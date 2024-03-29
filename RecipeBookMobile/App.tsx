@@ -10,6 +10,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import HomeScreen from './pages/Home.js'
+import RecipeCategories from './pages/RecipeCategories.js'
 
 const Stack = createNativeStackNavigator();
 
@@ -21,6 +22,11 @@ function App(): React.JSX.Element {
             <Stack.Screen
               name="Home"
               component={HomeScreen}
+              options={{title: ''}}
+            />
+            <Stack.Screen
+              name="Categories"
+              component={RecipeCategories}
               options={{title: ''}}
             />
           </Stack.Navigator>

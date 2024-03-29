@@ -10,15 +10,18 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const Recipe = ({title}) => {
+const Recipe = ({title, image}) => {
     return(
         <View>
+            <Text>replace with {image}</Text>
             <Text>{title}</Text>
         </View>
     )
 }
 
 const HorizontalRecipe = ({title}) => {
+    const navigation = useNavigation()
+
     const data = [{
         img: "image_1",
         title: "Recipe 1"
@@ -36,13 +39,14 @@ const HorizontalRecipe = ({title}) => {
         <View>
             <View>
                 <Text>{title}</Text>
-                <Text>See All</Text>
+                <Pressable onPress={() => navigation.navigate("Categories")}>
+                    <Text onPress={() => navigation.navigate("Categories")}>See All</Text>
+                </Pressable>
             </View>
             <FlatList
                 data={data}
                 horizontal={true}
-                keyExtractor={item => item.id}
-                renderItem={({item}) => <Recipe title={item.title} />}
+                renderItem={({item}) => <Recipe title={item.title} image={item.img} />}
             />
         </View>
     )
