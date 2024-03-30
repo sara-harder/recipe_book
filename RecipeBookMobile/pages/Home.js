@@ -19,9 +19,7 @@ const Recipe = ({title, image}) => {
     )
 }
 
-const HorizontalRecipe = ({title}) => {
-    const navigation = useNavigation()
-
+const HorizontalRecipe = ({title, nav}) => {
     const data = [{
         img: "image_1",
         title: "Recipe 1"
@@ -39,8 +37,8 @@ const HorizontalRecipe = ({title}) => {
         <View>
             <View>
                 <Text>{title}</Text>
-                <Pressable onPress={() => navigation.navigate("Categories")}>
-                    <Text onPress={() => navigation.navigate("Categories")}>See All</Text>
+                <Pressable onPress={nav}>
+                    <Text onPress={nav}>See All</Text>
                 </Pressable>
             </View>
             <FlatList
@@ -53,14 +51,16 @@ const HorizontalRecipe = ({title}) => {
 }
 
 function HomeScreen() {
+    const navigation = useNavigation()
+
     return(
         <SafeAreaView>
             <View>
                 <Text></Text>
-                <HorizontalRecipe title="Favorites" />
-                <HorizontalRecipe title="Recents" />
-                <HorizontalRecipe title="Savory" />
-                <HorizontalRecipe title="Sweet" />
+                <HorizontalRecipe title="Favorites" nav={()=>navigation.navigate("Recipes")} />
+                <HorizontalRecipe title="Recents" nav={()=>navigation.navigate("Recipes")} />
+                <HorizontalRecipe title="Savory" nav={()=>navigation.navigate("Categories")} />
+                <HorizontalRecipe title="Sweet" nav={()=>navigation.navigate("Categoreis")} />
             </View>
         </SafeAreaView>
     )

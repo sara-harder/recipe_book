@@ -12,20 +12,20 @@ import { useNavigation } from '@react-navigation/native';
 // component imports
 import ListItem from '../components/ListItem.js'
 
-function RecipeCategories() {
+function RecipeList() {
     const navigation = useNavigation()
 
     const data = [{
-        text: "Cat 1",
-        nav: () => navigation.navigate("Recipes")
+        text: "Recipe 1",
+        nav: () => navigation.navigate("Home")
     },
     {
-        text: "Cat 2",
-        nav: () => navigation.navigate("Recipes")
+        text: "Recipe 2",
+        nav: () => navigation.navigate("Home")
     },
     {
-        text: "Cat 3",
-        nav: () => navigation.navigate("Recipes")
+        text: "Recipe 3",
+        nav: () => navigation.navigate("Home")
     }]
 
     return(
@@ -41,4 +41,4 @@ function RecipeCategories() {
     )
 }
 
-export default RecipeCategories;
+export default RecipeList;
