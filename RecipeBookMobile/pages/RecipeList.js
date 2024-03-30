@@ -17,15 +17,15 @@ function RecipeList() {
 
     const data = [{
         text: "Recipe 1",
-        nav: () => navigation.navigate("Home")
+        nav: () => navigation.navigate("ViewRecipe")
     },
     {
         text: "Recipe 2",
-        nav: () => navigation.navigate("Home")
+        nav: () => navigation.navigate("ViewRecipe")
     },
     {
         text: "Recipe 3",
-        nav: () => navigation.navigate("Home")
+        nav: () => navigation.navigate("ViewRecipe")
     }]
 
     return(

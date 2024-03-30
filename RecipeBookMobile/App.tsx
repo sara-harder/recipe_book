@@ -12,6 +12,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import HomeScreen from './pages/Home.js'
 import RecipeCategories from './pages/RecipeCategories.js'
 import RecipeList from './pages/RecipeList.js'
+import ViewRecipe from './pages/ViewRecipe.js'
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +34,11 @@ function App(): React.JSX.Element {
             <Stack.Screen
               name="Recipes"
               component={RecipeList}
+              options={{title: ''}}
+            />
+            <Stack.Screen
+              name="ViewRecipe"
+              component={ViewRecipe}
               options={{title: ''}}
             />
           </Stack.Navigator>

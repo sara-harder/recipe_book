@@ -10,27 +10,32 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const Recipe = ({title, image}) => {
+const Recipe = ({title, image, nav}) => {
     return(
-        <View>
+        <Pressable onPress={nav} >
             <Text>replace with {image}</Text>
             <Text>{title}</Text>
-        </View>
+        </Pressable>
     )
 }
 
 const HorizontalRecipe = ({title, nav}) => {
+    const navigation = useNavigation()
+
     const data = [{
         img: "image_1",
-        title: "Recipe 1"
+        title: "Recipe 1",
+        nav: ()=>navigation.navigate("ViewRecipe")
     },
     {
         img: "image_2",
-        title: "Recipe 2"
+        title: "Recipe 2",
+        nav: ()=>navigation.navigate("ViewRecipe")
     },
     {
         img: "image_3",
-        title: "Recipe 3"
+        title: "Recipe 3",
+        nav: ()=>navigation.navigate("ViewRecipe")
     }]
 
     return(
@@ -44,7 +49,7 @@ const HorizontalRecipe = ({title, nav}) => {
             <FlatList
                 data={data}
                 horizontal={true}
-                renderItem={({item}) => <Recipe title={item.title} image={item.img} />}
+                renderItem={({item}) => <Recipe title={item.title} image={item.img} nav={item.nav} />}
             />
         </View>
     )
@@ -56,11 +61,11 @@ function HomeScreen() {
     return(
         <SafeAreaView>
             <View>
-                <Text></Text>
+                <Text>Title</Text>
                 <HorizontalRecipe title="Favorites" nav={()=>navigation.navigate("Recipes")} />
                 <HorizontalRecipe title="Recents" nav={()=>navigation.navigate("Recipes")} />
                 <HorizontalRecipe title="Savory" nav={()=>navigation.navigate("Categories")} />
-                <HorizontalRecipe title="Sweet" nav={()=>navigation.navigate("Categoreis")} />
+                <HorizontalRecipe title="Sweet" nav={()=>navigation.navigate("Categories")} />
             </View>
         </SafeAreaView>
     )
