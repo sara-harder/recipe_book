@@ -1,3 +1,4 @@
+// react imports
 import React from 'react';
 
 function ListItem({text, navigate}) {

@@ -1,3 +1,4 @@
+// react imports
 import React from 'react';
 import {useNavigate} from "react-router-dom"
 
@@ -65,8 +66,8 @@ function HomePage() {
         <>
             <h2>title</h2>
             <div>
-                <HorizontalRecipe title="Favorites" nav={()=>navigate("/")} />
-                <HorizontalRecipe title="Recents" nav={()=>navigate("/")} />
+                <HorizontalRecipe title="Favorites" nav={()=>navigate("recipes")} />
+                <HorizontalRecipe title="Recents" nav={()=>navigate("recipes")} />
                 <HorizontalRecipe title="Savory" nav={()=>navigate("categories")} />
                 <HorizontalRecipe title="Sweet" nav={()=>navigate("categories")} />
             </div>

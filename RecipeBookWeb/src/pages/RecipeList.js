@@ -5,20 +5,20 @@ import {useNavigate} from "react-router-dom"
 // component imports
 import ListItem from '../components/ListItem';
 
-function RecipeCategories() {
+function RecipeList() {
     const navigate = useNavigate()
 
     const data = [{
-        text: "Cat 1",
-        nav: () => navigate("/recipes")
+        text: "Recipe 1",
+        nav: () => navigate("/")
     },
     {
-        text: "Cat 2",
-        nav: () => navigate("/recipes")
+        text: "Recipe 2",
+        nav: () => navigate("/")
     },
     {
-        text: "Cat 3",
-        nav: () => navigate("/recipes")
+        text: "Recipe 3",
+        nav: () => navigate("/")
     }]
 
     return(
@@ -33,4 +33,4 @@ function RecipeCategories() {
     )
 }
 
-export default RecipeCategories;
+export default RecipeList;
