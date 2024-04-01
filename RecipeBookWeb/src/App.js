@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // page imports
 import HomePage from './pages/Home';
+import RecipeCategories from './pages/RecipeCategories';
 
 // style imports
 import './App.css';
@@ -14,7 +15,8 @@ function App() {
       <header className="App-header">
       <Router>
         <Routes>
-          <Route path="/" element={<HomePage/>} />
+          <Route path="/" exact element={<HomePage/>} />
+          <Route path="/categories" element={<RecipeCategories/>} />
         </Routes>
       </Router>
       </header>

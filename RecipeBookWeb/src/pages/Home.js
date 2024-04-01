@@ -45,7 +45,11 @@ const HorizontalRecipe = ({title, nav}) => {
                 <table>
                     <tbody>
                         <tr>
-                            {data.map((item, index) => <td><Recipe title={item.title} image={item.img} nav={item.nav} key={index}/></td>)}
+                            {data.map((item, index) => 
+                                <td>
+                                    <Recipe title={item.title} image={item.img} nav={item.nav} key={index}/>
+                                </td>
+                            )}
                         </tr>
                     </tbody>
                 </table>
@@ -63,8 +67,8 @@ function HomePage() {
             <div>
                 <HorizontalRecipe title="Favorites" nav={()=>navigate("/")} />
                 <HorizontalRecipe title="Recents" nav={()=>navigate("/")} />
-                <HorizontalRecipe title="Savory" nav={()=>navigate("/")} />
-                <HorizontalRecipe title="Sweet" nav={()=>navigate("/")} />
+                <HorizontalRecipe title="Savory" nav={()=>navigate("categories")} />
+                <HorizontalRecipe title="Sweet" nav={()=>navigate("categories")} />
             </div>
         </>
     )
