@@ -19,17 +19,17 @@ const HorizontalRecipe = ({title, nav}) => {
     const data = [{
         img: "image_1",
         title: "Recipe 1",
-        nav: ()=>navigate("/")
+        nav: ()=>navigate("view-recipe")
     },
     {
         img: "image_2",
         title: "Recipe 2",
-        nav: ()=>navigate("/")
+        nav: ()=>navigate("view-recipe")
     },
     {
         img: "image_3",
         title: "Recipe 3",
-        nav: ()=>navigate("/")
+        nav: ()=>navigate("view-recipe")
     }]
 
     return (
