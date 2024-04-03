@@ -31,7 +31,7 @@ function RecipeList() {
     return(
         <SafeAreaView>
             <View>
-                <Text></Text>
+                <Text>Title</Text>
                 <FlatList
                     data={data}
                     renderItem={({item}) => <ListItem text={item.text} navigate={item.nav} />}
