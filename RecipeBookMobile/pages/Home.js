@@ -76,7 +76,6 @@ function HomeScreen() {
     return(
         <SafeAreaView style={styles.app}>
             <View style={styles.container}>
-                <Text style={text_styles.largeTitle}>My Recipes</Text>
                 <HorizontalRecipe title="Favorites" nav={()=>navigation.navigate("Recipes")} />
                 <HorizontalRecipe title="Recents" nav={()=>navigation.navigate("Recipes")} />
                 <HorizontalRecipe title="Savory" nav={()=>navigation.navigate("Categories")} />
