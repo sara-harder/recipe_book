@@ -12,6 +12,9 @@ import { useNavigation } from '@react-navigation/native';
 // component imports
 import ListItem from '../components/ListItem.js'
 
+// style imports
+import styles from '../style.js';
+
 function RecipeList() {
     const navigation = useNavigation()
 
@@ -29,9 +32,8 @@ function RecipeList() {
     }]
 
     return(
-        <SafeAreaView>
-            <View>
-                <Text>Title</Text>
+        <SafeAreaView style={styles.app}>
+            <View style={styles.container}>
                 <FlatList
                     data={data}
                     renderItem={({item}) => <ListItem text={item.text} navigate={item.nav} />}

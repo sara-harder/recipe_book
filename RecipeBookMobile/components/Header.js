@@ -19,9 +19,11 @@ const header = ({navigation, route, options, back}) => {
     return (
         <SafeAreaView style={header_style.header}>
             <View>
-                <Text onPress={navigation.goBack} style={header_style.text}>
-                    Back
-                </Text>
+                {title == "My Recipes" ? <Text></Text> : (
+                    <Text onPress={navigation.goBack} style={header_style.text}>
+                        Back
+                    </Text>
+                )}
                 <Text style={text_styles.largeTitle}>{title}</Text>
             </View>
         </SafeAreaView>

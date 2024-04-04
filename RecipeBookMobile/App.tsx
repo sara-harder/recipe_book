@@ -31,12 +31,12 @@ function App(): React.JSX.Element {
             <Stack.Screen
               name="Categories"
               component={RecipeCategories}
-              options={{title: ''}}
+              options={{title: 'S Recipes'}}
             />
             <Stack.Screen
               name="Recipes"
               component={RecipeList}
-              options={{title: ''}}
+              options={{title: 'Recipes'}}
             />
             <Stack.Screen
               name="ViewRecipe"
