@@ -109,8 +109,8 @@ const home_style = StyleSheet.create({
     },
     row: {
         paddingRight: 8,
-        paddingBottom: 15,
+        paddingBottom: 18,
 
-        height: 100,
+        height: 105,
     }
 })

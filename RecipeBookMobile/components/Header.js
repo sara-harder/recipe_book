@@ -19,7 +19,10 @@ const header = ({navigation, route, options, back}) => {
     return (
         <SafeAreaView style={header_style.header}>
             <View>
-                <Text style={[text_styles.largeTitle, header_style.title]}>{title}</Text>
+                <Text onPress={navigation.goBack} style={header_style.text}>
+                    Back
+                </Text>
+                <Text style={text_styles.largeTitle}>{title}</Text>
             </View>
         </SafeAreaView>
     )
@@ -36,7 +39,12 @@ const header_style = StyleSheet.create({
         borderBottomWidth: 15,
         backgroundColor: styles.headerColor.color,
     },
-    title: {
-        paddingTop: 15,
+    text: {
+        color: styles.secondaryTextColor.color,
+        fontFamily: styles.fontRegular.fontFamily,
+
+        paddingLeft: 10,
+        paddingBottom: 0,
+        paddingTop: 5
     }
 })
