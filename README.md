@@ -10,6 +10,9 @@ I added some basic navigation functions, to allow movement between pages by pres
 After creating the framework pages for mobile, I started work on the web portion. I followed the same process, starting with adding empty pages and creating the basic components. A lot of the components could be copied from mobile, then changed to follow HTML instead of React Native. I enabled navigation to each of the pages as well.
 
 
+Next, I wanted to start adding some basic style. The components are there, but they're a mess on the page. Starting again with mobile, I created a style sheet and started placing the components where I wanted them. I gave them dimensions, borders, and padding. I added a basic color scheme to be updated later. I also added a basic header.
+
+
 
 
 
@@ -20,3 +23,4 @@ Change the ingredient units from metric to imperial and back
 Change the number of portions
 Checkbox to filter items by seasonal vegetables only 
 Add recipes into multiple categories, so you can find it anywhere you think of (including vegan, vegetarian, and gluten free)
+Search for recipes
