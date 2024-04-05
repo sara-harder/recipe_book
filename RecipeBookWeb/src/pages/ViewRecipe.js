@@ -10,7 +10,9 @@ const Ingredient = ({name, quantity}) => {
     )
 }
 
-function ViewRecipe() {
+function ViewRecipe({setHeader}) {
+    setHeader("Recipe")
+
     const ingredients = [{
         name: "Ing 1",
         qua: "15g"

@@ -24,9 +24,9 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" exact element={<HomePage setHeader={setHeader}/>} />
-            <Route path="/categories" element={<RecipeCategories/>} />
-            <Route path="/recipes" element={<RecipeList/>} />
-            <Route path="/view-recipe" element={<ViewRecipe/>} />
+            <Route path="/categories" element={<RecipeCategories setHeader={setHeader}/>} />
+            <Route path="/recipes" element={<RecipeList setHeader={setHeader}/>} />
+            <Route path="/view-recipe" element={<ViewRecipe setHeader={setHeader}/>} />
           </Routes>
         </Router>
       </body>

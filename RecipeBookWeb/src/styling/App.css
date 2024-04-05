@@ -47,6 +47,10 @@ h1 {
   padding-left: 50px;
 }
 
+h3 {
+  margin: 0px;
+}
+
 .row {
   width: 100%
 }
