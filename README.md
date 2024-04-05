@@ -18,9 +18,19 @@ Next, I wanted to start adding some basic style. The components are there, but t
 
 
 Stretch Goals:
+
 Have the ingredients follow along with the directions. When the user clicks a direction, the ingredients jump next to it, and highlight the ingredients needed for the direction
+
 Change the ingredient units from metric to imperial and back
+
 Change the number of portions
+
 Checkbox to filter items by seasonal vegetables only 
+
 Add recipes into multiple categories, so you can find it anywhere you think of (including vegan, vegetarian, and gluten free)
+
 Search for recipes
+
+Add all ingredients for a recipe to a shopping list (Bring!)
+
+Coordination with Alexa for adding ingredients (and reading recipes?)
