@@ -39,7 +39,6 @@ function ViewRecipe({setHeader}) {
     return(
         <>
             <div>
-                <h2>Title</h2>
                 <div>Image</div>
                 {ingredients.map((item, index) => 
                     <Ingredient name={item.name} quantity={item.qua} key={index} />

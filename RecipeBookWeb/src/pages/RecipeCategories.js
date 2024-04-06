@@ -3,7 +3,7 @@ import React from 'react';
 import {useNavigate} from "react-router-dom"
 
 // function imports
-import { createFlexTable } from '../functionality/helpers';
+import { createFlexTable } from '../../../functionality/helpers';
 
 // component imports
 import ListItem from '../components/ListItem';
