@@ -8,31 +8,34 @@ import {
   View
 } from 'react-native';
 
+// style imports
+import styles, {text_styles} from '../style.js';
+
 const Ingredient = ({name, quantity}) => {
     return(
-        <View>
-            <Text>{quantity}, </Text>
-            <Text>{name}</Text>
+        <View style={[styles.row, {justifyContent: "flex-start"}]}>
+            <Text style={recipe_style.ingredient_quantity}>{quantity},  </Text>
+            <Text style={recipe_style.ingredient_name}>{name}</Text>
         </View>
     )
 }
 
 function ViewRecipe() {
     const ingredients = [{
-        name: "Ing 1",
-        qua: "15g"
+        name: "mayonnaisre",
+        qua: "1500ml"
     },
     {
-        name: "Ing 2",
+        name: "Tomato Sauce",
         qua: "10g"
     },
     {
-        name: "Ing 3",
+        name: "Worcestershire",
         qua: "25g"
     }]
 
     const directions = [{
-        text: "Dir 1",
+        text: "Line of directions 2 with specified ing",
     },
     {
         text: "Dir 2",
@@ -42,21 +45,82 @@ function ViewRecipe() {
     }]
 
     return(
-        <SafeAreaView>
-            <View>
-                <Text>Title</Text>
-                <Text>Image</Text>
-                <FlatList
-                    data={ingredients}
-                    renderItem={({item}) => <Ingredient name={item.name} quantity={item.qua}/>}
-                />
-                <FlatList
-                    data={directions}
-                    renderItem={({item}) => <Text>{item.text}</Text>}
-                />
+        <SafeAreaView style={styles.app}>
+            <View style={styles.container}>
+                <View style={recipe_style.image}></View>
+                <View>
+                    <View style={recipe_style.ingredients_list}>
+                        <Text style={text_styles.boldText}>Ingredients:</Text>
+                        <View style={styles.row}>
+                            <FlatList
+                                style={{minWidth: "49%", maxWidth: "50%"}}
+                                data={ingredients}
+                                renderItem={({item}) => <Ingredient name={item.name} quantity={item.qua}/>}
+                            />
+                            <FlatList
+                                style={{minWidth: "49%", maxWidth: "50%"}}
+                                data={ingredients}
+                                renderItem={({item}) => <Ingredient name={item.name} quantity={item.qua}/>}
+                            />
+                        </View>
+                    </View>
+                    <View style={recipe_style.directions_list}>
+                        <Text style={text_styles.boldText}>Directions:</Text>
+                        <FlatList
+                            data={directions}
+                            renderItem={({item}) => <Text style={recipe_style.direction_text} >{item.text}</Text>}
+                        />
+                    </View>
+                </View>
             </View>
         </SafeAreaView>
     )
 }
 
 export default ViewRecipe;
+
+
+
+const recipe_style = StyleSheet.create({
+    ingredient_quantity: {
+        width: "30%",
+        textAlign: "right",
+        padding: 1,
+        color: text_styles.itemText.color
+    },
+    ingredient_name: {
+        width: "70%",
+        textAlign: "left",
+        padding: 1,
+        color: text_styles.itemText.color
+    },
+    ingredients_list: {
+        borderWidth: 2,
+        borderColor: styles.borderColor.color,
+        padding: 6,
+        paddingTop: 4,
+        paddingBottom: 12,
+        backgroundColor: styles.itemBackground.color
+    },
+    directions_list: {
+        borderWidth: 2,
+        borderColor: styles.borderColor.color,
+        padding: 6,
+        paddingTop: 4,
+        paddingBottom: 12,
+        backgroundColor: styles.itemBackground.color
+    },
+    direction_text: {
+        minWidth: "100%",
+        padding: 1,
+        color: text_styles.itemText.color
+    },
+    image: {
+        width: "100%",
+        height: "30%",
+        borderWidth: 2,
+        borderRadius:10,
+        borderColor: styles.borderColor.color,
+        marginBottom: 15,
+    },
+})

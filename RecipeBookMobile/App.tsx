@@ -41,7 +41,7 @@ function App(): React.JSX.Element {
             <Stack.Screen
               name="ViewRecipe"
               component={ViewRecipe}
-              options={{title: ''}}
+              options={{title: 'Recipe'}}
             />
           </Stack.Navigator>
       </NavigationContainer>

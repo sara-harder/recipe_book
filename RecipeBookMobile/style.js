@@ -110,6 +110,13 @@ const text_styles = StyleSheet.create({
         paddingTop: 4,
         paddingBottom: 4,
     },
+    boldText: {
+        color: styles.textColor.color,
+        fontFamily: styles.fontBold.fontFamily,
+
+        paddingTop: 4,
+        paddingBottom: 4,
+    },
     inputText: {
         color: styles.textColor.color,
         fontFamily: styles.fontMedium.fontFamily,
