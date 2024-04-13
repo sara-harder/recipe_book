@@ -11,6 +11,9 @@ import {
 // style imports
 import styles, {text_styles} from '../style.js';
 
+// function imports
+import { createFlexTable } from 'recipe-book';
+
 const Ingredient = ({name, quantity}) => {
     return(
         <View style={[styles.row, {justifyContent: "flex-start"}]}>
@@ -23,7 +26,7 @@ const Ingredient = ({name, quantity}) => {
 function ViewRecipe() {
     const ingredients = [{
         name: "mayonnaisre",
-        qua: "1500ml"
+        qua: "150ml"
     },
     {
         name: "Tomato Sauce",
@@ -44,6 +47,8 @@ function ViewRecipe() {
         text: "Dir 3",
     }]
 
+    const rows = createFlexTable(2, ingredients.length)
+
     return(
         <SafeAreaView style={styles.app}>
             <View style={styles.container}>
@@ -54,12 +59,12 @@ function ViewRecipe() {
                         <View style={styles.row}>
                             <FlatList
                                 style={{minWidth: "49%", maxWidth: "50%"}}
-                                data={ingredients}
+                                data={ingredients.slice(rows[0][0], rows[0][1])}
                                 renderItem={({item}) => <Ingredient name={item.name} quantity={item.qua}/>}
                             />
                             <FlatList
                                 style={{minWidth: "49%", maxWidth: "50%"}}
-                                data={ingredients}
+                                data={ingredients.slice(rows[1][0], rows[1][1])}
                                 renderItem={({item}) => <Ingredient name={item.name} quantity={item.qua}/>}
                             />
                         </View>

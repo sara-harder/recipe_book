@@ -1,0 +1,10 @@
+{
+  "version": "v1",
+  "packages": {
+    "recipe-book": {
+      "signature": "65044292902cc947ef98a7c989d09a66",
+      "file": true,
+      "replaced": "file:../functionality"
+    }
+  }
+}
