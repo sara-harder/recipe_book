@@ -1,3 +1,9 @@
+.home_rows {
+    align-self: flex-end;
+    margin: 10px;
+    margin-top: 20px;
+}
+
 .recipe {
     text-align: center;
     margin-bottom: 12px;
