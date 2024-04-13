@@ -10,11 +10,14 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
+// style imports
+import styles, {text_styles} from '../style.js';
+
 const Recipe = ({title, image, nav}) => {
     return(
         <Pressable onPress={nav} >
-            <Text>replace with {image}</Text>
-            <Text>{title}</Text>
+            <View style={home_style.image} ></View>
+            <Text style={[text_styles.itemText, {textAlign: "center"}]}>{title}</Text>
         </Pressable>
     )
 }
@@ -36,21 +39,33 @@ const HorizontalRecipe = ({title, nav}) => {
         img: "image_3",
         title: "Recipe 3",
         nav: ()=>navigation.navigate("ViewRecipe")
-    }]
+    },
+    {
+        img: "image_4",
+        title: "Recipe 4",
+        nav: ()=>navigation.navigate("ViewRecipe")
+    },
+    {
+        img: "image_5",
+        title: "Recipe 5",
+        nav: ()=>navigation.navigate("ViewRecipe")
+    },
+    ]
 
     return(
         <View>
-            <View>
-                <Text>{title}</Text>
-                <Pressable onPress={nav}>
-                    <Text onPress={nav}>See All</Text>
-                </Pressable>
+            <View style={styles.row}>
+                <Text style={text_styles.smallTitle}>{title}</Text>
+                <Text style={[text_styles.itemText, {paddingTop: 12, paddingRight: 12}]}
+                    onPress={nav}>See All</Text>
             </View>
-            <FlatList
-                data={data}
-                horizontal={true}
-                renderItem={({item}) => <Recipe title={item.title} image={item.img} nav={item.nav} />}
-            />
+            <View style={home_style.row}>
+                <FlatList
+                    data={data}
+                    horizontal={true}
+                    renderItem={({item}) => <Recipe title={item.title} image={item.img} nav={item.nav} />}
+                />
+            </View>
         </View>
     )
 }
@@ -59,9 +74,8 @@ function HomeScreen() {
     const navigation = useNavigation()
 
     return(
-        <SafeAreaView>
-            <View>
-                <Text>Title</Text>
+        <SafeAreaView style={styles.app}>
+            <View style={styles.container}>
                 <HorizontalRecipe title="Favorites" nav={()=>navigation.navigate("Recipes")} />
                 <HorizontalRecipe title="Recents" nav={()=>navigation.navigate("Recipes")} />
                 <HorizontalRecipe title="Savory" nav={()=>navigation.navigate("Categories")} />
@@ -72,3 +86,31 @@ function HomeScreen() {
 }
 
 export default HomeScreen;
+
+
+
+const home_style = StyleSheet.create({
+    image: {
+        alignContent: "center",
+        flex: 1,
+
+        borderWidth: 2,
+        borderRadius: 5,
+        borderColor: styles.borderColor.color,
+
+        minHeight: 64,
+        minWidth: 80,
+        maxHeight: 64,
+        maxWidth: 80,
+
+        marginLeft: 12,
+        marginRight: 12
+
+    },
+    row: {
+        paddingRight: 8,
+        paddingBottom: 18,
+
+        height: 105,
+    }
+})
