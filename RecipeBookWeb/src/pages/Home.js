@@ -49,14 +49,10 @@ const HorizontalRecipe = ({title, nav}) => {
     return (
         <>
             <div>
-                <table className="row">
-                    <thead>
-                        <tr>
-                            <td className="left"><h2>{title}</h2></td>
-                            <td onClick={nav} className="right">See All</td>
-                        </tr>
-                    </thead>
-                </table>
+                <div className="row wide">
+                    <div className='home_rows'><h2 className="left">{title}</h2></div>
+                    <div onClick={nav} className="right home_rows">See All</div>
+                </div>
                 <table>
                     <tbody>
                         <tr>
