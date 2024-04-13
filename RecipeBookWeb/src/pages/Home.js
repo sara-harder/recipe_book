@@ -2,12 +2,15 @@
 import React from 'react';
 import {useNavigate} from "react-router-dom"
 
+// style imports
+import '../styling/Home.css';
+
 const Recipe = ({title, image, nav}) => {
     return(
         <>
-            <div onClick={nav}>
-                <div>replace with {image}</div>
-                <h4>{title}</h4>
+            <div onClick={nav} className="recipe">
+                <div className="thumbnail"></div>
+                <div>{title}</div>
             </div>
         </>
     )
@@ -30,19 +33,26 @@ const HorizontalRecipe = ({title, nav}) => {
         img: "image_3",
         title: "Recipe 3",
         nav: ()=>navigate("view-recipe")
-    }]
+    },
+    {
+        img: "image_4",
+        title: "Recipe 4",
+        nav: ()=>navigate("view-recipe")
+    },
+    {
+        img: "image_5",
+        title: "Recipe 5",
+        nav: ()=>navigate("view-recipe")
+    },
+    ]
 
     return (
         <>
             <div>
-                <table>
-                    <thead>
-                        <tr>
-                            <td>{title}</td>
-                            <td onClick={nav}>See All</td>
-                        </tr>
-                    </thead>
-                </table>
+                <div className="row wide">
+                    <div className='home_rows'><h2 className="left">{title}</h2></div>
+                    <div onClick={nav} className="right home_rows">See All</div>
+                </div>
                 <table>
                     <tbody>
                         <tr>
@@ -59,12 +69,12 @@ const HorizontalRecipe = ({title, nav}) => {
     )
 }
 
-function HomePage() {
+function HomePage({setHeader}) {
+    setHeader("My Recipes")
     const navigate = useNavigate()
 
     return(
         <>
-            <h2>title</h2>
             <div>
                 <HorizontalRecipe title="Favorites" nav={()=>navigate("recipes")} />
                 <HorizontalRecipe title="Recents" nav={()=>navigate("recipes")} />

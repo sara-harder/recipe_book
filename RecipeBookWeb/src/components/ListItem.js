@@ -1,11 +1,14 @@
 // react imports
 import React from 'react';
 
+// style imports
+import '../styling/Lists.css';
+
 function ListItem({text, navigate}) {
     return(
-        <div>
-            <div>Replace with image</div>
-            <div onClick={navigate}>{text}</div>
+        <div  onClick={navigate} className="item">
+            <div className="image"></div>
+            <h3>{text}</h3>
         </div>
     )
 }
