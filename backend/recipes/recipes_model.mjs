@@ -3,11 +3,11 @@ import mongoose from 'mongoose';
 const recipeSchema = mongoose.Schema({
     // creates a Schema for the recipe table in the database
     name: { type: String, required: true },
-    image: { type: String, required: true },
+    image: { type: String, required: false },
     portions: { type: Number, required: true },
     ingredients: { type: Object, required: true },
     directions: { type: Object, required: true },
-    source: { type: String, required: true },
+    source: { type: String, required: false },
 })
 
 // creates a Recipe model class based on the precreated Schema
@@ -22,7 +22,7 @@ const createRecipe = async(name, image, portions, ingredients, directions, sourc
 
 const getRecipe = async(filter) => {
     // finds the recipe based on id
-    const query = Recipe.find(filter)
+    const query = Recipe.findOne(filter)
     return query.exec()
 }
 
@@ -35,7 +35,7 @@ const searchForRecipe = async(filter) => {
 const updateRecipe = async(filter, update) => {
     // finds the recipe based on id, then updates the provided criteria for that recipe
     await Recipe.updateOne(filter, update)
-    const query = Recipe.find(filter)
+    const query = Recipe.findOne(filter)
     return query.exec()
 }
 

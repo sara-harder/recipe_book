@@ -20,7 +20,7 @@ const createUser = async(username, fullname, favorites, recents) => {
 
 const getUser = async(filter) => {
     // finds the user based on id
-    const query = User.find(filter)
+    const query = User.findOne(filter)
     return query.exec()
 }
 
@@ -28,7 +28,7 @@ const getUser = async(filter) => {
 const updateUser = async(filter, update) => {
     // finds the user based on id, then updates the provided criteria for that user
     await User.updateOne(filter, update)
-    const query = User.find(filter)
+    const query = User.findOne(filter)
     return query.exec()
 }
 
