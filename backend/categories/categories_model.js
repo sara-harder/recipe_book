@@ -33,3 +33,5 @@ const deleteCategory = async(filter) => {
     const response = await Category.deleteOne(filter)
     return response.deletedCount
 }
+
+module.exports = {createCategory, getCategory, getAllCategories, deleteCategory};

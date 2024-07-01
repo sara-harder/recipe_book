@@ -38,3 +38,5 @@ const deleteUser = async(filter) => {
     const response = await User.deleteOne(filter)
     return response.deletedCount
 }
+
+module.exports = {createUser, getUser, updateUser, deleteUser};

@@ -27,3 +27,5 @@ const deleteRecipeCategory = async(filter) => {
     const response = await RecipeCategory.deleteOne(filter)
     return response.deletedCount
 }
+
+module.exports = {createRecipeCategory, getAllRecipeCategories, deleteRecipeCategory};

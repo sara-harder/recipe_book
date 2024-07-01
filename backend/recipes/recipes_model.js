@@ -45,3 +45,5 @@ const deleteRecipe = async(filter) => {
     const response = await Recipe.deleteOne(filter)
     return response.deletedCount
 }
+
+module.exports = {createRecipe, getRecipe, searchForRecipe, updateRecipe, deleteRecipe};
