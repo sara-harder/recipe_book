@@ -1,6 +1,6 @@
-import express from 'express';
-import asyncHandler from 'express-async-handler';
-import * as categories from './categories_model.mjs';
+const express = require('express');
+const asyncHandler = require('express-async-handler')
+const categories = require('./categories_model.js');
 
 const bodyParser = require('body-parser');
 const categoriesRouter = express.Router();
@@ -41,5 +41,4 @@ categoriesRouter.delete("/:id", asyncHandler(async(req, res, next) => {
     else res.status(204).send()
 }))
 
-
-export default categoriesRouter;
+module.exports = {categoriesRouter};

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const recipeSchema = mongoose.Schema({
     // creates a Schema for the recipe table in the database
@@ -45,6 +45,3 @@ const deleteRecipe = async(filter) => {
     const response = await Recipe.deleteOne(filter)
     return response.deletedCount
 }
-
-
-export {createRecipe, getRecipe, searchForRecipe, updateRecipe, deleteRecipe}

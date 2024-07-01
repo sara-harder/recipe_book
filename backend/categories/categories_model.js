@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const categorySchema = mongoose.Schema({
     // creates a Schema for the category table in the database
@@ -33,6 +33,3 @@ const deleteCategory = async(filter) => {
     const response = await Category.deleteOne(filter)
     return response.deletedCount
 }
-
-
-export {createCategory, getCategory, getAllCategories, deleteCategory}

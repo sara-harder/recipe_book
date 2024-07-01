@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
     // creates a Schema for the user table in the database
@@ -38,6 +38,3 @@ const deleteUser = async(filter) => {
     const response = await User.deleteOne(filter)
     return response.deletedCount
 }
-
-
-export {createUser, getUser, updateUser, deleteUser}

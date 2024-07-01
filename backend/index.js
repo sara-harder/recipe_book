@@ -1,9 +1,9 @@
-import express from 'express';
+const express = require('express');
 
-import usersRouter from './users/users_controller.mjs';
-import recipesRouter from './recipes/recipes_controller.mjs';
-import categoriesRouter from './categories/categories_controller.mjs';
-import reccatRouter from './recipe_in_category/recipe_cat_controller.mjs';
+const {usersRouter} = require('./users/users_controller.js');
+const {recipesRouter} = require('./recipes/recipes_controller.js');
+const {categoriesRouter} = require('./categories/categories_controller.js');
+const {reccatRouter} = require('./recipe_in_category/recipe_cat_controller.js');
 
 const router = module.exports = express.Router();
 

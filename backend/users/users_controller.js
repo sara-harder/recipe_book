@@ -1,6 +1,6 @@
-import express from 'express';
-import asyncHandler from 'express-async-handler';
-import * as users from './users_model.mjs';
+const express = require('express');
+const asyncHandler = require('express-async-handler')
+const users = require('./users_model.js');
 
 const bodyParser = require('body-parser');
 const usersRouter = express.Router();
@@ -42,5 +42,4 @@ usersRouter.delete("/:id", asyncHandler(async(req, res, next) => {
     else res.status(204).send()
 }))
 
-
-export default usersRouter;
+module.exports = {usersRouter};

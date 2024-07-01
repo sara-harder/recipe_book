@@ -1,6 +1,6 @@
-import express from 'express';
-import asyncHandler from 'express-async-handler';
-import * as recipes from './recipes_model.mjs';
+const express = require('express');
+const asyncHandler = require('express-async-handler')
+const recipes = require('./recipes_model.js');
 
 const bodyParser = require('body-parser');
 const recipesRouter = express.Router();
@@ -50,5 +50,4 @@ recipesRouter.delete("/:id", asyncHandler(async(req, res, next) => {
     else res.status(204).send()
 }))
 
-
-export default recipesRouter;
+module.exports = {recipesRouter};
