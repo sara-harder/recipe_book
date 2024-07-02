@@ -12,9 +12,9 @@ const userSchema = mongoose.Schema({
 const User = mongoose.model("User", userSchema)
 
 
-const createUser = async(username, fullname, favorites, recents) => {
+const createUser = async(username, fullname) => {
     // uses the User class to create a new user object
-    const user = new User({username, fullname, favorites, recents})
+    const user = new User({username, fullname, favorites: [], recents: []})
     return user.save()
 }
 
