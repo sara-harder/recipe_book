@@ -118,6 +118,42 @@ describe.only("RECIPE MODEL TESTS", () => {
         ).toBeNull()
     })
 
+    performSyncTest("Search for recipe 2", async () => {
+        const recipe_results = await recipes.searchForRecipe("Carbonara")
+        expect(
+            recipe_results
+        ).toMatchObject(
+            [recipe_2]
+        )
+    })
+
+    performSyncTest("Search for recipe 2 (shortened start)", async () => {
+        const recipe_results = await recipes.searchForRecipe("carb")
+        expect(
+            recipe_results
+        ).toMatchObject(
+            [recipe_2]
+        )
+    })
+
+    performSyncTest("Search for recipe 2 (shortened end)", async () => {
+        const recipe_results = await recipes.searchForRecipe("ara")
+        expect(
+            recipe_results
+        ).toMatchObject(
+            [recipe_2]
+        )
+    })
+
+    performSyncTest("No search results", async () => {
+        const recipe = await recipes.searchForRecipe("Mushroom")
+        expect(
+            recipe
+        ).toMatchObject(
+            []
+        )
+    })
+
     performSyncTest("Update portions", async () => {
         recipe_1.portions = 6
         const recipe = await recipes.updateRecipe({_id: id_1}, {portions: recipe_1.portions})

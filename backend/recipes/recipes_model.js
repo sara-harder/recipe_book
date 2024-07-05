@@ -28,7 +28,7 @@ const getRecipe = async(filter) => {
 
 const searchForRecipe = async(filter) => {
     // finds the recipe based on search for name
-    const query = Recipe.find({ name: {$regex: filter} })
+    const query = Recipe.find({ name: {$regex: filter, $options: 'i'} })
     return query.exec()
 }
 
@@ -46,4 +46,4 @@ const deleteRecipe = async(filter) => {
     return response.deletedCount
 }
 
-module.exports = {createRecipe, getRecipe, searchForRecipe, updateRecipe, deleteRecipe, deleteAll};
+module.exports = {createRecipe, getRecipe, searchForRecipe, updateRecipe, deleteRecipe};
