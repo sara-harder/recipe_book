@@ -1,11 +1,14 @@
+require('dotenv').config();
+
 // connect to the server
 const server = require('../server')
 const mongoose = require('mongoose');
 
 // retrieve the user's model for testing
 const users = require('../users/users_model');
+const proxy = `http://localhost:${process.env.PORT}`
 
-jest.setTimeout(20000);
+jest.setTimeout(60000);
 
 
 
@@ -54,6 +57,12 @@ describe("USER MODEL TESTS", () => {
         ).toEqual(
             {username: username, fullname: fullname}
         )
+    })
+
+    performSyncTest("Fail user creation", async () => {
+        await expect(
+            users.createUser(username)
+        ).rejects.toThrow('User validation failed')
     })
 
     performSyncTest("Get user", async () => {
@@ -139,9 +148,9 @@ describe("USER CONTROLLER TESTS", () => {
     const favorites = ["id_1"]
     const favorites2 = ["id_2"]
 
-    test.only("Create user", async () => {
+    performSyncTest("Create user", async () => {
         const new_user = {username: username, fullname: fullname}
-        const response = await fetch("http://localhost:5001/users", {
+        const response = await fetch(`${proxy}/users`, {
                             method: "POST", 
                             body: JSON.stringify(new_user),
                             headers: {"Content-type": "application/json"}
@@ -153,6 +162,112 @@ describe("USER CONTROLLER TESTS", () => {
             {username: user.username, fullname: user.fullname}
         ).toEqual(
             {username: username, fullname: fullname}
+        )
+    })
+
+    performSyncTest("Fail user creation", async () => {
+        const new_user = {username: username}
+        const response = await fetch(`${proxy}/users`, {
+                            method: "POST", 
+                            body: JSON.stringify(new_user),
+                            headers: {"Content-type": "application/json"}
+        })
+        expect(
+            response.status
+        ).toEqual(
+            500
+        )
+    })
+
+    performSyncTest("Get user", async () => {
+        const response = await fetch(`${proxy}/users/${user_id}`)
+        const user = await response.json()
+        expect(
+            {username: user.username, fullname: user.fullname}
+        ).toEqual(
+            {username: username, fullname: fullname}
+        )
+    })
+
+    performSyncTest("Fail get user", async () => {
+        const response = await fetch(`${proxy}/users/${"633b47e164a80559f146166c"}`)
+        expect(
+            response.status
+        ).toEqual(
+            404
+        )
+    })
+
+    performSyncTest("Update username", async () => {
+        const response = await fetch(`${proxy}/users/${user_id}`, {
+                            method: "PUT", 
+                            body: JSON.stringify({username: username2}),
+                            headers: {"Content-type": "application/json"}
+        })
+        const user = await response.json()
+        expect(
+            {username: user.username, fullname: user.fullname}
+        ).toEqual(
+            {username: username2, fullname: fullname}
+        )
+    })
+
+    performSyncTest("Fail get user for update", async () => {
+        const response = await fetch(`${proxy}/users/${"633b47e164a80559f146166c"}`, {
+                            method: "PUT", 
+                            body: JSON.stringify({favorites: favorites}),
+                            headers: {"Content-type": "application/json"}
+        })
+        expect(
+            response.status
+        ).toEqual(
+            404
+        )
+    })
+
+    performSyncTest("Update user favorites", async () => {
+        const response = await fetch(`${proxy}/users/${user_id}`, {
+                            method: "PUT", 
+                            body: JSON.stringify({favorites: favorites}),
+                            headers: {"Content-type": "application/json"}
+        })
+        const user = await response.json()
+        expect(
+            {username: user.username, fullname: user.fullname, favorites: user.favorites}
+        ).toEqual(
+            {username: username2, fullname: fullname, favorites: favorites}
+        )
+    })
+
+    performSyncTest("Update user favorites again", async () => {
+        const response = await fetch(`${proxy}/users/${user_id}`, {
+                            method: "PUT", 
+                            body: JSON.stringify({favorites: favorites2}),
+                            headers: {"Content-type": "application/json"}
+        })
+        const user = await response.json()
+        expect(
+            {username: user.username, fullname: user.fullname, favorites: user.favorites}
+        ).not.toEqual(
+            {username: username2, fullname: fullname, favorites: favorites}
+        )
+    })
+
+    performSyncTest("Fail delete user", async () => {
+        const response = await fetch(`${proxy}/users/${"633b47e164a80559f146166c"}`, {method: "DELETE"})
+        expect(
+            response.status
+        ).toEqual(
+            404
+        )
+    })
+
+    performSyncTest("Delete user", async () => {
+        const response = await fetch(`${proxy}/users/${user_id}`, {method: "DELETE"})
+        expect(
+            response.status
+        ).toEqual(
+            204
         )
     })
 
