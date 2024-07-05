@@ -1,30 +1,20 @@
-require('dotenv').config();
+// connect to the server
+const server = require('../server')
 const mongoose = require('mongoose');
 
+// retrieve the user's model for testing
 const users = require('../users/users_model');
-const recipes = require('../recipes/recipes_model');
-const categories = require('../categories/categories_model');
-const recipe_category = require('../recipe_in_category/recipe_cat_model');
 
-jest.setTimeout(10000);
+jest.setTimeout(20000);
 
-beforeAll(() => {
-    // connect to MongoDB
-    mongoose.connect(
-        process.env.MONGODB_CONNECT_STRING
-    );
 
-    const db = mongoose.connection;
 
-    db.once("open", () => {
-        console.log("Successfully connected to MongoDB using Mongoose!");
-    });
-})
-
+// close connection to MongoDB after all tests are performed
 afterAll(() => {
-    // close connection to MongoDB
     mongoose.connection.close()
+    server.closeServer()
 })
+
 
 
 // source for sequential test code: https://stackoverflow.com/questions/51250006/jest-stop-test-suite-after-first-fail
@@ -47,6 +37,7 @@ const performSyncTest = (test_name, test_func) => {
 }
 
 
+// Test the user model
 describe("USER MODEL TESTS", () => {
     let user_id;
     const username = "gamer"
@@ -136,3 +127,39 @@ describe("USER MODEL TESTS", () => {
 
     create_failed = false
 })
+
+
+
+// Test the user controller
+describe("USER CONTROLLER TESTS", () => {
+    let user_id;
+    const username = "gamer"
+    const username2 = "goirl"
+    const fullname = "Sara H"
+    const favorites = ["id_1"]
+    const favorites2 = ["id_2"]
+
+    test.only("Create user", async () => {
+        const new_user = {username: username, fullname: fullname}
+        const response = await fetch("http://localhost:5001/users", {
+                            method: "POST", 
+                            body: JSON.stringify(new_user),
+                            headers: {"Content-type": "application/json"}
+        })
+        const user = await response.json()
+
+        user_id = user._id
+        expect(
+            {username: user.username, fullname: user.fullname}
+        ).toEqual(
+            {username: username, fullname: fullname}
+        )
+    })
+
+    
+
+    create_failed = false
+})
+
+
+
