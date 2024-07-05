@@ -14,7 +14,7 @@ const recipeSchema = mongoose.Schema({
 const Recipe = mongoose.model("Recipe", recipeSchema)
 
 
-const createRecipe = async(name, image, portions, ingredients, directions, source) => {
+const createRecipe = async(name, portions, ingredients, directions, image=null,  source=null) => {
     // uses the Recipe class to create a new recipe object
     const recipe = new Recipe({name, image, portions, ingredients, directions, source})
     return recipe.save()
@@ -46,4 +46,4 @@ const deleteRecipe = async(filter) => {
     return response.deletedCount
 }
 
-module.exports = {createRecipe, getRecipe, searchForRecipe, updateRecipe, deleteRecipe};
+module.exports = {createRecipe, getRecipe, searchForRecipe, updateRecipe, deleteRecipe, deleteAll};

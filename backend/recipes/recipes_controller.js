@@ -9,7 +9,7 @@ recipesRouter.use(bodyParser.json());
 
 recipesRouter.post("/", asyncHandler(async(req, res, next) => {
     // creates a recipe in the database
-    const recipe = await recipes.createRecipe(req.body.name, req.body.image, req.body.portions, req.body.ingredients, req.body.directions, req.body.source)
+    const recipe = await recipes.createRecipe(req.body.name, req.body.portions, req.body.ingredients, req.body.directions, req.body.image, req.body.source)
 
     if (recipe == null) res.type("application/json").status(500).send({Error: "Could not create recipe"})
     res.type("application/json").status(201).send(recipe)
