@@ -17,8 +17,7 @@ app.listen(PORT, () => {
 
 // create the connection to mongodb
 mongoose.connect(
-    process.env.MONGODB_CONNECT_STRING,
-    { useNewUrlParser: true }
+    process.env.MONGODB_CONNECT_STRING
 );
 
 const db = mongoose.connection;
