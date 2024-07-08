@@ -14,28 +14,28 @@ reccatRouter.post("/", asyncHandler(async(req, res, next) => {
     res.type("application/json").status(201).send(recipe_cat)
 }))
 
-reccatRouter.get("/:category", asyncHandler(async(req, res, next) => {
+reccatRouter.get("/recipes/:category", asyncHandler(async(req, res, next) => {
     // returns the ids for all of the recipes in the specified category
-    const recipe_cats = await recipe_cats.getAllRecipeCategories(req.params.category)
+    const results = await recipe_cats.getAllRecipeCategories({category: req.params.category})
 
-    if (recipe_cats == null) res.type("application/json").status(404).send({Error: "No recipes found in this category"})
+    if (results.length == 0) res.type("application/json").status(404).send({Error: "No recipes found in this category"})
     else {
         const recipes = []
-        for (const obj in recipe_cats) {
+        for (const obj of results) {
             recipes.push(obj.recipe)
         }
         res.type("application/json").status(200).send(recipes)
     }
 }))
 
-reccatRouter.get("/:recipe", asyncHandler(async(req, res, next) => {
+reccatRouter.get("/categories/:recipe", asyncHandler(async(req, res, next) => {
     // returns the ids for all of the categories for the specified recipe
-    const recipe_cats = await recipe_cats.getAllRecipeCategories(req.params.recipe)
+    const results = await recipe_cats.getAllRecipeCategories({recipe: req.params.recipe})
 
-    if (recipe_cats == null) res.type("application/json").status(404).send({Error: "No categories found for this recipe"})
+    if (results.length == 0) res.type("application/json").status(404).send({Error: "No categories found for this recipe"})
     else {
         const categories = []
-        for (const obj in recipe_cats) {
+        for (const obj of results) {
             categories.push(obj.category)
         }
         res.type("application/json").status(200).send(categories)
