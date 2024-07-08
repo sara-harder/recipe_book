@@ -87,7 +87,7 @@ describe("RECIPE MODEL TESTS", () => {
         ).toMatchObject(
             recipe_1
         )
-        id_1 = recipe.id
+        id_1 = recipe._id
     })
 
     performSyncTest("Create recipe (w/ img and src)", async () => {
@@ -97,7 +97,7 @@ describe("RECIPE MODEL TESTS", () => {
         ).toMatchObject(
             recipe_2
         )
-        id_2 = recipe.id
+        id_2 = recipe._id
     })
 
     performSyncTest("Fail recipe creation", async () => {

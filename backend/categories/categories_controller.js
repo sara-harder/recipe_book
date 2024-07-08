@@ -15,7 +15,7 @@ categoriesRouter.post("/", asyncHandler(async(req, res, next) => {
     res.type("application/json").status(201).send(category)
 }))
 
-categoriesRouter.get("/:id", asyncHandler(async(req, res, next) => {
+categoriesRouter.get("/indiv/:id", asyncHandler(async(req, res, next) => {
     // get the category based on the provided id
     const id = {_id: req.params.id}
     const category = await categories.getCategory(id)
@@ -26,10 +26,10 @@ categoriesRouter.get("/:id", asyncHandler(async(req, res, next) => {
 
 categoriesRouter.get("/:flavor_type", asyncHandler(async(req, res, next) => {
     // gets all of the categories in the specified flavor_type
-    const categories = await categories.getAllCategories(req.params.flavor_type)
+    const results = await categories.getAllCategories({flavor_type: req.params.flavor_type})
 
-    if (categories == null) res.type("application/json").status(404).send({Error: "No categories found"})
-    else res.type("application/json").status(200).send(categories)
+    if (results.length == 0) res.type("application/json").status(404).send({Error: "No categories found"})
+    else res.type("application/json").status(200).send(results)
 }))
 
 categoriesRouter.delete("/:id", asyncHandler(async(req, res, next) => {
