@@ -1,7 +1,7 @@
-require('dotenv').config();
+require('dotenv').config();    
 
 // connect to the server
-const server = require('../server')
+server = require('../server')
 const mongoose = require('mongoose');
 
 // retrieve the recipe's model for testing
@@ -10,6 +10,18 @@ const proxy = `http://localhost:${process.env.PORT}`
 
 jest.setTimeout(60000);
 
+beforeAll(async () => {
+    // create the connection to mongodb
+    await mongoose.connect(
+        process.env.MONGODB_CONNECT_STRING
+    );
+
+    const db = mongoose.connection;
+
+    db.once("open", () => {
+        console.log("Successfully connected to MongoDB using Mongoose!");
+    });
+})
 
 
 // close connection to MongoDB after all tests are performed
@@ -40,32 +52,33 @@ const performSyncTest = (test_name, test_func) => {
 }
 
 class Ingredient {
-    constructor(name, quantity, unit) {
+    constructor(name, quantity, unit=null) {
       this.name = name;
       this.quantity = quantity;
-      this.unit = unit
+      this.unit = unit;
     }
+}
+
+const recipe_1 = {
+    name: "Tomato Pasta",
+    portions: 4,
+    ingredients: [new Ingredient("Pasta", 360, "g"), new Ingredient("Tomato Sauce", 100, "g")],
+    directions: ["Boil water", "Add salt", "Cook the pasta", "Heat up the tomato sauce"],
+}
+const recipe_2 = {
+    name: "Carbonara",
+    image: "image_1",
+    portions: 4,
+    ingredients: [new Ingredient("Pasta", 360, "g"), new Ingredient("Pecorino", 100, "g")],
+    directions: ["Boil water", "Add salt", "Cook the pasta", "Grate the cheese"],
+    source: "website/carbonara"
 }
 
 
 // Test the recipe model
-describe.only("RECIPE MODEL TESTS", () => {
+describe("RECIPE MODEL TESTS", () => {
     let id_1;
-    const recipe_1 = {
-        name: "Tomato Pasta",
-        portions: 4,
-        ingredients: [new Ingredient("Pasta", 360, "g"), new Ingredient("Tomato Sauce", 100, "g")],
-        directions: ["Boil water", "Add salt", "Cook the pasta", "Heat up the tomato sauce"],
-    }
     let id_2;
-    const recipe_2 = {
-        name: "Carbonara",
-        image: "image_1",
-        portions: 4,
-        ingredients: [new Ingredient("Pasta", 360, "g"), new Ingredient("Pecorino", 100, "g")],
-        directions: ["Boil water", "Add salt", "Cook the pasta", "Grate the cheese"],
-        source: "website/carbonara"
-    }
 
     performSyncTest("Create recipe (no img or src)", async () => {
         const recipe = await recipes.createRecipe(recipe_1.name, recipe_1.portions, recipe_1.ingredients, recipe_1.directions)
@@ -146,9 +159,9 @@ describe.only("RECIPE MODEL TESTS", () => {
     })
 
     performSyncTest("No search results", async () => {
-        const recipe = await recipes.searchForRecipe("Mushroom")
+        const recipe_results = await recipes.searchForRecipe("Mushroom")
         expect(
-            recipe
+            recipe_results
         ).toMatchObject(
             []
         )
@@ -217,6 +230,196 @@ describe.only("RECIPE MODEL TESTS", () => {
             1
         )
     })
+
+    create_failed = false
+})
+
+
+
+// Test the recipe controller
+describe("RECIPE CONTROLLER TESTS", () => {
+    let id_1;
+    let id_2;
+
+    performSyncTest("Create recipe (no img or src)", async () => {
+        const response = await fetch(`${proxy}/recipes`, {
+                            method: "POST", 
+                            body: JSON.stringify(recipe_1),
+                            headers: {"Content-type": "application/json"}
+        })
+        const recipe = await response.json()
+
+        expect(
+            recipe
+        ).toMatchObject(
+            recipe_1
+        )
+        id_1 = recipe._id
+    })
+
+    performSyncTest("Create recipe (w/ img and src)", async () => {
+        const response = await fetch(`${proxy}/recipes`, {
+                            method: "POST", 
+                            body: JSON.stringify(recipe_2),
+                            headers: {"Content-type": "application/json"}
+        })
+        const recipe = await response.json()
+
+        expect(
+            recipe
+        ).toMatchObject(
+            recipe_2
+        )
+        id_2 = recipe._id
+    })
+
+    performSyncTest("Fail recipe creation", async () => {
+        const new_recipe = {name: "Spaghetti"}
+        const response = await fetch(`${proxy}/recipes`, {
+                            method: "POST", 
+                            body: JSON.stringify(new_recipe),
+                            headers: {"Content-type": "application/json"}
+        })
+        expect(
+            response.status
+        ).toEqual(
+            500
+        )
+    })
+
+    performSyncTest("Get recipe 1", async () => {
+        const response = await fetch(`${proxy}/recipes/${id_1}`)
+        const recipe = await response.json()
+        expect(
+            recipe
+        ).toMatchObject(
+            recipe_1
+        )
+    })
+
+    performSyncTest("Fail get recipe", async () => {
+        const response = await fetch(`${proxy}/recipes/633b47e164a80559f146166c`)
+        expect(
+            response.status
+        ).toEqual(
+            404
+        )
+    })
+
+    performSyncTest("Search for recipe 2", async () => {
+        const response = await fetch(`${proxy}/recipes/search/Carbonara`)
+        const recipe_results = await response.json()
+        expect(
+            recipe_results
+        ).toMatchObject(
+            [recipe_2]
+        )
+    })
+
+    performSyncTest("Search for recipe 2 (shortened start)", async () => {
+        const response = await fetch(`${proxy}/recipes/search/carb`)
+        const recipe_results = await response.json()
+        expect(
+            recipe_results
+        ).toMatchObject(
+            [recipe_2]
+        )
+    })
+
+    performSyncTest("No search results", async () => {
+        const response = await fetch(`${proxy}/recipes/search/Mushroom`)
+        expect(
+            response.status
+        ).toEqual(
+            404
+        )
+    })
+
+    performSyncTest("Update portions", async () => {
+        recipe_1.portions = 2
+        const response = await fetch(`${proxy}/recipes/${id_1}`, {
+                            method: "PUT", 
+                            body: JSON.stringify({portions: recipe_1.portions}),
+                            headers: {"Content-type": "application/json"}
+        })
+        const recipe = await response.json()
+        expect(
+            recipe
+        ).toMatchObject(
+            recipe_1
+        )
+    })
+
+    performSyncTest("Fail get recipe for update", async () => {
+        const response = await fetch(`${proxy}/recipes/${"633b47e164a80559f146166c"}`, {
+                            method: "PUT", 
+                            body: JSON.stringify({portions: recipe_1.portions}),
+                            headers: {"Content-type": "application/json"}
+        })
+        expect(
+            response.status
+        ).toEqual(
+            404
+        )
+    })
+
+    performSyncTest("Update ingredients", async () => {
+        recipe_2.ingredients.push([new Ingredient("Eggs", 2)])
+        const response = await fetch(`${proxy}/recipes/${id_2}`, {
+                            method: "PUT", 
+                            body: JSON.stringify({ingredients: recipe_2.ingredients}),
+                            headers: {"Content-type": "application/json"}
+        })
+        const recipe = await response.json()
+        expect(
+            recipe
+        ).toMatchObject(
+            recipe_2
+        )
+    })
+
+    performSyncTest("Update recipe portions again", async () => {
+        const response = await fetch(`${proxy}/recipes/${id_1}`, {
+                            method: "PUT", 
+                            body: JSON.stringify({portions: 4}),
+                            headers: {"Content-type": "application/json"}
+        })
+        const recipe = await response.json()
+        expect(
+            recipe
+        ).not.toEqual(
+            recipe_1
+        )
+    })
+
+    performSyncTest("Fail delete recipe", async () => {
+        const response = await fetch(`${proxy}/recipes/${"633b47e164a80559f146166c"}`, {method: "DELETE"})
+        expect(
+            response.status
+        ).toEqual(
+            404
+        )
+    })
+
+    performSyncTest("Delete recipe 1", async () => {
+        const response = await fetch(`${proxy}/recipes/${id_1}`, {method: "DELETE"})
+        expect(
+            response.status
+        ).toEqual(
+            204
+        )
+    })
+
+    performSyncTest("Delete recipe 2", async () => {
+        const response = await fetch(`${proxy}/recipes/${id_2}`, {method: "DELETE"})
+        expect(
+            response.status
+        ).toEqual(
+            204
+        )
+    })
+
+    
 
     create_failed = false
 })

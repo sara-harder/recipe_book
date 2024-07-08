@@ -1,7 +1,7 @@
-require('dotenv').config();
+require('dotenv').config();    
 
 // connect to the server
-const server = require('../server')
+server = require('../server')
 const mongoose = require('mongoose');
 
 // retrieve the user's model for testing
@@ -10,6 +10,18 @@ const proxy = `http://localhost:${process.env.PORT}`
 
 jest.setTimeout(60000);
 
+beforeAll(async () => {
+    // create the connection to mongodb
+    await mongoose.connect(
+        process.env.MONGODB_CONNECT_STRING
+    );
+
+    const db = mongoose.connection;
+
+    db.once("open", () => {
+        console.log("Successfully connected to MongoDB using Mongoose!");
+    });
+})
 
 
 // close connection to MongoDB after all tests are performed
@@ -39,15 +51,15 @@ const performSyncTest = (test_name, test_func) => {
       })
 }
 
+const username = "gamer"
+const username2 = "goirl"
+const fullname = "Sara H"
+const favorites = ["id_1"]
+const favorites2 = ["id_2"]
 
 // Test the user model
 describe("USER MODEL TESTS", () => {
     let user_id;
-    const username = "gamer"
-    const username2 = "goirl"
-    const fullname = "Sara H"
-    const favorites = ["id_1"]
-    const favorites2 = ["id_2"]
 
     performSyncTest("Create user", async () => {
         const user = await users.createUser(username, fullname)
@@ -142,11 +154,6 @@ describe("USER MODEL TESTS", () => {
 // Test the user controller
 describe("USER CONTROLLER TESTS", () => {
     let user_id;
-    const username = "gamer"
-    const username2 = "goirl"
-    const fullname = "Sara H"
-    const favorites = ["id_1"]
-    const favorites2 = ["id_2"]
 
     performSyncTest("Create user", async () => {
         const new_user = {username: username, fullname: fullname}

@@ -24,12 +24,12 @@ recipesRouter.get("/:id", asyncHandler(async(req, res, next) => {
     else res.type("application/json").status(200).send(recipe)
 }))
 
-recipesRouter.get("/search", asyncHandler(async(req, res, next) => {
+recipesRouter.get("/search/:search", asyncHandler(async(req, res, next) => {
     // get a list of recipes that match the provided search
-    const recipes = await recipes.searchForRecipe(req.query.search)
+    const results = await recipes.searchForRecipe(req.params.search)
 
-    if (recipes == null) res.type("application/json").status(404).send({Error: "No recipes found"})
-    else res.type("application/json").status(200).send(recipes)
+    if (results.length == 0) res.type("application/json").status(404).send({Error: "No recipes found"})
+    else res.type("application/json").status(200).send(results)
 }))
 
 recipesRouter.put("/:id", asyncHandler(async(req, res, next) => {
