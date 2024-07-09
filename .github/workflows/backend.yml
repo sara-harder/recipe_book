@@ -28,4 +28,4 @@ jobs:
 
       - name: Run Jest tests
         working-directory: backend
-        run: jest --runInBand
+        run: npm test
