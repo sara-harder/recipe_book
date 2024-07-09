@@ -1,23 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+// react imports
+import React from 'react';
+import {useState} from "react"
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+// page imports
+import HomePage from './pages/Home';
+import RecipeCategories from './pages/RecipeCategories';
+import RecipeList from './pages/RecipeList';
+import ViewRecipe from './pages/ViewRecipe';
+
+// style imports
+import './styling/App.css';
 
 function App() {
+  const [header, setHeader] = useState("")
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>{header}</h1>
       </header>
+      <body className="App-body">
+        <Router>
+          <Routes>
+            <Route path="/" exact element={<HomePage setHeader={setHeader}/>} />
+            <Route path="/categories" element={<RecipeCategories setHeader={setHeader}/>} />
+            <Route path="/recipes" element={<RecipeList setHeader={setHeader}/>} />
+            <Route path="/view-recipe" element={<ViewRecipe setHeader={setHeader}/>} />
+          </Routes>
+        </Router>
+      </body>
     </div>
   );
 }

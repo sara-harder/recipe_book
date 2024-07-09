@@ -1,0 +1,12 @@
+{
+  "name": "recipe-book",
+  "version": "1.0.0",
+  "description": "functionality for the recipe book app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sara Harder",
+  "license": "ISC",
+  "yalcSig": "65044292902cc947ef98a7c989d09a66"
+}
