@@ -19,7 +19,17 @@ jobs:
           node-version: '14'
 
       - name: Install dependencies
+        working-directory: backend
         run: npm install
 
+      - name: Install jest
+        working-directory: backend
+        run: npm install jest
+
+      - name: Install mongoose
+        working-directory: backend
+        run: npm install mongoose
+
       - name: Run Jest tests
-        run: jest --runInBand
+        working-directory: backend
+        run: npm test
