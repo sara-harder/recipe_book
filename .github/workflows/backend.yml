@@ -19,7 +19,11 @@ jobs:
           node-version: '14'
 
       - name: Install dependencies
-        run: npm install
+        run: 
+          working-directory: RECIPE_BOOK/backend
+          npm install
 
       - name: Run Jest tests
-        run: jest --runInBand
+        run: 
+          working-directory: RECIPE_BOOK/backend
+          jest --runInBand
