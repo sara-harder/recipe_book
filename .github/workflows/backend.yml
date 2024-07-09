@@ -17,12 +17,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '14'
-          
-      - name: show folders
-        run: dir
 
       - name: Install dependencies
-        working-directory: /home/runner/work/recipe_book/backend
+        working-directory: backend
         run: npm install
 
       - name: Run Jest tests
