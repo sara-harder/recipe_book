@@ -36,7 +36,7 @@ reccatRouter.get("/categories/:recipe", asyncHandler(async(req, res, next) => {
     else {
         const categories = []
         for (const obj of results) {
-            categories.push(obj.category)
+            categories.push(obj.recipe)
         }
         res.type("application/json").status(200).send(categories)
     }
