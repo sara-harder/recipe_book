@@ -26,6 +26,10 @@ jobs:
         working-directory: backend
         run: npm install jest
 
+      - name: Install mongoose
+        working-directory: backend
+        run: npm install mongoose
+
       - name: Run Jest tests
         working-directory: backend
-        run: jest --runInBand
+        run: npm test
