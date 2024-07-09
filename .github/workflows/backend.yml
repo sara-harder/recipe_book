@@ -10,9 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Move to backend branch
-        run: cd backend
-        
       - name: Checkout repository
         uses: actions/checkout@v2
 
