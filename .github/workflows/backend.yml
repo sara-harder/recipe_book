@@ -22,6 +22,10 @@ jobs:
         working-directory: backend
         run: npm install
 
+      - name: Install jest
+        working-directory: backend
+        run: npm install jest
+
       - name: Run Jest tests
         working-directory: backend
         run: jest --runInBand
