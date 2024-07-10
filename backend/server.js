@@ -14,10 +14,10 @@ app_server = app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}...`);
 }); 
 
-/*
+
 // create the connection to mongodb
 mongoose.connect(
-    process.env.MONGODB_CONNECT_STRING
+    "mongodb+srv://harders:admin@recipes.fvmleot.mongodb.net/"
 );
 
 const db = mongoose.connection;
@@ -25,7 +25,6 @@ const db = mongoose.connection;
 db.once("open", () => {
     console.log("Successfully connected to MongoDB using Mongoose!");
 });
-*/
 
 
 function closeServer() {
