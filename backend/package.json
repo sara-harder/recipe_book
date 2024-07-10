@@ -17,7 +17,7 @@
     "nodemon": "^3.1.4"
   },
   "jest": {
-    "transformIgnorePatterns": ["/node_modules/(?!(mongoose|mongodb)/)"]
+    "transformIgnorePatterns": ["/node_modules/(?!(mongoose|mongodb|bson)/)"]
   },
   "devDependencies": {
     "jest": "^29.7.0"
