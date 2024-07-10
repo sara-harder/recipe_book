@@ -8,6 +8,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        mongodb-version: ['6.0', '7.0', '8.0']
 
     steps:
       - name: Checkout repository
@@ -25,10 +28,7 @@ jobs:
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.11.0
         with:
-          mongodb-version: 7.0.11
-          mongodb-username: supercharge
-          mongodb-password: secret
-          mongodb-db: supercharge
+          mongodb-version: ${{ matrix.mongodb-version }}
 
       - name: Run Jest tests
         working-directory: backend
