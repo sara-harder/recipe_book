@@ -17,7 +17,7 @@ app_server = app.listen(PORT, () => {
 
 // create the connection to mongodb
 mongoose.connect(
-    "mongodb+srv://harders:admin@recipes.fvmleot.mongodb.net/"
+    process.env.MONGODB_CONNECT_STRING
 );
 
 const db = mongoose.connection;
