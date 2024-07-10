@@ -17,7 +17,7 @@
     "nodemon": "^3.1.4"
   },
   "jest": {
-    "transformIgnorePatterns": ["node_modules/(?!(.*\\.mjs$|pdfjs-dist))"]
+    "transformIgnorePatterns": ["/node_modules/(?!(mongoose)/)"]
   },
   "devDependencies": {
     "jest": "^29.7.0"
