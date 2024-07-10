@@ -11,9 +11,10 @@ const proxy = `http://localhost:${process.env.PORT}`
 jest.setTimeout(60000);
 
 beforeAll(async () => {
+    /*
     // create the connection to mongodb
     await mongoose.connect(
-        "mongodb+srv://harders:admin@recipes.fvmleot.mongodb.net/"
+        process.env.MONGODB_CONNECT_STRING
     );
 
     const db = mongoose.connection;
@@ -21,12 +22,13 @@ beforeAll(async () => {
     db.once("open", () => {
         console.log("Successfully connected to MongoDB using Mongoose!");
     });
+    */
 })
 
 
 // close connection to MongoDB after all tests are performed
 afterAll(() => {
-    mongoose.connection.close()
+    //mongoose.connection.close()
     server.closeServer()
 })
 
