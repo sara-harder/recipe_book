@@ -22,13 +22,13 @@ jobs:
         working-directory: backend
         run: npm install
 
-      - name: Install jest
-        working-directory: backend
-        run: npm install jest
-
-      - name: Install mongoose
-        working-directory: backend
-        run: npm install mongoose
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.11.0
+        with:
+          mongodb-version: 7.0.11
+          mongodb-username: supercharge
+          mongodb-password: secret
+          mongodb-db: supercharge
 
       - name: Run Jest tests
         working-directory: backend
