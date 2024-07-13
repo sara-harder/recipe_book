@@ -2,6 +2,7 @@ const express = require('express');
 const asyncHandler = require('express-async-handler')
 const recipe_cats = require('./recipe_cat_model.js');
 const recipes = require('../recipes/recipes_model.js')
+const categories = require('../categories/categories_model.js')
 
 const bodyParser = require('body-parser');
 const reccatRouter = express.Router();
@@ -36,11 +37,12 @@ reccatRouter.get("/categories/:recipe", asyncHandler(async(req, res, next) => {
 
     if (results.length == 0) res.type("application/json").status(404).send({Error: "No categories found for this recipe"})
     else {
-        const categories = []
+        const category_objs = []
         for (const obj of results) {
-            categories.push(obj.category)
+            const category = await categories.getCategory({_id: obj.category})
+            category_objs.push(category)
         }
-        res.type("application/json").status(200).send(categories)
+        res.type("application/json").status(200).send(category_objs)
     }
 }))
 

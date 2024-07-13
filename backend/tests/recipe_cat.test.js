@@ -1,6 +1,7 @@
 // retrieve the recipe_cat's model for testing and recipes and categories for use
 const recipe_cats = require('../recipe_in_category/recipe_cat_model');
 const recipes = require('../recipes/recipes_model');
+const categories = require('../categories/categories_model');
 
 // set up the servers
 const { openServer } = require('./server');
@@ -69,9 +70,12 @@ const recipe_2 = {
     directions: ["Boil water", "Add salt", "Cook the pasta", "Grate the cheese"],
     source: "website/carbonara"
 }
+const category = {
+    name: "Pasta",
+    flavor_type: "Savory"
+}
 
-let recipe_1_id, recipe_2_id;
-let category;
+let recipe_1_id, recipe_2_id, category_id;
 let recipe_in_cat_1, recipe_in_cat_2;
 
 // Create the test data
@@ -97,20 +101,19 @@ describe("CREATE TEST DATA", () => {
     })
 
     performSyncTest("Create category", async () => {
-        category = {
-            _id: "category_id",
-            name: "Pasta",
-            flavor_type: "Savory"
-        }
+        const cat = await categories.createCategory(category.name, category.flavor_type)
         expect(
+            cat
+        ).toMatchObject(
             category
-        ).not.toBeNull
+        )
+        category_id = cat._id
     })
 
     performSyncTest("Create recipe_in_cat_1", () => {
         recipe_in_cat_1 = {
             recipe: String(recipe_1_id),
-            category: String(category._id)
+            category: String(category_id)
         }
         expect(
             recipe_in_cat_1
@@ -120,7 +123,7 @@ describe("CREATE TEST DATA", () => {
     performSyncTest("Create recipe_in_cat_2", () => {
         recipe_in_cat_2 = {
             recipe: String(recipe_2_id),
-            category: String(category._id)
+            category: String(category_id)
         }
         expect(
             recipe_in_cat_2
@@ -137,7 +140,7 @@ describe("RECIPE_CAT MODEL TESTS", () => {
     let id_2;
 
     performSyncTest("Connect recipe_1 to category", async () => {
-        const recipe_cat = await recipe_cats.createRecipeCategory(recipe_1_id, category._id)
+        const recipe_cat = await recipe_cats.createRecipeCategory(recipe_1_id, category_id)
         expect(
             recipe_cat
         ).toMatchObject(
@@ -147,7 +150,7 @@ describe("RECIPE_CAT MODEL TESTS", () => {
     })
 
     performSyncTest("Connect recipe_2 to category", async () => {
-        const recipe_cat = await recipe_cats.createRecipeCategory(recipe_2_id, category._id)
+        const recipe_cat = await recipe_cats.createRecipeCategory(recipe_2_id, category_id)
         expect(
             recipe_cat
         ).toMatchObject(
@@ -163,7 +166,7 @@ describe("RECIPE_CAT MODEL TESTS", () => {
     })
 
     performSyncTest("Get all recipe_cats for a category", async () => {
-        const results = await recipe_cats.getAllRecipeCategories({category: category._id})
+        const results = await recipe_cats.getAllRecipeCategories({category: category_id})
         expect(
             results
         ).toMatchObject(
@@ -274,7 +277,7 @@ describe("RECIPE_CAT CONTROLLER TESTS", () => {
     })
 
     performSyncTest("Get all recipes for a category", async () => {
-        const response = await fetch(`${proxy}/recipe-in-category/recipes/${category._id}`)
+        const response = await fetch(`${proxy}/recipe-in-category/recipes/${category_id}`)
         const recipes = await response.json()
         expect(
             recipes
@@ -289,7 +292,7 @@ describe("RECIPE_CAT CONTROLLER TESTS", () => {
         expect(
             categories
         ).toMatchObject(
-            [recipe_in_cat_1.category]
+            [category]
         )
     })
 
@@ -348,6 +351,15 @@ describe("DELETE TEST DATA", () => {
 
     performSyncTest("Delete recipe_2", async () => {
         const delete_count = await recipes.deleteRecipe({_id: recipe_2_id})        
+        expect(
+            delete_count
+        ).toEqual(
+            1
+        )
+    })
+
+    performSyncTest("Delete category", async () => {
+        const delete_count = await categories.deleteCategory({_id: category_id})
         expect(
             delete_count
         ).toEqual(
