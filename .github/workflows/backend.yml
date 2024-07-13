@@ -24,4 +24,4 @@ jobs:
         
       - name: Run Jest tests
         working-directory: backend
-        run: jest backend/tests/recipe_cat.test.js
+        run: npm test
