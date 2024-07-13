@@ -16,20 +16,12 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '18'
 
       - name: Install dependencies
         working-directory: backend
         run: npm install
-
-      - name: Install jest
-        working-directory: backend
-        run: npm install jest
-
-      - name: Install mongoose
-        working-directory: backend
-        run: npm install mongoose
-
+        
       - name: Run Jest tests
         working-directory: backend
         run: npm test

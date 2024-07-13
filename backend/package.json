@@ -4,7 +4,7 @@
   "description": "establishes connection from front end of recipe book to mongodb database",
   "main": "index.js",
   "scripts": {
-    "test": "jest --runInBand",
+    "test": "jest tests/*.test.js",
     "start": "nodemon server.js"
   },
   "author": "Sara Harder",
