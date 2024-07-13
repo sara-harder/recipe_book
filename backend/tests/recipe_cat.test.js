@@ -5,9 +5,12 @@ const recipes = require('../recipes/recipes_model');
 // set up the servers
 const { openServer } = require('./server');
 
-const proxy = `http://localhost:${process.env.PORT}`
+let PORT = 5005;
+const proxy = `http://localhost:${PORT}`
 
 jest.setTimeout(60000);
+
+let closeServer = () => {};
 
 beforeAll(async () => {
     closeServer = await openServer(PORT)
@@ -18,8 +21,6 @@ beforeAll(async () => {
 afterAll(async () => {
     closeServer()
 })
-
-
 
 
 
