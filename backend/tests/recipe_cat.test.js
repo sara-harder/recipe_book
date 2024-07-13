@@ -1,36 +1,22 @@
-require('dotenv').config();    
-
-// connect to the server
-server = require('../server')
-const mongoose = require('mongoose');
-
 // retrieve the recipe_cat's model for testing and recipes and categories for use
 const recipe_cats = require('../recipe_in_category/recipe_cat_model');
 const recipes = require('../recipes/recipes_model');
-const categories = require('../categories/categories_model');
+
+// set up the servers
+const { openServer } = require('./server');
 
 const proxy = `http://localhost:${process.env.PORT}`
 
 jest.setTimeout(60000);
 
 beforeAll(async () => {
-    // create the connection to mongodb
-    await mongoose.connect(
-        process.env.MONGODB_CONNECT_STRING
-    );
-
-    const db = mongoose.connection;
-
-    db.once("open", () => {
-        console.log("Successfully connected to MongoDB using Mongoose!");
-    });
+    closeServer = await openServer(PORT)
 })
 
 
 // close connection to MongoDB after all tests are performed
 afterAll(async () => {
-    mongoose.connection.close()
-    server.closeServer()
+    closeServer()
 })
 
 
@@ -69,14 +55,12 @@ class Ingredient {
 }
 
 const recipe_1 = {
-    _id: "recipe1_id",
     name: "Tomato Pasta",
     portions: 4,
     ingredients: [new Ingredient("Pasta", 360, "g"), new Ingredient("Tomato Sauce", 100, "g")],
     directions: ["Boil water", "Add salt", "Cook the pasta", "Heat up the tomato sauce"],
 }
 const recipe_2 = {
-    _id: "recipe2_id",
     name: "Carbonara",
     image: "image_1",
     portions: 4,
@@ -85,21 +69,65 @@ const recipe_2 = {
     source: "website/carbonara"
 }
 
-const category = {
-    _id: "category_id",
-    name: "Pasta",
-    flavor_type: "Savory"
-}
+let recipe_1_id, recipe_2_id;
+let category;
+let recipe_in_cat_1, recipe_in_cat_2;
 
-const recipe_in_cat_1 = {
-    recipe: String(recipe_1._id),
-    category: String(category._id)
-}
+// Create the test data
+describe("CREATE TEST DATA", () => {
+    performSyncTest("Create recipe_1", async () => {
+        const recipe = await recipes.createRecipe(recipe_1.name, recipe_1.portions, recipe_1.ingredients, recipe_1.directions)
+        expect(
+            recipe
+        ).toMatchObject(
+            recipe_1
+        )
+        recipe_1_id = recipe._id
+    })
 
-const recipe_in_cat_2 = {
-    recipe: String(recipe_2._id),
-    category: String(category._id)
-}
+    performSyncTest("Create recipe_2", async () => {
+        const recipe = await recipes.createRecipe(recipe_2.name, recipe_2.portions, recipe_2.ingredients, recipe_2.directions, recipe_2.image, recipe_2.source)
+        expect(
+            recipe
+        ).toMatchObject(
+            recipe_2
+        )
+        recipe_2_id = recipe._id
+    })
+
+    performSyncTest("Create category", async () => {
+        category = {
+            _id: "category_id",
+            name: "Pasta",
+            flavor_type: "Savory"
+        }
+        expect(
+            category
+        ).not.toBeNull
+    })
+
+    performSyncTest("Create recipe_in_cat_1", () => {
+        recipe_in_cat_1 = {
+            recipe: String(recipe_1_id),
+            category: String(category._id)
+        }
+        expect(
+            recipe_in_cat_1
+        ).not.toBeNull
+    })
+
+    performSyncTest("Create recipe_in_cat_2", () => {
+        recipe_in_cat_2 = {
+            recipe: String(recipe_2_id),
+            category: String(category._id)
+        }
+        expect(
+            recipe_in_cat_2
+        ).not.toBeNull
+    })
+})
+
+
 
 
 // Test the recipe in category model
@@ -108,7 +136,7 @@ describe("RECIPE_CAT MODEL TESTS", () => {
     let id_2;
 
     performSyncTest("Connect recipe_1 to category", async () => {
-        const recipe_cat = await recipe_cats.createRecipeCategory(recipe_1._id, category._id)
+        const recipe_cat = await recipe_cats.createRecipeCategory(recipe_1_id, category._id)
         expect(
             recipe_cat
         ).toMatchObject(
@@ -118,7 +146,7 @@ describe("RECIPE_CAT MODEL TESTS", () => {
     })
 
     performSyncTest("Connect recipe_2 to category", async () => {
-        const recipe_cat = await recipe_cats.createRecipeCategory(recipe_2._id, category._id)
+        const recipe_cat = await recipe_cats.createRecipeCategory(recipe_2_id, category._id)
         expect(
             recipe_cat
         ).toMatchObject(
@@ -129,7 +157,7 @@ describe("RECIPE_CAT MODEL TESTS", () => {
 
     performSyncTest("Fail recipe_cat creation", async () => {
         await expect(
-            recipe_cats.createRecipeCategory(recipe_1._id)
+            recipe_cats.createRecipeCategory(recipe_1_id)
         ).rejects.toThrow('RecipeCategory validation failed')
     })
 
@@ -143,7 +171,7 @@ describe("RECIPE_CAT MODEL TESTS", () => {
     })
 
     performSyncTest("Get all recipe_cats for a recipe", async () => {
-        const results = await recipe_cats.getAllRecipeCategories({recipe: recipe_1._id})
+        const results = await recipe_cats.getAllRecipeCategories({recipe: recipe_1_id})
         expect(
             results
         ).toMatchObject(
@@ -231,7 +259,7 @@ describe("RECIPE_CAT CONTROLLER TESTS", () => {
     })
 
     performSyncTest("Fail recipe_cat creation", async () => {
-        const new_recipe_cat = {recipe: recipe_1._id}
+        const new_recipe_cat = {recipe: recipe_1_id}
         const response = await fetch(`${proxy}/recipe-in-category`, {
                             method: "POST", 
                             body: JSON.stringify(new_recipe_cat),
@@ -250,12 +278,12 @@ describe("RECIPE_CAT CONTROLLER TESTS", () => {
         expect(
             recipes
         ).toMatchObject(
-            [recipe_in_cat_1.recipe, recipe_in_cat_2.recipe]
+            [recipe_1, recipe_2]
         )
     })
 
     performSyncTest("Get all categories for a recipe", async () => {
-        const response = await fetch(`${proxy}/recipe-in-category/categories/${recipe_1._id}`)
+        const response = await fetch(`${proxy}/recipe-in-category/categories/${recipe_1_id}`)
         const categories = await response.json()
         expect(
             categories
@@ -306,4 +334,24 @@ describe("RECIPE_CAT CONTROLLER TESTS", () => {
 })
 
 
+// Delete the test data
+describe("DELETE TEST DATA", () => {
+    performSyncTest("Delete recipe_1", async () => {
+        const delete_count = await recipes.deleteRecipe({_id: recipe_1_id})        
+        expect(
+            delete_count
+        ).toEqual(
+            1
+        )
+    })
+
+    performSyncTest("Delete recipe_2", async () => {
+        const delete_count = await recipes.deleteRecipe({_id: recipe_2_id})        
+        expect(
+            delete_count
+        ).toEqual(
+            1
+        )
+    })
+})
 
