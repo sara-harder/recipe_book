@@ -4,7 +4,7 @@
   "description": "establishes connection from front end of recipe book to mongodb database",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest tests/*.test.js",
     "start": "nodemon server.js"
   },
   "author": "Sara Harder",
@@ -15,6 +15,9 @@
     "express-async-handler": "^1.2.0",
     "mongoose": "^8.3.1",
     "nodemon": "^3.1.4"
+  },
+  "jest": {
+    "transformIgnorePatterns": ["/node_modules/(?!(mongoose|mongodb|bson)/)"]
   },
   "devDependencies": {
     "jest": "^29.7.0"

@@ -10,19 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Move to backend branch
-        run: cd backend
-        
       - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '18'
 
       - name: Install dependencies
+        working-directory: backend
         run: npm install
-
+        
       - name: Run Jest tests
-        run: jest --runInBand
+        working-directory: backend
+        run: npm test
