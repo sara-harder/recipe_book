@@ -1,33 +1,23 @@
-require('dotenv').config();    
-
-// connect to the server
-server = require('../server')
-const mongoose = require('mongoose');
-
 // retrieve the recipe's model for testing
 const recipes = require('../recipes/recipes_model');
-const proxy = `http://localhost:${process.env.PORT}`
+
+// set up the servers
+const { openServer } = require('./server');   
+
+let PORT = 5004;
+const proxy = `http://localhost:${PORT}`
 
 jest.setTimeout(60000);
 
+let closeServer = () => {};
+
 beforeAll(async () => {
-    // create the connection to mongodb
-    await mongoose.connect(
-        process.env.MONGODB_CONNECT_STRING
-    );
-
-    const db = mongoose.connection;
-
-    db.once("open", () => {
-        console.log("Successfully connected to MongoDB using Mongoose!");
-    });
+    closeServer = await openServer(PORT)
 })
-
 
 // close connection to MongoDB after all tests are performed
 afterAll(() => {
-    mongoose.connection.close()
-    server.closeServer()
+    closeServer()
 })
 
 
