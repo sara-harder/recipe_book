@@ -273,7 +273,7 @@ describe("RECIPE CONTROLLER TESTS", () => {
         expect(
             response.status
         ).toEqual(
-            500
+            400
         )
     })
 
