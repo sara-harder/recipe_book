@@ -1,7 +1,13 @@
 require('dotenv').config();
 
-let PORT = process.env.PORT || 5003;
+let PORT = process.env.PORT;
 let url = "http://localhost:" + PORT
+
+function resetPort (port) {
+// used to set the correct port during testing 
+    PORT = port
+    url = "http://localhost:" + PORT
+}
 
 async function addCategory (new_category) {
 // creates a category in the database from the provided object. returns category if successful, undef if not
@@ -71,4 +77,4 @@ async function deleteCategory (category_id) {
     }
 }
 
-module.exports = {addCategory, getCategory, getFlavorType, deleteCategory}
+module.exports = {addCategory, getCategory, getFlavorType, deleteCategory, resetPort}

@@ -5,6 +5,7 @@ const recipe_funcs = require("../backend_connection/recipes")
 const { openServer } = require('../../backend/tests/server'); 
 
 let PORT = 5004
+recipe_funcs.resetPort(PORT)
 
 jest.setTimeout(60000);
 
