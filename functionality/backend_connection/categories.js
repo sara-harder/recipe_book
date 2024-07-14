@@ -1,0 +1,94 @@
+require('dotenv').config();
+
+let PORT = process.env.PORT || 5003;
+let url = "http://localhost:" + PORT
+
+async function addCategory (new_category) {
+// creates a category in the database from the provided object. returns category if successful, undef if not
+    let category;
+    try {
+        const response = await fetch(url + "/categories", {
+            method: "POST", 
+            body: JSON.stringify(new_category),
+            headers: {"Content-type": "application/json"}
+        })
+        category = await response.json()
+
+        if (category.Error) {throw (category.Error)}
+    } catch (error) { 
+        console.error(error)
+        category = undefined
+    }
+
+    return category
+}
+
+
+async function getCategory (category_id) {
+// returns the category based on the provided id
+    let category;
+    try {
+        const response = await fetch(url + `/categories/indiv/${category_id}`)
+        category = await response.json()
+
+        if (category.Error) {throw (category.Error)}
+    } catch (error) { 
+        console.error(error)
+        category = undefined
+    }
+
+    return category
+}
+
+async function getFlavorType (flavor_type) {
+// returns a list of categories in the specified flavor type (sweet or savory)
+    let categories;
+    try {
+        const response = await fetch(url + `/categories/${flavor_type}`)
+        categories = await response.json()
+
+        if (categories.Error) {throw (categories.Error)}
+    } catch (error) { 
+        console.error(error)
+        categories = undefined
+    }
+
+    return categories
+}
+
+async function updateCategory (category_id, updates) {
+// updates a category based on the provided id using the provided updates. returns category if successful, undef if not
+    let category;
+    try {
+        const response = await fetch(url + `/categories/${category_id}`, {
+            method: "PUT", 
+            body: JSON.stringify(updates),
+            headers: {"Content-type": "application/json"}
+        })
+        category = await response.json()
+
+        if (category.Error) {throw (category.Error)}
+    } catch (error) { 
+        console.error(error)
+        category = undefined
+    }
+
+    return category
+}
+
+async function deleteCategory (category_id) {
+// deletes a category based on the provided id. returns true if successful, false if not
+    try {
+        const res = await fetch(url + `/categories/${category_id}`, {method: "DELETE"})
+        
+        if (res.status == 204) return true
+        else {
+            const response = await res.json()
+            throw (response.Error)
+        }
+    } catch (error) { 
+        return false
+    }
+}
+
+module.exports = {addCategory, getCategory, getFlavorType, updateCategory, deleteCategory}
