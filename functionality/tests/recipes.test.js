@@ -1,6 +1,24 @@
 // import the recipe functions to be tested
 const recipe_funcs = require("../recipes")
 
+// set up the servers
+const { openServer } = require('../../backend/tests/server'); 
+
+let PORT = 5004
+
+jest.setTimeout(60000);
+
+let closeServer = () => {};
+
+beforeAll(async () => {
+    closeServer = await openServer(PORT)
+})
+
+// close connection to MongoDB after all tests are performed
+afterAll(() => {
+    closeServer()
+})
+
 // source for sequential test code: https://stackoverflow.com/questions/51250006/jest-stop-test-suite-after-first-fail
 // accessed 2 July 2024
 let create_failed = false;

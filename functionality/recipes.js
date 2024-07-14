@@ -1,5 +1,7 @@
 require('dotenv').config();
-const url = process.env.PROXY
+
+let PORT = process.env.PORT || 5004;
+let url = "http://localhost:" + PORT
 
 async function addRecipe (new_recipe) {
 // creates a recipe in the database from the provided object. returns recipe if successful, undef if not
