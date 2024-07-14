@@ -41,38 +41,41 @@ const performSyncTest = (test_name, test_func) => {
       })
 }
 
-const username = "gamer"
+
 const username2 = "goirl"
-const fullname = "Sara H"
 const favorites = ["id_1"]
 const favorites2 = ["id_2"]
 
 // Test the user model
 describe("USER MODEL TESTS", () => {
     let user_id;
+    const user_1 = {
+        username: "gamer",
+        fullname: "Sara H",
+    }
 
     performSyncTest("Create user", async () => {
-        const user = await users.createUser(username, fullname)
-        user_id = user._id
+        const user = await users.createUser(user_1.username, user_1.fullname)
         expect(
-            {username: user.username, fullname: user.fullname}
-        ).toEqual(
-            {username: username, fullname: fullname}
+            user
+        ).toMatchObject(
+            user_1
         )
+        user_id = user._id
     })
 
     performSyncTest("Fail user creation", async () => {
         await expect(
-            users.createUser(username)
+            users.createUser(user_1.username)
         ).rejects.toThrow('User validation failed')
     })
 
     performSyncTest("Get user", async () => {
         const user = await users.getUser({_id: user_id})
         expect(
-            {username: user.username, fullname: user.fullname}
-        ).toEqual(
-            {username: username, fullname: fullname}
+            user
+        ).toMatchObject(
+            user_1
         )
     })
 
@@ -84,11 +87,12 @@ describe("USER MODEL TESTS", () => {
     })
 
     performSyncTest("Update username", async () => {
-        const user = await users.updateUser({_id: user_id}, {username: username2})
+        user_1.username = username2
+        const user = await users.updateUser({_id: user_id}, {username: user_1.username})
         expect(
-            {username: user.username, fullname: user.fullname}
-        ).toEqual(
-            {username: username2, fullname: fullname}
+            user
+        ).toMatchObject(
+            user_1
         )
     })
 
@@ -100,20 +104,21 @@ describe("USER MODEL TESTS", () => {
     })
 
     performSyncTest("Update user favorites", async () => {
-        const user = await users.updateUser({_id: user_id}, {favorites: favorites})
+        user_1.favorites = favorites
+        const user = await users.updateUser({_id: user_id}, {favorites: user_1.favorites})
         expect(
-            {username: user.username, fullname: user.fullname, favorites: user.favorites}
-        ).toEqual(
-            {username: username2, fullname: fullname, favorites: favorites}
+            user
+        ).toMatchObject(
+            user_1
         )
     })
 
     performSyncTest("Update user favorites again", async () => {
         const user = await users.updateUser({_id: user_id}, {favorites: favorites2})
         expect(
-            {username: user.username, fullname: user.fullname, favorites: user.favorites}
-        ).not.toEqual(
-            {username: username2, fullname: fullname, favorites: favorites}
+            user
+        ).not.toMatchObject(
+            user_1
         )
     })
 
@@ -144,26 +149,29 @@ describe("USER MODEL TESTS", () => {
 // Test the user controller
 describe("USER CONTROLLER TESTS", () => {
     let user_id;
+    const user_1 = {
+        username: "gamer",
+        fullname: "Sara H",
+    }
 
     performSyncTest("Create user", async () => {
-        const new_user = {username: username, fullname: fullname}
         const response = await fetch(`${proxy}/users`, {
                             method: "POST", 
-                            body: JSON.stringify(new_user),
+                            body: JSON.stringify(user_1),
                             headers: {"Content-type": "application/json"}
         })
         const user = await response.json()
 
         user_id = user._id
         expect(
-            {username: user.username, fullname: user.fullname}
-        ).toEqual(
-            {username: username, fullname: fullname}
+            user
+        ).toMatchObject(
+            user_1
         )
     })
 
     performSyncTest("Fail user creation", async () => {
-        const new_user = {username: username}
+        const new_user = {username: user_1.username}
         const response = await fetch(`${proxy}/users`, {
                             method: "POST", 
                             body: JSON.stringify(new_user),
@@ -172,7 +180,7 @@ describe("USER CONTROLLER TESTS", () => {
         expect(
             response.status
         ).toEqual(
-            500
+            400
         )
     })
 
@@ -180,9 +188,9 @@ describe("USER CONTROLLER TESTS", () => {
         const response = await fetch(`${proxy}/users/${user_id}`)
         const user = await response.json()
         expect(
-            {username: user.username, fullname: user.fullname}
-        ).toEqual(
-            {username: username, fullname: fullname}
+            user
+        ).toMatchObject(
+            user_1
         )
     })
 
@@ -196,16 +204,17 @@ describe("USER CONTROLLER TESTS", () => {
     })
 
     performSyncTest("Update username", async () => {
+        user_1.username = username2
         const response = await fetch(`${proxy}/users/${user_id}`, {
                             method: "PUT", 
-                            body: JSON.stringify({username: username2}),
+                            body: JSON.stringify({username: user_1.username}),
                             headers: {"Content-type": "application/json"}
         })
         const user = await response.json()
         expect(
-            {username: user.username, fullname: user.fullname}
-        ).toEqual(
-            {username: username2, fullname: fullname}
+            user
+        ).toMatchObject(
+            user_1
         )
     })
 
@@ -223,16 +232,17 @@ describe("USER CONTROLLER TESTS", () => {
     })
 
     performSyncTest("Update user favorites", async () => {
+        user_1.favorites = favorites
         const response = await fetch(`${proxy}/users/${user_id}`, {
                             method: "PUT", 
-                            body: JSON.stringify({favorites: favorites}),
+                            body: JSON.stringify({favorites: user_1.favorites}),
                             headers: {"Content-type": "application/json"}
         })
         const user = await response.json()
         expect(
-            {username: user.username, fullname: user.fullname, favorites: user.favorites}
-        ).toEqual(
-            {username: username2, fullname: fullname, favorites: favorites}
+            user
+        ).toMatchObject(
+            user_1
         )
     })
 
@@ -244,9 +254,9 @@ describe("USER CONTROLLER TESTS", () => {
         })
         const user = await response.json()
         expect(
-            {username: user.username, fullname: user.fullname, favorites: user.favorites}
-        ).not.toEqual(
-            {username: username2, fullname: fullname, favorites: favorites}
+            user
+        ).not.toMatchObject(
+            user_1
         )
     })
 
