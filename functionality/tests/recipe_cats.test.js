@@ -7,6 +7,8 @@ const category_funcs = require("../backend_connection/categories")
 const { openServer } = require('../../backend/tests/server'); 
 
 let PORT = 5005
+recipe_funcs.resetPort(PORT)
+category_funcs.resetPort(PORT)
 
 jest.setTimeout(60000);
 

@@ -1,7 +1,13 @@
 require('dotenv').config();
 
-let PORT = process.env.PORT || 5004;
+let PORT = process.env.PORT;
 let url = "http://localhost:" + PORT
+
+function resetPort (port) {
+// used to set the correct port during testing 
+    PORT = port
+    url = "http://localhost:" + PORT
+}
 
 async function addRecipe (new_recipe) {
 // creates a recipe in the database from the provided object. returns recipe if successful, undef if not
@@ -91,4 +97,4 @@ async function deleteRecipe (recipe_id) {
     }
 }
 
-module.exports = {addRecipe, getRecipe, searchForRecipe, updateRecipe, deleteRecipe}
+module.exports = {addRecipe, getRecipe, searchForRecipe, updateRecipe, deleteRecipe, resetPort}
