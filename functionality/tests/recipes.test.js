@@ -1,5 +1,5 @@
 // import the recipe functions to be tested
-const recipe_funcs = require("../recipes")
+const recipe_funcs = require("../backend_connection/recipes")
 
 // set up the servers
 const { openServer } = require('../../backend/tests/server'); 
