@@ -56,26 +56,6 @@ async function getFlavorType (flavor_type) {
     return categories
 }
 
-async function updateCategory (category_id, updates) {
-// updates a category based on the provided id using the provided updates. returns category if successful, undef if not
-    let category;
-    try {
-        const response = await fetch(url + `/categories/${category_id}`, {
-            method: "PUT", 
-            body: JSON.stringify(updates),
-            headers: {"Content-type": "application/json"}
-        })
-        category = await response.json()
-
-        if (category.Error) {throw (category.Error)}
-    } catch (error) { 
-        console.error(error)
-        category = undefined
-    }
-
-    return category
-}
-
 async function deleteCategory (category_id) {
 // deletes a category based on the provided id. returns true if successful, false if not
     try {
@@ -91,4 +71,4 @@ async function deleteCategory (category_id) {
     }
 }
 
-module.exports = {addCategory, getCategory, getFlavorType, updateCategory, deleteCategory}
+module.exports = {addCategory, getCategory, getFlavorType, deleteCategory}
