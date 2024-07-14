@@ -159,7 +159,7 @@ describe("RECIPES FUNCTIONALITY TESTS", () => {
         const recipe = await recipe_funcs.updateRecipe(id_1, {portions: 4})
         expect(
             recipe
-        ).not.toEqual(
+        ).not.toMatchObject(
             recipe_1
         )
     })
