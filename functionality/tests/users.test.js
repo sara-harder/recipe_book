@@ -48,7 +48,7 @@ const favorites = ["user_id"]
 const favorites2 = ["id_2"]
 
 
-describe("RECIPES FUNCTIONALITY TESTS", () => {
+describe("USERS FUNCTIONALITY TESTS", () => {
     let user_id;
 
     performSyncTest("Create user", async () => {
