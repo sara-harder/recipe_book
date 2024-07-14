@@ -25,11 +25,11 @@ async function connectRecipeCat (recipe, category) {
 }
 
 
-async function getRecipes (category) {
+async function getRecipes (category_id) {
 // returns a list of recipes in the specified category
     let recipes;
     try {
-        const response = await fetch(url + `/recipe-in-category/recipes/${category}`)
+        const response = await fetch(url + `/recipe-in-category/recipes/${category_id}`)
         recipes = await response.json()
 
         if (recipes.Error) {throw (recipes.Error)}
@@ -41,11 +41,11 @@ async function getRecipes (category) {
     return recipes
 }
 
-async function getCategories (recipe) {
+async function getCategories (recipe_id) {
 // returns a list of categories for the specified recipe
     let categories;
     try {
-        const response = await fetch(url + `/recipe-in-category/categories/${recipe}`)
+        const response = await fetch(url + `/recipe-in-category/categories/${recipe_id}`)
         categories = await response.json()
 
         if (categories.Error) {throw (categories.Error)}
