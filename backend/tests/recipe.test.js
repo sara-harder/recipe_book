@@ -64,11 +64,20 @@ const recipe_2 = {
     source: "website/carbonara"
 }
 
+const recipe_3 = {
+    name: "Teriyaki",
+    portions: 6,
+    ingredients: [new Ingredient("Rice", 300, "g"), new Ingredient("Chicken", 550, "g")],
+    directions: ["Boil water", "Add rice", "Cook on low", "Cook the chicken"],
+    source: "website/teriyaki-sauce"
+}
+
 
 // Test the recipe model
 describe("RECIPE MODEL TESTS", () => {
     let id_1;
     let id_2;
+    let id_3;
 
     performSyncTest("Create recipe (no img or src)", async () => {
         const recipe = await recipes.createRecipe(recipe_1.name, recipe_1.portions, recipe_1.ingredients, recipe_1.directions)
@@ -88,6 +97,16 @@ describe("RECIPE MODEL TESTS", () => {
             recipe_2
         )
         id_2 = recipe._id
+    })
+
+    performSyncTest("Create recipe (w/ src and no img)", async () => {
+        const recipe = await recipes.createRecipe(recipe_3.name, recipe_3.portions, recipe_3.ingredients, recipe_3.directions, null, recipe_3.source)
+        expect(
+            recipe
+        ).toMatchObject(
+            recipe_3
+        )
+        id_3 = recipe._id
     })
 
     performSyncTest("Fail recipe creation", async () => {
@@ -221,6 +240,15 @@ describe("RECIPE MODEL TESTS", () => {
         )
     })
 
+    performSyncTest("Delete recipe 3", async () => {
+        const delete_count = await recipes.deleteRecipe({_id: id_3})
+        expect(
+            delete_count
+        ).toEqual(
+            1
+        )
+    })
+
     create_failed = false
 })
 
@@ -230,6 +258,7 @@ describe("RECIPE MODEL TESTS", () => {
 describe("RECIPE CONTROLLER TESTS", () => {
     let id_1;
     let id_2;
+    let id_3;
 
     performSyncTest("Create recipe (no img or src)", async () => {
         const response = await fetch(`${proxy}/recipes`, {
@@ -261,6 +290,22 @@ describe("RECIPE CONTROLLER TESTS", () => {
             recipe_2
         )
         id_2 = recipe._id
+    })
+
+    performSyncTest("Create recipe (w/ src and no img)", async () => {
+        const response = await fetch(`${proxy}/recipes`, {
+                    method: "POST", 
+                    body: JSON.stringify(recipe_3),
+                    headers: {"Content-type": "application/json"}
+        })
+        const recipe = await response.json()
+
+        expect(
+            recipe
+        ).toMatchObject(
+            recipe_3
+        )
+        id_3 = recipe._id
     })
 
     performSyncTest("Fail recipe creation", async () => {
@@ -409,6 +454,14 @@ describe("RECIPE CONTROLLER TESTS", () => {
         )
     })
 
+    performSyncTest("Delete recipe 3", async () => {
+        const response = await fetch(`${proxy}/recipes/${id_3}`, {method: "DELETE"})
+        expect(
+            response.status
+        ).toEqual(
+            204
+        )
+    })
     
 
     create_failed = false
