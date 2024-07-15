@@ -53,29 +53,27 @@ function ViewRecipe() {
         <SafeAreaView style={styles.app}>
             <View style={styles.container}>
                 <View style={recipe_style.image}></View>
-                <View>
-                    <View style={recipe_style.ingredients_list}>
-                        <Text style={text_styles.boldText}>Ingredients:</Text>
-                        <View style={styles.row}>
-                            <FlatList
-                                style={{minWidth: "49%", maxWidth: "50%"}}
-                                data={ingredients.slice(rows[0][0], rows[0][1])}
-                                renderItem={({item}) => <Ingredient name={item.name} quantity={item.qua}/>}
-                            />
-                            <FlatList
-                                style={{minWidth: "49%", maxWidth: "50%"}}
-                                data={ingredients.slice(rows[1][0], rows[1][1])}
-                                renderItem={({item}) => <Ingredient name={item.name} quantity={item.qua}/>}
-                            />
-                        </View>
-                    </View>
-                    <View style={recipe_style.directions_list}>
-                        <Text style={text_styles.boldText}>Directions:</Text>
+                <View style={recipe_style.list}>
+                    <Text style={text_styles.boldText}>Ingredients:</Text>
+                    <View style={styles.row}>
                         <FlatList
-                            data={directions}
-                            renderItem={({item}) => <Text style={recipe_style.direction_text} >{item.text}</Text>}
+                            style={{minWidth: "49%", maxWidth: "50%"}}
+                            data={ingredients.slice(rows[0][0], rows[0][1])}
+                            renderItem={({item}) => <Ingredient name={item.name} quantity={item.qua}/>}
+                        />
+                        <FlatList
+                            style={{minWidth: "49%", maxWidth: "50%"}}
+                            data={ingredients.slice(rows[1][0], rows[1][1])}
+                            renderItem={({item}) => <Ingredient name={item.name} quantity={item.qua}/>}
                         />
                     </View>
+                </View>
+                <View style={recipe_style.list}>
+                    <Text style={text_styles.boldText}>Directions:</Text>
+                    <FlatList
+                        data={directions}
+                        renderItem={({item}) => <Text style={recipe_style.direction_text} >{item.text}</Text>}
+                    />
                 </View>
             </View>
         </SafeAreaView>
@@ -99,15 +97,7 @@ const recipe_style = StyleSheet.create({
         padding: 1,
         color: text_styles.itemText.color
     },
-    ingredients_list: {
-        borderWidth: 2,
-        borderColor: styles.borderColor.color,
-        padding: 6,
-        paddingTop: 4,
-        paddingBottom: 12,
-        backgroundColor: styles.itemBackground.color
-    },
-    directions_list: {
+    list: {
         borderWidth: 2,
         borderColor: styles.borderColor.color,
         padding: 6,
@@ -118,6 +108,7 @@ const recipe_style = StyleSheet.create({
     direction_text: {
         minWidth: "100%",
         padding: 1,
+        paddingLeft: 10,
         color: text_styles.itemText.color
     },
     image: {
