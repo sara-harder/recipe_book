@@ -9,10 +9,14 @@ usersRouter.use(bodyParser.json());
 
 usersRouter.post("/", asyncHandler(async(req, res, next) => {
     // creates a user in the database
-    const user = await users.createUser(req.body.username, req.body.fullname)
+    try {
+        const user = await users.createUser(req.body.username, req.body.fullname)
 
-    if (user == null) res.type("application/json").status(500).send({Error: "Could not create user"})
-    res.type("application/json").status(201).send(user)
+        if (user == null) res.type("application/json").status(500).send({Error: "Could not create user"})
+        res.type("application/json").status(201).send(user)
+    } catch (ValidationError) {
+        res.type("application/json").status(400).send({Error: "Invalid input"})
+    }
 }))
 
 usersRouter.get("/:id", asyncHandler(async(req, res, next) => {

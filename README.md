@@ -25,6 +25,11 @@ Naturally, all of these functions needed to be tested. Unit Testing is useful fo
 I believe that continuous integration is important, especially for ensuring that nothing breaks in later stages. As such, I decided to incorporate my tests into GitHub actions, so that the tests would always run before I push any code to the main branch. This helps me identify any issues right when they arise, instead of discovering them later and having to dig for the code that caused the issue. It was challenging to create the GitHub actions yml file correctly. While I had previously used GitHub actions for some python tests, these tests are more complex becauses they involve server connections, to MongoDB and to the backend server when calling through REST API. Although it was complex to set up these servers, I was able to get them both running in the end. 
 
 
+With the back end all set up, I started working on integrating it with the front end. I set up a folder within the functionality folder to use for backend connection files. These functions in these files use REST API to connect to the backend, thus enabling the frontend to access the basic database functions. While working on these functions, I also set up tests to ensure the functions were running correctly. The tests are set up to automatically start the backend server, so that they could be incorporated into GitHub Actions as well.
+
+
+
+
 
 Stretch Goals:
 
@@ -43,3 +48,5 @@ Search for recipes
 Add all ingredients for a recipe to a shopping list (Bring!)
 
 Coordination with Alexa for adding ingredients (and reading recipes?)
+
+Use AI tool to auto-add recipes based on picture or website input
