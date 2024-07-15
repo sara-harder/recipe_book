@@ -9,8 +9,17 @@ function resetPort (port) {
     url = "http://localhost:" + PORT
 }
 
-async function addRecipe (new_recipe) {
-// creates a recipe in the database from the provided object. returns recipe if successful, undef if not
+async function addRecipe (name, portions, ingredients, directions, image=null, source=null) {
+// creates a recipe in the database from the provided params. returns recipe if successful, undef if not
+    const new_recipe = {
+        name: name,
+        image: image,
+        portions: portions,
+        ingredients: ingredients,
+        directions: directions,
+        source: source
+    }
+
     let recipe;
     try {
         const response = await fetch(url + "/recipes", {

@@ -9,8 +9,13 @@ function resetPort (port) {
     url = "http://localhost:" + PORT
 }
 
-async function addCategory (new_category) {
-// creates a category in the database from the provided object. returns category if successful, undef if not
+async function addCategory (name, flavor_type) {
+// creates a category in the database from the provided params. returns category if successful, undef if not
+    const new_category = {
+        name: name,
+        flavor_type: flavor_type
+    }
+
     let category;
     try {
         const response = await fetch(url + "/categories", {
