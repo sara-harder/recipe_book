@@ -5,8 +5,12 @@ let url = "http://localhost:" + PORT
 
 async function connectRecipeCat (recipe, category) {
 // connects a recipe to a category in the database from the provided ids. returns recipe_cat if successful, undef if not
+    const new_recipe_cat = {
+        recipe: recipe, 
+        category: category
+    }
+
     let recipe_cat;
-    const new_recipe_cat = {recipe: recipe, category: category}
     try {
         const response = await fetch(url + "/recipe-in-category", {
             method: "POST", 
