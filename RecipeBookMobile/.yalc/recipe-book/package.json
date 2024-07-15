@@ -4,9 +4,13 @@
   "description": "functionality for the recipe book app",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --runInBand"
   },
   "author": "Sara Harder",
   "license": "ISC",
-  "yalcSig": "65044292902cc947ef98a7c989d09a66"
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "jest": "^29.7.0"
+  },
+  "yalcSig": "9991ebdb205b3258f7582b3f4baeac5d"
 }
