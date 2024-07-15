@@ -62,11 +62,18 @@ const recipe_2 = {
     directions: ["Boil water", "Add salt", "Cook the pasta", "Grate the cheese"],
     source: "website/carbonara"
 }
-
+const recipe_3 = {
+    name: "Teriyaki",
+    portions: 6,
+    ingredients: [new Ingredient("Rice", 300, "g"), new Ingredient("Chicken", 550, "g")],
+    directions: ["Boil water", "Add rice", "Cook on low", "Cook the chicken"],
+    source: "website/teriyaki-sauce"
+}
 
 describe("RECIPES FUNCTIONALITY TESTS", () => {
     let id_1;
     let id_2;
+    let id_3;
 
     performSyncTest("Create recipe (no img or src)", async () => {
         const recipe = await recipe_funcs.addRecipe(recipe_1.name, recipe_1.portions, recipe_1.ingredients, recipe_1.directions)
@@ -86,6 +93,16 @@ describe("RECIPES FUNCTIONALITY TESTS", () => {
             recipe_2
         )
         id_2 = recipe._id
+    })
+
+    performSyncTest("Create recipe (w/ src and no img)", async () => {
+        const recipe = await recipe_funcs.addRecipe(recipe_3.name, recipe_3.portions, recipe_3.ingredients, recipe_3.directions, null, recipe_3.source)
+        expect(
+            recipe
+        ).toMatchObject(
+            recipe_3
+        )
+        id_3 = recipe._id
     })
 
     performSyncTest("Fail recipe creation", async () => {
@@ -180,6 +197,13 @@ describe("RECIPES FUNCTIONALITY TESTS", () => {
 
     performSyncTest("Delete recipe 2", async () => {
         const response = await recipe_funcs.deleteRecipe(id_2)
+        expect(
+            response
+        ).toBe(true)
+    })
+
+    performSyncTest("Delete recipe 3", async () => {
+        const response = await recipe_funcs.deleteRecipe(id_3)
         expect(
             response
         ).toBe(true)
