@@ -52,7 +52,7 @@ describe("USERS FUNCTIONALITY TESTS", () => {
     let user_id;
 
     performSyncTest("Create user", async () => {
-        const user = await user_funcs.addUser(user_1)
+        const user = await user_funcs.addUser(user_1.username, user_1.fullname)
         expect(
             user
         ).toMatchObject(
@@ -62,8 +62,7 @@ describe("USERS FUNCTIONALITY TESTS", () => {
     })
 
     performSyncTest("Fail user creation", async () => {
-        const new_user = {username: user_1.username}
-        const response = await user_funcs.addUser(new_user)
+        const response = await user_funcs.addUser(user_1.username)
         expect(response).toBeUndefined()
     })
 

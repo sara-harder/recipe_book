@@ -69,7 +69,7 @@ describe("RECIPES FUNCTIONALITY TESTS", () => {
     let id_2;
 
     performSyncTest("Create recipe (no img or src)", async () => {
-        const recipe = await recipe_funcs.addRecipe(recipe_1)
+        const recipe = await recipe_funcs.addRecipe(recipe_1.name, recipe_1.portions, recipe_1.ingredients, recipe_1.directions)
         expect(
             recipe
         ).toMatchObject(
@@ -79,7 +79,7 @@ describe("RECIPES FUNCTIONALITY TESTS", () => {
     })
 
     performSyncTest("Create recipe (w/ img and src)", async () => {
-        const recipe = await recipe_funcs.addRecipe(recipe_2)
+        const recipe = await recipe_funcs.addRecipe(recipe_2.name, recipe_2.portions, recipe_2.ingredients, recipe_2.directions, recipe_2.image, recipe_2.source)
         expect(
             recipe
         ).toMatchObject(
@@ -89,8 +89,7 @@ describe("RECIPES FUNCTIONALITY TESTS", () => {
     })
 
     performSyncTest("Fail recipe creation", async () => {
-        const new_recipe = {name: "Spaghetti"}
-        const response = await recipe_funcs.addRecipe(new_recipe)
+        const response = await recipe_funcs.addRecipe("Spaghetti")
         expect(response).toBeUndefined()
     })
 

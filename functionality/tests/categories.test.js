@@ -56,7 +56,7 @@ describe("CATEGORIES FUNCTIONALITY TESTS", () => {
     let id_2;
 
     performSyncTest("Create category 1", async () => {
-        const category = await category_funcs.addCategory(category_1)
+        const category = await category_funcs.addCategory(category_1.name, category_1.flavor_type)
         expect(
             category
         ).toMatchObject(
@@ -66,7 +66,7 @@ describe("CATEGORIES FUNCTIONALITY TESTS", () => {
     })
 
     performSyncTest("Create category 2", async () => {
-        const category = await category_funcs.addCategory(category_2)
+        const category = await category_funcs.addCategory(category_2.name, category_2.flavor_type)
         expect(
             category
         ).toMatchObject(
@@ -76,8 +76,7 @@ describe("CATEGORIES FUNCTIONALITY TESTS", () => {
     })
 
     performSyncTest("Fail category creation", async () => {
-        const new_category = {name: category_1.name}
-        const response = await category_funcs.addCategory(new_category)
+        const response = await category_funcs.addCategory(category_1.name)
         expect(response).toBeUndefined()
     })
 

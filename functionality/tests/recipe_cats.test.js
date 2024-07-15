@@ -76,7 +76,7 @@ let recipe_in_cat_1, recipe_in_cat_2;
 // Create the test data
 describe("CREATE TEST DATA", () => {
     performSyncTest("Create recipe_1", async () => {
-        const recipe = await recipe_funcs.addRecipe(recipe_1)
+        const recipe = await recipe_funcs.addRecipe(recipe_1.name, recipe_1.portions, recipe_1.ingredients, recipe_1.directions)
         expect(
             recipe
         ).toMatchObject(
@@ -86,7 +86,7 @@ describe("CREATE TEST DATA", () => {
     })
 
     performSyncTest("Create recipe_2", async () => {
-        const recipe = await recipe_funcs.addRecipe(recipe_2)
+        const recipe = await recipe_funcs.addRecipe(recipe_2.name, recipe_2.portions, recipe_2.ingredients, recipe_2.directions, recipe_2.image, recipe_2.source)
         expect(
             recipe
         ).toMatchObject(
@@ -96,7 +96,7 @@ describe("CREATE TEST DATA", () => {
     })
 
     performSyncTest("Create category", async () => {
-        const cat = await category_funcs.addCategory(category)
+        const cat = await category_funcs.addCategory(category.name, category.flavor_type)
         expect(
             cat
         ).toMatchObject(

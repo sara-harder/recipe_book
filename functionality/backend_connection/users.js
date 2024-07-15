@@ -3,8 +3,13 @@ require('dotenv').config();
 let PORT = process.env.PORT || 5002;
 let url = "http://localhost:" + PORT
 
-async function addUser (new_user) {
-// creates a user in the database from the provided object. returns user if successful, undef if not
+async function addUser (username, fullname) {
+// creates a user in the database from the provided params. returns user if successful, undef if not
+    const new_user = {
+        username: username,
+        fullname: fullname
+    }
+
     let user;
     try {
         const response = await fetch(url + "/users", {
