@@ -82,7 +82,7 @@ const HorizontalRecipe = ({title, nav}) => {
                 <FlatList
                     data={real_data}
                     horizontal={true}
-                    renderItem={({item}) => <Recipe name={item.name} image={item.image} nav={item.nav} />}
+                    renderItem={({item}) => <Recipe name={item.name} image={item.image} nav={()=>navigation.navigate("ViewRecipe", {recipe: item})} />}
                 />
             </View>
         </View>
