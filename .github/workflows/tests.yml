@@ -1,13 +1,9 @@
-name: Run Functionality Jest Tests
+name: Run All Jest Tests
 
 on:
   pull_request:
     branches:
       - main
-
-concurrency:
-  group: tests-with-server
-  cancel-in-progress: true
 
 jobs:
   test:
@@ -22,10 +18,18 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install dependencies
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm install
+        
+      - name: Run backend Jest tests
+        working-directory: backend
+        run: npm test
+
+      - name: Install functionality dependencies
         working-directory: functionality
         run: npm install
         
-      - name: Run Jest tests
+      - name: Run functionality Jest tests
         working-directory: functionality
         run: npm test

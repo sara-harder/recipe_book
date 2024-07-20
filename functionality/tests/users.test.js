@@ -5,6 +5,7 @@ const user_funcs = require("../backend_connection/users")
 const { openServer } = require('../../backend/tests/server'); 
 
 let PORT = 5002
+user_funcs.resetPort(PORT)
 
 jest.setTimeout(60000);
 

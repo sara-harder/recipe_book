@@ -3,7 +3,7 @@ import React from 'react';
 import {useNavigate} from "react-router-dom"
 
 // function imports
-import { createFlexTable } from 'recipe-book';
+import { helpers } from 'recipe-book';
 
 // component imports
 import ListItem from '../components/ListItem';
@@ -25,7 +25,7 @@ function RecipeList({setHeader}) {
         nav: () => navigate("/view-recipe")
     }]
 
-    const rows = createFlexTable(5, data.length)
+    const rows = helpers.createFlexTable(5, data.length)
 
     return(
         <>
