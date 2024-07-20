@@ -12,7 +12,7 @@ import {
 import styles, {text_styles} from '../style.js';
 
 // function imports
-import { createFlexTable } from 'recipe-book';
+import { helpers } from 'recipe-book';
 
 const Ingredient = ({name, quantity}) => {
     return(
@@ -47,7 +47,7 @@ function ViewRecipe() {
         text: "Dir 3",
     }]
 
-    const rows = createFlexTable(2, ingredients.length)
+    const rows = helpers.createFlexTable(2, ingredients.length)
 
     return(
         <SafeAreaView style={styles.app}>

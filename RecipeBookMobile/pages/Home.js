@@ -8,16 +8,20 @@ import {
   Text,
   View
 } from 'react-native';
+import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 // style imports
 import styles, {text_styles} from '../style.js';
 
-const Recipe = ({title, image, nav}) => {
+// function imports
+import { helpers } from 'recipe-book';
+
+const Recipe = ({name, image, nav}) => {
     return(
         <Pressable onPress={nav} >
             <View style={home_style.image} ></View>
-            <Text style={[text_styles.itemText, {textAlign: "center"}]}>{title}</Text>
+            <Text style={[text_styles.itemText, {textAlign: "center"}]}>{name}</Text>
         </Pressable>
     )
 }
@@ -25,32 +29,47 @@ const Recipe = ({title, image, nav}) => {
 const HorizontalRecipe = ({title, nav}) => {
     const navigation = useNavigation()
 
+    const [real_data, setData] = useState([]);
+
     const data = [{
-        img: "image_1",
-        title: "Recipe 1",
+        image: "image_1",
+        name: "Recipe 1",
         nav: ()=>navigation.navigate("ViewRecipe")
     },
     {
-        img: "image_2",
-        title: "Recipe 2",
+        image: "image_2",
+        name: "Recipe 2",
         nav: ()=>navigation.navigate("ViewRecipe")
     },
     {
-        img: "image_3",
-        title: "Recipe 3",
+        image: "image_3",
+        name: "Recipe 3",
         nav: ()=>navigation.navigate("ViewRecipe")
     },
     {
-        img: "image_4",
-        title: "Recipe 4",
+        image: "image_4",
+        name: "Recipe 4",
         nav: ()=>navigation.navigate("ViewRecipe")
     },
     {
-        img: "image_5",
-        title: "Recipe 5",
+        image: "image_5",
+        name: "Recipe 5",
         nav: ()=>navigation.navigate("ViewRecipe")
     },
     ]
+
+    // Pull all products from the database
+    useEffect(() =>{
+        const getUserRecipes = async ()=> {
+            setData(data)
+        }
+        const getCatRecipes = async ()=> {
+            const recipes = await helpers.getRandomRecipes(title)
+            setData(recipes)
+        }
+        if (title == "Savory" || title == "Sweet") getCatRecipes();
+        else getUserRecipes()
+    }, []);
 
     return(
         <View>
@@ -61,9 +80,9 @@ const HorizontalRecipe = ({title, nav}) => {
             </View>
             <View style={home_style.row}>
                 <FlatList
-                    data={data}
+                    data={real_data}
                     horizontal={true}
-                    renderItem={({item}) => <Recipe title={item.title} image={item.img} nav={item.nav} />}
+                    renderItem={({item}) => <Recipe name={item.name} image={item.image} nav={item.nav} />}
                 />
             </View>
         </View>
