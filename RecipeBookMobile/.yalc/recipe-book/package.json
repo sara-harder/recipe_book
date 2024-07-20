@@ -9,8 +9,7 @@
   "author": "Sara Harder",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.4.5",
     "jest": "^29.7.0"
   },
-  "yalcSig": "9991ebdb205b3258f7582b3f4baeac5d"
+  "yalcSig": "dfacfd95c2fb327b07a707d71e0a2cb9"
 }
