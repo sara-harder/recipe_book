@@ -3,6 +3,7 @@ import React from 'react';
 import {
   SafeAreaView,
   FlatList,
+  ScrollView,
   StyleSheet,
   Text,
   View
@@ -27,34 +28,43 @@ function ViewRecipe({route}) {
     let {recipe} = route.params;
 
     const ingredients = recipe.ingredients
-    const rows = helpers.createFlexTable(2, ingredients.length)
+    const rows = [[0, Math.ceil(ingredients.length/2)], [Math.ceil(ingredients.length/2), ingredients.length]]
 
     return(
         <SafeAreaView style={styles.app}>
             <View style={styles.container}>
+                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 <View style={recipe_style.image}></View>
                 <View style={recipe_style.list}>
                     <Text style={text_styles.boldText}>Ingredients:</Text>
                     <View style={styles.row}>
-                        <FlatList
-                            style={{minWidth: "49%", maxWidth: "50%"}}
-                            data={ingredients.slice(rows[0][0], rows[0][1])}
-                            renderItem={({item}) => <Ingredient name={item.name} quantity={item.quantity} unit={item.unit}/>}
-                        />
-                        <FlatList
-                            style={{minWidth: "49%", maxWidth: "50%"}}
-                            data={ingredients.slice(rows[1][0], rows[1][1])}
-                            renderItem={({item}) => <Ingredient name={item.name} quantity={item.qua}/>}
-                        />
+                        <View style={{minWidth: "49%", maxWidth: "50%"}}>
+                            {ingredients.slice(rows[0][0], rows[0][1]).map((item, index) => {
+                               return (
+                                   <Ingredient name={item.name} quantity={item.quantity} unit={item.unit} key={index}/>
+                               )
+                            })}
+                        </View>
+                        <View style={{minWidth: "49%", maxWidth: "50%"}}>
+                            {ingredients.slice(rows[1][0], rows[1][1]).map((item, index) => {
+                                return (
+                                    <Ingredient name={item.name} quantity={item.quantity} unit={item.unit} key={index}/>
+                                )
+                            })}
+                        </View>
                     </View>
                 </View>
                 <View style={recipe_style.list}>
                     <Text style={text_styles.boldText}>Directions:</Text>
-                    <FlatList
-                        data={recipe.directions}
-                        renderItem={({item}) => <Text style={recipe_style.direction_text} >{item}</Text>}
-                    />
+                    <View>
+                        {recipe.directions.map((item, index) => {
+                            return(
+                                <Text style={recipe_style.direction_text} key={index}>{index+1}. {item}</Text>
+                            )
+                        })}
+                    </View>
                 </View>
+                </ScrollView>
             </View>
         </SafeAreaView>
     )
@@ -93,7 +103,7 @@ const recipe_style = StyleSheet.create({
     },
     image: {
         width: "100%",
-        height: "30%",
+        height: 175,
         borderWidth: 2,
         borderRadius:10,
         borderColor: styles.borderColor.color,
