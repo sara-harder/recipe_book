@@ -1,7 +1,10 @@
-import {createFlexTable} from "./helpers.js"
+import * as helpers from "./helpers.js"
 import * as user_funcs from "./backend_connection/users.js"
 import * as category_funcs from "./backend_connection/categories.js"
 import * as recipe_funcs from "./backend_connection/recipes.js"
 import * as rec_cat_funcs from "./backend_connection/recipes_in_categories.js"
 
-export {createFlexTable, user_funcs, category_funcs, recipe_funcs, rec_cat_funcs}
+// run "yalc push" in the functionality folder to update this package whenever it changes
+// run "npm run reset-yalc" in the mobile folder to register changes
+
+export {helpers, user_funcs, category_funcs, recipe_funcs, rec_cat_funcs}
