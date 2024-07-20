@@ -1,12 +1,9 @@
-require('dotenv').config();
-
-let PORT = process.env.PORT;
-let url = "http://localhost:" + PORT
+let PORT = 5001;
+let url = "http://10.0.2.2:" + PORT
 
 function resetPort (port) {
-// used to set the correct port during testing 
-    PORT = port
-    url = "http://localhost:" + PORT
+// used to set the correct port during testing
+    url = "http://localhost:" + port
 }
 
 async function addRecipe (name, portions, ingredients, directions, image=null, source=null) {
