@@ -1,13 +1,10 @@
 name: Run Functionality Jest Tests
 
 on:
-  pull_request:
-    branches:
-      - main
-
-concurrency:
-  group: tests-with-server
-  cancel-in-progress: true
+  workflow_run:
+    workflows: ["Run Backend Jest Tests"]
+    types:
+      - completed
 
 jobs:
   test:
