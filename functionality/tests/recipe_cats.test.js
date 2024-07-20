@@ -7,6 +7,7 @@ const category_funcs = require("../backend_connection/categories")
 const { openServer } = require('../../backend/tests/server'); 
 
 let PORT = 5005
+rec_cat_funcs.resetPort(PORT)
 recipe_funcs.resetPort(PORT)
 category_funcs.resetPort(PORT)
 
