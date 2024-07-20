@@ -1,7 +1,10 @@
-require('dotenv').config();
+let PORT = 5001;
+let url = "http://10.0.2.2:" + PORT
 
-let PORT = process.env.PORT || 5002;
-let url = "http://localhost:" + PORT
+function resetPort (port) {
+// used to set the correct port during testing
+    url = "http://localhost:" + port
+}
 
 async function addUser (username, fullname) {
 // creates a user in the database from the provided params. returns user if successful, undef if not
@@ -81,4 +84,4 @@ async function deleteUser (user_id) {
     }
 }
 
-module.exports = {addUser, getUser, updateUser, deleteUser}
+module.exports = {addUser, getUser, updateUser, deleteUser, resetPort}
