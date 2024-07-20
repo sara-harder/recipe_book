@@ -64,3 +64,8 @@ yarn-error.log
 
 # testing
 /coverage
+
+# yalc package
+.yalc/recipe-book/.env
+.yalc/recipe-book/tests/
+

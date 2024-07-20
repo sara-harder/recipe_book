@@ -1,9 +1,10 @@
 name: Run Functionality Jest Tests
 
 on:
-  pull_request:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Run Backend Jest Tests"]
+    types:
+      - completed
 
 jobs:
   test:
