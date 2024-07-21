@@ -16,11 +16,18 @@ import { useDispatch } from 'react-redux';
 import styles, {text_styles} from '../style.js';
 
 // function imports
-import { helpers } from 'recipe-book';
-import { selectR, selectF } from '../redux/selectionSlice';
+import { helpers, recipe_funcs } from 'recipe-book';
+import { selectR, selectC, selectF } from '../redux/selectionSlice';
 
+const favorites = "Favorites"
+const recents = "Recents"
 const savory = "Savory"
 const sweet = "Sweet"
+
+const user = {
+    favorites: [],
+    recents: []
+}
 
 const Recipe = ({name, image, nav}) => {
     return(
@@ -38,15 +45,18 @@ const HorizontalRecipe = ({title, nav}) => {
     const [real_data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const data = [{
-        image: "image_1",
-        name: "Recipe 1",
-        nav: ()=>navigation.navigate("ViewRecipe")
-    }]
-
     // Get the recipes to display in this row
     useEffect(() =>{
         const getUserRecipes = async ()=> {
+            let ids;
+            if (title == favorites) ids = user.favorites
+            else ids = user.recents
+
+            const data = []
+            for (const id of ids) {
+                const recipe = await recipe_funcs.getRecipe(id)
+                data.push(recipe)
+            }
             setData(data)
 
             setLoading(false);
@@ -107,6 +117,12 @@ function HomeScreen() {
     const navigation = useNavigation()
 
     // Navigate to the category page when Sweet or Savory see all is selected
+    const selectUserRecipes = (type) => {
+        dispatch(selectC(type))
+        navigation.navigate("Recipes", {category: type})
+    }
+
+    // Navigate to the category page when Sweet or Savory see all is selected
     const selectFlavor = (flavor_type) => {
         dispatch(selectF(flavor_type))
         navigation.navigate("Categories", {flavor_type: flavor_type})
@@ -115,8 +131,8 @@ function HomeScreen() {
     return(
         <SafeAreaView style={styles.app}>
             <View style={styles.container}>
-                <HorizontalRecipe title="Favorites" nav={()=>navigation.navigate("Recipes")} />
-                <HorizontalRecipe title="Recents" nav={()=>navigation.navigate("Recipes")} />
+                <HorizontalRecipe title={favorites} nav={()=>selectUserRecipes("Favorite")} />
+                <HorizontalRecipe title={recents} nav={()=>selectUserRecipes("Recent")} />
                 <HorizontalRecipe title={savory} nav={()=>selectFlavor(savory)} />
                 <HorizontalRecipe title={sweet} nav={()=>selectFlavor(sweet)} />
             </View>

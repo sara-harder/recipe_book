@@ -19,8 +19,16 @@ import Loading from '../components/LoadingScreen.js'
 import styles from '../style.js';
 
 // function imports
-import { rec_cat_funcs } from 'recipe-book';
+import { recipe_funcs, rec_cat_funcs } from 'recipe-book';
 import { selectR } from '../redux/selectionSlice';
+
+const favorites = "Favorite"
+const recents = "Recent"
+
+const user = {
+    favorites: [],
+    recents: []
+}
 
 function RecipeList({route}) {
     let {category} = route.params;
@@ -33,13 +41,30 @@ function RecipeList({route}) {
 
     // Get the recipes to display
     useEffect(() =>{
+        const getUserRecipes = async ()=> {
+            let ids;
+            if (category == favorites) ids = user.favorites
+            else ids = user.recents
+
+            const data = []
+            for (const id of ids) {
+                const recipe = await recipe_funcs.getRecipe(id)
+                data.push(recipe)
+            }
+            setData(data)
+
+            setLoading(false);
+        }
+
         const getRecipes = async ()=> {
             const recipes = await rec_cat_funcs.getRecipes(category._id)
             setData(recipes)
 
             setLoading(false)
         }
-        getRecipes()
+
+        if (category == favorites || category == recents) getUserRecipes();
+        else getRecipes()
     }, []);
 
     // Show loading screen while waiting for data
