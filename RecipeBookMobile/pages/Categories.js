@@ -19,11 +19,11 @@ import Loading from '../components/LoadingScreen.js'
 import styles from '../style.js';
 
 // function imports
-import { rec_cat_funcs } from 'recipe-book';
-import { selectR } from '../redux/selectionSlice';
+import { category_funcs } from 'recipe-book';
+import { selectC } from '../redux/selectionSlice';
 
-function RecipeList({route}) {
-    let {category} = route.params;
+function Categories({route}) {
+    let {flavor_type} = route.params;
 
     const dispatch = useDispatch();
     const navigation = useNavigation()
@@ -31,15 +31,15 @@ function RecipeList({route}) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Get the recipes to display
+    // Get the categories to display
     useEffect(() =>{
-        const getRecipes = async ()=> {
-            const recipes = await rec_cat_funcs.getRecipes(category._id)
-            setData(recipes)
+        const getCategories = async ()=> {
+            const categories = await category_funcs.getFlavorType(flavor_type)
+            setData(categories)
 
             setLoading(false)
         }
-        getRecipes()
+        getCategories()
     }, []);
 
     // Show loading screen while waiting for data
@@ -47,10 +47,10 @@ function RecipeList({route}) {
         return <Loading />
     }
 
-    // Navigate to the view recipe page when a recipe is selected
-    const selectRecipe = (recipe) => {
-        dispatch(selectR(recipe.name))
-        navigation.navigate("ViewRecipe", {recipe: recipe})
+    // Navigate to the RecipeList page when a Category is selected
+    const selectCategory = (category) => {
+        dispatch(selectC(category.name))
+        navigation.navigate("Recipes", {category: category})
     }
 
     return(
@@ -58,11 +58,11 @@ function RecipeList({route}) {
             <View style={styles.container}>
                 <FlatList
                     data={data}
-                    renderItem={({item}) => <ListItem text={item.name} navigate={() => selectRecipe(item)} />}
+                    renderItem={({item}) => <ListItem text={item.name} navigate={() => selectCategory(item)} />}
                 />
             </View>
         </SafeAreaView>
     )
 }
 
-export default RecipeList;
+export default Categories;
