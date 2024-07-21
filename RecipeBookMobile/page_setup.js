@@ -5,7 +5,7 @@ import header from './components/Header.js';
 import { useSelector } from 'react-redux';
 
 import HomeScreen from './pages/Home.js'
-import RecipeCategories from './pages/RecipeCategories.js'
+import Categories from './pages/Categories.js'
 import RecipeList from './pages/RecipeList.js'
 import ViewRecipe from './pages/ViewRecipe.js'
 
@@ -23,8 +23,8 @@ const PageSetup = () => {
         />
         <Stack.Screen
           name="Categories"
-          component={RecipeCategories}
-          options={{title: 'S Recipes'}}
+          component={Categories}
+          options={{title: selection}}
         />
         <Stack.Screen
           name="Recipes"

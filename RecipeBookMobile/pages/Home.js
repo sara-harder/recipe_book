@@ -38,28 +38,7 @@ const HorizontalRecipe = ({title, nav}) => {
         image: "image_1",
         name: "Recipe 1",
         nav: ()=>navigation.navigate("ViewRecipe")
-    },
-    {
-        image: "image_2",
-        name: "Recipe 2",
-        nav: ()=>navigation.navigate("ViewRecipe")
-    },
-    {
-        image: "image_3",
-        name: "Recipe 3",
-        nav: ()=>navigation.navigate("ViewRecipe")
-    },
-    {
-        image: "image_4",
-        name: "Recipe 4",
-        nav: ()=>navigation.navigate("ViewRecipe")
-    },
-    {
-        image: "image_5",
-        name: "Recipe 5",
-        nav: ()=>navigation.navigate("ViewRecipe")
-    },
-    ]
+    }]
 
     // Get the recipes to display in this row
     useEffect(() =>{
@@ -74,11 +53,13 @@ const HorizontalRecipe = ({title, nav}) => {
         else getUserRecipes()
     }, []);
 
+    // Navigate to the view recipe page when a recipe is selected
     const selectRecipe = (recipe) => {
         dispatch(select(recipe.name))
         navigation.navigate("ViewRecipe", {recipe: recipe})
     }
 
+    // Row of recipe examples with See All button
     return(
         <View>
             <View style={styles.row}>
@@ -98,15 +79,24 @@ const HorizontalRecipe = ({title, nav}) => {
 }
 
 function HomeScreen() {
+    const dispatch = useDispatch();
     const navigation = useNavigation()
+
+    const savory = "Savory"
+    const sweet = "Sweet"
+
+    const selectFlavor = (flavor_type) => {
+        dispatch(select(flavor_type))
+        navigation.navigate("Categories", {flavor_type: flavor_type})
+    }
 
     return(
         <SafeAreaView style={styles.app}>
             <View style={styles.container}>
                 <HorizontalRecipe title="Favorites" nav={()=>navigation.navigate("Recipes")} />
                 <HorizontalRecipe title="Recents" nav={()=>navigation.navigate("Recipes")} />
-                <HorizontalRecipe title="Savory" nav={()=>navigation.navigate("Categories")} />
-                <HorizontalRecipe title="Sweet" nav={()=>navigation.navigate("Categories")} />
+                <HorizontalRecipe title={savory} nav={()=>selectFlavor(savory)} />
+                <HorizontalRecipe title={sweet} nav={()=>selectFlavor(sweet)} />
             </View>
         </SafeAreaView>
     )
