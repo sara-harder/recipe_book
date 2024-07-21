@@ -19,7 +19,7 @@ import styles from '../style.js';
 
 // function imports
 import { rec_cat_funcs } from 'recipe-book';
-import { select } from '../redux/selectionSlice';
+import { selectR } from '../redux/selectionSlice';
 
 function RecipeList({route}) {
     let {category} = route.params;
@@ -40,7 +40,7 @@ function RecipeList({route}) {
 
     // Navigate to the view recipe page when a recipe is selected
     const selectRecipe = (recipe) => {
-        dispatch(select(recipe.name))
+        dispatch(selectR(recipe.name))
         navigation.navigate("ViewRecipe", {recipe: recipe})
     }
 

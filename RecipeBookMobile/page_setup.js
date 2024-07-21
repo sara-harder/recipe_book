@@ -12,7 +12,9 @@ import ViewRecipe from './pages/ViewRecipe.js'
 const Stack = createNativeStackNavigator();
 
 const PageSetup = () => {
-  const selection = useSelector(state=> state.selection.value);
+  const recipe = useSelector(state=> state.selection.recipe);
+  const category = useSelector(state=> state.selection.category);
+  const flavor = useSelector(state=> state.selection.flavor);
 
   return (
       <Stack.Navigator screenOptions={{header: header}}>
@@ -24,17 +26,17 @@ const PageSetup = () => {
         <Stack.Screen
           name="Categories"
           component={Categories}
-          options={{title: selection}}
+          options={{title: flavor}}
         />
         <Stack.Screen
           name="Recipes"
           component={RecipeList}
-          options={{title: selection + " Recipes"}}
+          options={{title: category + " Recipes"}}
         />
         <Stack.Screen
           name="ViewRecipe"
           component={ViewRecipe}
-          options={{title: selection}}
+          options={{title: recipe}}
         />
       </Stack.Navigator>
   );

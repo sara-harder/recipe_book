@@ -19,7 +19,7 @@ import styles from '../style.js';
 
 // function imports
 import { category_funcs } from 'recipe-book';
-import { select } from '../redux/selectionSlice';
+import { selectC } from '../redux/selectionSlice';
 
 function Categories({route}) {
     let {flavor_type} = route.params;
@@ -40,7 +40,7 @@ function Categories({route}) {
 
     // Navigate to the RecipeList page when a Category is selected
     const selectCategory = (category) => {
-        dispatch(select(category.name))
+        dispatch(selectC(category.name))
         navigation.navigate("Recipes", {category: category})
     }
 

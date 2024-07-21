@@ -17,7 +17,7 @@ import styles, {text_styles} from '../style.js';
 
 // function imports
 import { helpers } from 'recipe-book';
-import { select } from '../redux/selectionSlice';
+import { selectR, selectF } from '../redux/selectionSlice';
 
 const savory = "Savory"
 const sweet = "Sweet"
@@ -58,7 +58,7 @@ const HorizontalRecipe = ({title, nav}) => {
 
     // Navigate to the view recipe page when a recipe is selected
     const selectRecipe = (recipe) => {
-        dispatch(select(recipe.name))
+        dispatch(selectR(recipe.name))
         navigation.navigate("ViewRecipe", {recipe: recipe})
     }
 
@@ -87,7 +87,7 @@ function HomeScreen() {
 
     // Navigate to the category page when Sweet or Savory see all is selected
     const selectFlavor = (flavor_type) => {
-        dispatch(select(flavor_type))
+        dispatch(selectF(flavor_type))
         navigation.navigate("Categories", {flavor_type: flavor_type})
     }
 

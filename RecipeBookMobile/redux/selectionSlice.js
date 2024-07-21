@@ -3,15 +3,23 @@ import { createSlice } from '@reduxjs/toolkit'
 export const selectionSlice = createSlice({
   name: 'selection',
   initialState: {
-    value: undefined
+    recipe: undefined,
+    category: undefined,
+    flavor: undefined
   },
   reducers: {
-    select(state, action) {
-      state.value = action.payload
+    selectR(state, action) {
+      state.recipe = action.payload
+    },
+    selectC(state, action) {
+      state.category = action.payload
+    },
+    selectF(state, action) {
+      state.flavor = action.payload
     }
   }
 })
 
-export const { select } = selectionSlice.actions
+export const { selectR, selectC, selectF } = selectionSlice.actions
 
 export default selectionSlice.reducer
