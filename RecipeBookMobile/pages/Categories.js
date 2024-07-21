@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
 
 // component imports
 import ListItem from '../components/ListItem.js'
@@ -18,10 +19,12 @@ import styles from '../style.js';
 
 // function imports
 import { category_funcs } from 'recipe-book';
+import { select } from '../redux/selectionSlice';
 
 function Categories({route}) {
     let {flavor_type} = route.params;
 
+    const dispatch = useDispatch();
     const navigation = useNavigation()
 
     const [data, setData] = useState([]);
@@ -35,12 +38,18 @@ function Categories({route}) {
         getCategories()
     }, []);
 
+    // Navigate to the RecipeList page when a Category is selected
+    const selectCategory = (category) => {
+        dispatch(select(category.name))
+        navigation.navigate("Recipes", {category: category})
+    }
+
     return(
         <SafeAreaView style={styles.app}>
             <View style={styles.container}>
                 <FlatList
                     data={data}
-                    renderItem={({item}) => <ListItem text={item.name} navigate={item.nav} />}
+                    renderItem={({item}) => <ListItem text={item.name} navigate={() => selectCategory(item)} />}
                 />
             </View>
         </SafeAreaView>

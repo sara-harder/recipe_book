@@ -29,7 +29,7 @@ const PageSetup = () => {
         <Stack.Screen
           name="Recipes"
           component={RecipeList}
-          options={{title: 'Recipes'}}
+          options={{title: selection + " Recipes"}}
         />
         <Stack.Screen
           name="ViewRecipe"

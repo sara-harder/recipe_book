@@ -19,6 +19,9 @@ import styles, {text_styles} from '../style.js';
 import { helpers } from 'recipe-book';
 import { select } from '../redux/selectionSlice';
 
+const savory = "Savory"
+const sweet = "Sweet"
+
 const Recipe = ({name, image, nav}) => {
     return(
         <Pressable onPress={nav} >
@@ -49,7 +52,7 @@ const HorizontalRecipe = ({title, nav}) => {
             const recipes = await helpers.getRandomRecipes(title)
             setData(recipes)
         }
-        if (title == "Savory" || title == "Sweet") getCatRecipes();
+        if (title == savory || title == sweet) getCatRecipes();
         else getUserRecipes()
     }, []);
 
@@ -82,9 +85,7 @@ function HomeScreen() {
     const dispatch = useDispatch();
     const navigation = useNavigation()
 
-    const savory = "Savory"
-    const sweet = "Sweet"
-
+    // Navigate to the category page when Sweet or Savory see all is selected
     const selectFlavor = (flavor_type) => {
         dispatch(select(flavor_type))
         navigation.navigate("Categories", {flavor_type: flavor_type})
