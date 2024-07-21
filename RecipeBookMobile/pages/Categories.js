@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux';
 
 // component imports
 import ListItem from '../components/ListItem.js'
+import Loading from '../components/LoadingScreen.js'
 
 // style imports
 import styles from '../style.js';
@@ -28,15 +29,23 @@ function Categories({route}) {
     const navigation = useNavigation()
 
     const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     // Get the categories to display
     useEffect(() =>{
         const getCategories = async ()=> {
             const categories = await category_funcs.getFlavorType(flavor_type)
             setData(categories)
+
+            setLoading(false)
         }
         getCategories()
     }, []);
+
+    // Show loading screen while waiting for data
+    if (loading) {
+        return <Loading />
+    }
 
     // Navigate to the RecipeList page when a Category is selected
     const selectCategory = (category) => {

@@ -36,6 +36,7 @@ const HorizontalRecipe = ({title, nav}) => {
     const navigation = useNavigation();
 
     const [real_data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const data = [{
         image: "image_1",
@@ -47,10 +48,14 @@ const HorizontalRecipe = ({title, nav}) => {
     useEffect(() =>{
         const getUserRecipes = async ()=> {
             setData(data)
+
+            setLoading(false);
         }
         const getCatRecipes = async ()=> {
             const recipes = await helpers.getRandomRecipes(title)
             setData(recipes)
+
+            setLoading(false);
         }
         if (title == savory || title == sweet) getCatRecipes();
         else getUserRecipes()
@@ -60,6 +65,22 @@ const HorizontalRecipe = ({title, nav}) => {
     const selectRecipe = (recipe) => {
         dispatch(selectR(recipe.name))
         navigation.navigate("ViewRecipe", {recipe: recipe})
+    }
+
+    // Show loading message while waiting for data
+    if (loading) {
+        return(
+            <View>
+                <View style={styles.row}>
+                    <Text style={text_styles.smallTitle}>{title}</Text>
+                    <Text style={[text_styles.itemText, {paddingTop: 12, paddingRight: 12}]}
+                        onPress={nav}>See All</Text>
+                </View>
+                <View style={home_style.row}>
+                    <Text style={loading_style.title}>Loading...</Text>
+                </View>
+            </View>
+        )
     }
 
     // Row of recipe examples with See All button
@@ -132,3 +153,15 @@ const home_style = StyleSheet.create({
         height: 105,
     }
 })
+
+const loading_style = StyleSheet.create({
+    title: {
+        fontSize: 18,
+        color: styles.textColor.color,
+        fontFamily: styles.fontBold.fontFamily,
+
+        paddingTop: 12,
+
+        alignSelf: 'center'
+    },
+});
