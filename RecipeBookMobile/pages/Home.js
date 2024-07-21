@@ -10,12 +10,14 @@ import {
 } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
 
 // style imports
 import styles, {text_styles} from '../style.js';
 
 // function imports
 import { helpers } from 'recipe-book';
+import { select } from '../redux/selectionSlice';
 
 const Recipe = ({name, image, nav}) => {
     return(
@@ -27,7 +29,8 @@ const Recipe = ({name, image, nav}) => {
 }
 
 const HorizontalRecipe = ({title, nav}) => {
-    const navigation = useNavigation()
+    const dispatch = useDispatch();
+    const navigation = useNavigation();
 
     const [real_data, setData] = useState([]);
 
@@ -58,7 +61,7 @@ const HorizontalRecipe = ({title, nav}) => {
     },
     ]
 
-    // Pull all products from the database
+    // Get the recipes to display in this row
     useEffect(() =>{
         const getUserRecipes = async ()=> {
             setData(data)
@@ -71,6 +74,11 @@ const HorizontalRecipe = ({title, nav}) => {
         else getUserRecipes()
     }, []);
 
+    const selectRecipe = (recipe) => {
+        dispatch(select(recipe.name))
+        navigation.navigate("ViewRecipe", {recipe: recipe})
+    }
+
     return(
         <View>
             <View style={styles.row}>
@@ -82,7 +90,7 @@ const HorizontalRecipe = ({title, nav}) => {
                 <FlatList
                     data={real_data}
                     horizontal={true}
-                    renderItem={({item}) => <Recipe name={item.name} image={item.image} nav={()=>navigation.navigate("ViewRecipe", {recipe: item})} />}
+                    renderItem={({item}) => <Recipe name={item.name} image={item.image} nav={()=>selectRecipe(item)} />}
                 />
             </View>
         </View>
