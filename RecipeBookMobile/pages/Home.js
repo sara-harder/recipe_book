@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // style imports
 import styles, {text_styles} from '../style.js';
@@ -24,10 +24,6 @@ const recents = "Recents"
 const savory = "Savory"
 const sweet = "Sweet"
 
-const user = {
-    favorites: [],
-    recents: []
-}
 
 const Recipe = ({name, image, nav}) => {
     return(
@@ -44,6 +40,8 @@ const HorizontalRecipe = ({title, nav}) => {
 
     const [real_data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const user = useSelector(state=> state.user.value);
 
     // Get the recipes to display in this row
     useEffect(() =>{

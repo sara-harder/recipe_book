@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // component imports
 import ListItem from '../components/ListItem.js'
@@ -25,10 +25,6 @@ import { selectR } from '../redux/selectionSlice';
 const favorites = "Favorite"
 const recents = "Recent"
 
-const user = {
-    favorites: [],
-    recents: []
-}
 
 function RecipeList({route}) {
     let {category} = route.params;
@@ -38,6 +34,8 @@ function RecipeList({route}) {
 
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const user = useSelector(state=> state.user.value);
 
     // Get the recipes to display
     useEffect(() =>{
