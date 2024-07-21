@@ -18,6 +18,7 @@ import styles, {text_styles} from '../style.js';
 // function imports
 import { helpers, recipe_funcs } from 'recipe-book';
 import { selectR, selectC, selectF } from '../redux/selectionSlice';
+import { setRecents } from '../redux/userSlice';
 
 const favorites = "Favorites"
 const recents = "Recents"
@@ -38,7 +39,7 @@ const HorizontalRecipe = ({title, nav}) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
-    const [real_data, setData] = useState([]);
+    const [recipe_data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const user = useSelector(state=> state.user.value);
@@ -47,8 +48,8 @@ const HorizontalRecipe = ({title, nav}) => {
     useEffect(() =>{
         const getUserRecipes = async ()=> {
             let ids;
-            if (title == favorites) ids = user.favorites
-            else ids = user.recents
+            if (title == favorites) ids = user.favorites.slice(0, 5)
+            else ids = user.recents.slice(0, 5)
 
             const data = []
             for (const id of ids) {
@@ -67,10 +68,17 @@ const HorizontalRecipe = ({title, nav}) => {
         }
         if (title == savory || title == sweet) getCatRecipes();
         else getUserRecipes()
-    }, []);
+    }, [user]);
 
     // Navigate to the view recipe page when a recipe is selected
     const selectRecipe = (recipe) => {
+        let recents = [recipe._id].concat(user.recents)
+        if (user.recents.includes(recipe._id)) {
+            const set_recents = new Set(recents)
+            recents = Array.from(set_recents)
+        }
+        dispatch(setRecents(recents))
+
         dispatch(selectR(recipe.name))
         navigation.navigate("ViewRecipe", {recipe: recipe})
     }
@@ -101,7 +109,7 @@ const HorizontalRecipe = ({title, nav}) => {
             </View>
             <View style={home_style.row}>
                 <FlatList
-                    data={real_data}
+                    data={recipe_data}
                     horizontal={true}
                     renderItem={({item}) => <Recipe name={item.name} image={item.image} nav={()=>selectRecipe(item)} />}
                 />

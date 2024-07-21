@@ -21,6 +21,7 @@ import styles from '../style.js';
 // function imports
 import { recipe_funcs, rec_cat_funcs } from 'recipe-book';
 import { selectR } from '../redux/selectionSlice';
+import { setRecents } from '../redux/userSlice';
 
 const favorites = "Favorite"
 const recents = "Recent"
@@ -63,7 +64,7 @@ function RecipeList({route}) {
 
         if (category == favorites || category == recents) getUserRecipes();
         else getRecipes()
-    }, []);
+    }, [user]);
 
     // Show loading screen while waiting for data
     if (loading) {
@@ -72,6 +73,13 @@ function RecipeList({route}) {
 
     // Navigate to the view recipe page when a recipe is selected
     const selectRecipe = (recipe) => {
+        let recents = [recipe._id].concat(user.recents)
+        if (user.recents.includes(recipe._id)) {
+            const set_recents = new Set(recents)
+            recents = Array.from(set_recents)
+        }
+        dispatch(setRecents(recents))
+
         dispatch(selectR(recipe.name))
         navigation.navigate("ViewRecipe", {recipe: recipe})
     }
