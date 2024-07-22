@@ -26,17 +26,17 @@ const PageSetup = () => {
         <Stack.Screen
           name="Categories"
           component={Categories}
-          options={{title: flavor}}
+          options={{title: flavor, animation: "slide_from_right"}}
         />
         <Stack.Screen
           name="Recipes"
           component={RecipeList}
-          options={{title: category + " Recipes"}}
+          options={{title: category + " Recipes", animation: "slide_from_right"}}
         />
         <Stack.Screen
           name="ViewRecipe"
           component={ViewRecipe}
-          options={{title: recipe}}
+          options={{title: recipe, animation: "slide_from_right"}}
         />
       </Stack.Navigator>
   );
