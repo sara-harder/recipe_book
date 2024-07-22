@@ -3,11 +3,13 @@ import * as rec_cat_funcs from "./backend_connection/recipes_in_categories.js"
 
 function createFlexTable (num_columns, data_length) {
     // determine the num of rows required based on num columns
-    const num_rows = Math.ceil(data_length / num_columns)
+    const num_rows = Math.floor(data_length / num_columns)
     const row_idxs = []
-    for (let i=0; i < num_rows; i+=num_columns) {
+    let n = 0
+    for (let i=0; i < num_rows; i+=1) {
         // push the idx to slice from the data for each row
-        row_idxs.push([i, i+num_columns])
+        row_idxs.push([n, n+num_columns])
+        n += num_columns
     }
 
     // add one last row for remainders
