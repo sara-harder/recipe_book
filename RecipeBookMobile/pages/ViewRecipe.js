@@ -34,36 +34,36 @@ function ViewRecipe({route}) {
         <SafeAreaView style={styles.app}>
             <View style={styles.container}>
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                <View style={recipe_style.image}></View>
-                <View style={recipe_style.list}>
-                    <Text style={text_styles.boldText}>Ingredients:</Text>
-                    <View style={styles.row}>
-                        <View style={{minWidth: "49%", maxWidth: "50%"}}>
-                            {ingredients.slice(rows[0][0], rows[0][1]).map((item, index) => {
-                               return (
-                                   <Ingredient name={item.name} quantity={item.quantity} unit={item.unit} key={index}/>
-                               )
-                            })}
+                    <View style={recipe_style.image}></View>
+                    <View style={recipe_style.list}>
+                        <Text style={text_styles.boldText}>Ingredients:</Text>
+                        <View style={styles.row}>
+                            <View style={{minWidth: "49%", maxWidth: "50%"}}>
+                                {ingredients.slice(rows[0][0], rows[0][1]).map((item, index) => {
+                                   return (
+                                       <Ingredient name={item.name} quantity={item.quantity} unit={item.unit} key={index}/>
+                                   )
+                                })}
+                            </View>
+                            <View style={{minWidth: "49%", maxWidth: "50%"}}>
+                                {ingredients.slice(rows[1][0], rows[1][1]).map((item, index) => {
+                                    return (
+                                        <Ingredient name={item.name} quantity={item.quantity} unit={item.unit} key={index}/>
+                                    )
+                                })}
+                            </View>
                         </View>
-                        <View style={{minWidth: "49%", maxWidth: "50%"}}>
-                            {ingredients.slice(rows[1][0], rows[1][1]).map((item, index) => {
-                                return (
-                                    <Ingredient name={item.name} quantity={item.quantity} unit={item.unit} key={index}/>
+                    </View>
+                    <View style={recipe_style.list}>
+                        <Text style={text_styles.boldText}>Directions:</Text>
+                        <View>
+                            {recipe.directions.map((item, index) => {
+                                return(
+                                    <Text style={recipe_style.direction_text} key={index}>{index+1}. {item}</Text>
                                 )
                             })}
                         </View>
                     </View>
-                </View>
-                <View style={recipe_style.list}>
-                    <Text style={text_styles.boldText}>Directions:</Text>
-                    <View>
-                        {recipe.directions.map((item, index) => {
-                            return(
-                                <Text style={recipe_style.direction_text} key={index}>{index+1}. {item}</Text>
-                            )
-                        })}
-                    </View>
-                </View>
                 </ScrollView>
             </View>
         </SafeAreaView>

@@ -76,7 +76,7 @@ const HorizontalRecipe = ({title, nav}) => {
         if (user.recents.includes(recipe._id)) {
             const set_recents = new Set(recents)
             recents = Array.from(set_recents)
-        }
+        } else recents = recents.slice(0, 15)
         dispatch(setRecents(recents))
 
         dispatch(selectR(recipe.name))

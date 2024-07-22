@@ -12,6 +12,7 @@ import {getHeaderTitle} from '@react-navigation/elements';
 
 // style imports
 import styles, {text_styles} from '../style.js';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const header = ({navigation, route, options, back}) => {
     const title = getHeaderTitle(options, route.name);
@@ -24,7 +25,18 @@ const header = ({navigation, route, options, back}) => {
                         Back
                     </Text>
                 )}
-                <Text style={text_styles.largeTitle}>{title}</Text>
+                <View style={styles.row}>
+                    <Text style={text_styles.largeTitle}>{title}</Text>
+                    <View style={[header_style.icon, text_styles.largeTitle]}>
+                        {route.name == "ViewRecipe" ? (
+                            <Icon
+                                name={"heart-outline"}
+                                size={35}
+                                color={styles.secondaryTextColor.color}
+                            />
+                        ) : null}
+                    </View>
+                </View>
             </View>
         </SafeAreaView>
     )
@@ -48,5 +60,9 @@ const header_style = StyleSheet.create({
         paddingLeft: 10,
         paddingBottom: 0,
         paddingTop: 5
+    },
+    icon: {
+        paddingRight: 15,
+        paddingLeft: 0
     }
 })
