@@ -1,7 +1,10 @@
-require('dotenv').config();
+let PORT = 5001;
+let url = "http://10.0.2.2:" + PORT
 
-let PORT = process.env.PORT || 5005;
-let url = "http://localhost:" + PORT
+function resetPort (port) {
+// used to set the correct port during testing
+    url = "http://localhost:" + port
+}
 
 async function connectRecipeCat (recipe, category) {
 // connects a recipe to a category in the database from the provided ids. returns recipe_cat if successful, undef if not
@@ -76,4 +79,4 @@ async function deleteRecipeCat (recipe_cat_id) {
     }
 }
 
-module.exports = {connectRecipeCat, getRecipes, getCategories, deleteRecipeCat}
+module.exports = {connectRecipeCat, getRecipes, getCategories, deleteRecipeCat, resetPort}
