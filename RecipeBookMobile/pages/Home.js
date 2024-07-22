@@ -44,7 +44,7 @@ const HorizontalRecipe = ({title, nav}) => {
 
     const user = useSelector(state=> state.user.value);
 
-    // Get the recipes to display in this row
+    // Get the recipes to display in this row for favorites/recents
     useEffect(() =>{
         const getUserRecipes = async ()=> {
             let ids;
@@ -60,6 +60,11 @@ const HorizontalRecipe = ({title, nav}) => {
 
             setLoading(false);
         }
+        if (title == favorites || title == recents) getUserRecipes()
+    }, [user]);
+
+    // Get the recipes to display in this row for sweet/savory
+    useEffect(() =>{
         const getCatRecipes = async ()=> {
             const recipes = await helpers.getRandomRecipes(title)
             setData(recipes)
@@ -67,8 +72,7 @@ const HorizontalRecipe = ({title, nav}) => {
             setLoading(false);
         }
         if (title == savory || title == sweet) getCatRecipes();
-        else getUserRecipes()
-    }, [user]);
+    }, []);
 
     // Navigate to the view recipe page when a recipe is selected
     const selectRecipe = (recipe) => {
