@@ -8,7 +8,7 @@ import { helpers } from 'recipe-book';
 // component imports
 import ListItem from '../components/ListItem';
 
-function RecipeCategories({setHeader}) {
+function Categories({setHeader}) {
     setHeader("S Recipes")
     const navigate = useNavigate()
 
@@ -64,4 +64,4 @@ function RecipeCategories({setHeader}) {
     )
 }
 
-export default RecipeCategories;
+export default Categories;
