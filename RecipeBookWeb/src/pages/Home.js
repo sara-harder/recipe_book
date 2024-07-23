@@ -5,12 +5,12 @@ import {useNavigate} from "react-router-dom"
 // style imports
 import '../styling/Home.css';
 
-const Recipe = ({title, image, nav}) => {
+const Recipe = ({name, image, nav}) => {
     return(
         <>
             <div onClick={nav} className="recipe">
                 <div className="thumbnail"></div>
-                <div>{title}</div>
+                <div>{name}</div>
             </div>
         </>
     )
@@ -20,28 +20,28 @@ const HorizontalRecipe = ({title, nav}) => {
     const navigate = useNavigate()
 
     const data = [{
-        img: "image_1",
-        title: "Recipe 1",
+        image: "image_1",
+        name: "Recipe 1",
         nav: ()=>navigate("view-recipe")
     },
     {
-        img: "image_2",
-        title: "Recipe 2",
+        image: "image_2",
+        name: "Recipe 2",
         nav: ()=>navigate("view-recipe")
     },
     {
-        img: "image_3",
-        title: "Recipe 3",
+        image: "image_3",
+        name: "Recipe 3",
         nav: ()=>navigate("view-recipe")
     },
     {
-        img: "image_4",
-        title: "Recipe 4",
+        image: "image_4",
+        name: "Recipe 4",
         nav: ()=>navigate("view-recipe")
     },
     {
-        img: "image_5",
-        title: "Recipe 5",
+        image: "image_5",
+        name: "Recipe 5",
         nav: ()=>navigate("view-recipe")
     },
     ]
@@ -58,7 +58,7 @@ const HorizontalRecipe = ({title, nav}) => {
                         <tr>
                             {data.map((item, index) => 
                                 <td>
-                                    <Recipe title={item.title} image={item.img} nav={item.nav} key={index}/>
+                                    <Recipe name={item.name} image={item.image} nav={()=>navigate("view-recipe", {state:{recipe: item}})} key={index}/>
                                 </td>
                             )}
                         </tr>
