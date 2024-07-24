@@ -28,6 +28,13 @@ I believe that continuous integration is important, especially for ensuring that
 With the back end all set up, I started working on integrating it with the front end. I set up a folder within the functionality folder to use for backend connection files. These functions in these files use REST API to connect to the backend, thus enabling the frontend to access the basic database functions. While working on these functions, I also set up tests to ensure the functions were running correctly. The tests are set up to automatically start the backend server, so that they could be incorporated into GitHub Actions as well.
 
 
+After adding some real data into MongoDB, the integration between back and front end was the next step. I had some small difficulties connecting to the backend server from the mobile app. First, the use of the dotenv file wasn't working, so the port had to be hard coded into the functionality folder. Then, I had to make sure I was using http://10.0.2.2: instead of http://localhost: for my connection URL, since that's the computer's local server when connecting from mobile.
+
+
+Once the connection was running properly, I started adding some random savory and sweet recipes to the mobile home page. I created a function to pick random recipes, then I use the function to display the recipes on the home page. I updated the navigation to the view recipe page from the home page and ensured it was showing real data. I updated the Categories and the Recipe List pages as well, so that they used real data and the navigation between all pages functioned smoothly. 
+
+
+Haf of the home page was set up, but I still needed to add the Favorites and the Recents. I wasn't ready to incorportate the user database data yet, so I started with a mock object instead. I added a user state into redux, so that the user's attributes can be accessed at any time. From there, I added functionality so that when a user opens a recipe, it adds it to their recents, and when they click on the heart in the corner, it adds it to their favorites. 
 
 
 
