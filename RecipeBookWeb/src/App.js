@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // page imports
 import HomePage from './pages/Home';
-import RecipeCategories from './pages/RecipeCategories';
+import Categories from './pages/Categories';
 import RecipeList from './pages/RecipeList';
 import ViewRecipe from './pages/ViewRecipe';
 
@@ -24,7 +24,7 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" exact element={<HomePage setHeader={setHeader}/>} />
-            <Route path="/categories" element={<RecipeCategories setHeader={setHeader}/>} />
+            <Route path="/categories" element={<Categories setHeader={setHeader}/>} />
             <Route path="/recipes" element={<RecipeList setHeader={setHeader}/>} />
             <Route path="/view-recipe" element={<ViewRecipe setHeader={setHeader}/>} />
           </Routes>
