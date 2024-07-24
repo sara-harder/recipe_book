@@ -29,6 +29,7 @@ const HorizontalRecipe = ({title, nav}) => {
     const navigate = useNavigate()
 
     const [recipe_data, setData] = useState([])
+    const [loading, setLoading] = useState(true);
 
     const data = [{
         image: "image_1",
@@ -62,10 +63,29 @@ const HorizontalRecipe = ({title, nav}) => {
         const getCatRecipes = async ()=> {
             const recipes = await helpers.getRandomRecipes(title)
             setData(recipes)
+
+            setLoading(false)
         }
         if (title == savory || title == sweet) getCatRecipes();
-        else setData(data)
+        else {
+            setData(data)
+            setLoading(false)
+        }
     }, [])
+
+    if (loading) {
+        return(
+            <>
+                <div className="row wide">
+                    <div className='home_rows'><h2 className="left">{title}</h2></div>
+                    <div onClick={nav} className="right home_rows">See All</div>
+                </div>
+                <div className="no-thumbs">
+                    <h3 className='loading'> Loading... </h3>
+                </div>
+            </>
+        )
+    }
 
     // Row of recipe examples with See All button
     return (

@@ -19,17 +19,26 @@ function RecipeList({setHeader}) {
     setHeader(category.name + " Recipes")
 
     const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     // Get the recipes to display
     useEffect(() =>{
         const getRecipes = async ()=> {
             const recipes = await rec_cat_funcs.getRecipes(category._id)
             setData(recipes)
+
+            setLoading(false)
         }
         getRecipes()
     }, []);
 
     const rows = helpers.createFlexTable(5, data.length)
+    
+    // Show loading screen while waiting for data
+    if (loading) {
+        return  <h1 className='loading'> Loading... </h1>
+    }
+
 
     return(
         <>

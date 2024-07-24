@@ -21,17 +21,25 @@ function Categories({setHeader}) {
     setHeader(flavor_type + " Recipes")
 
     const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     // Get the categories to display
     useEffect(() =>{
         const getCategories = async ()=> {
             const categories = await category_funcs.getFlavorType(flavor_type)
             setData(categories)
+
+            setLoading(false)
         }
         getCategories()
     }, []);
 
     const rows = helpers.createFlexTable(5, data.length)
+
+    // Show loading screen while waiting for data
+    if (loading) {
+        return  <h1 className='loading'> Loading... </h1>
+    }
 
     return(
         <>
