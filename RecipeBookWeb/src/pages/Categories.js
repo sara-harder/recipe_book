@@ -40,7 +40,7 @@ function Categories({setHeader}) {
                     {rows.map((row, index) => 
                         <tr key={index}>
                         {(data.slice(row[0], row[1])).map((item, index) => 
-                            <td><ListItem text={item.name} navigate={item.nav} key={index} /></td>
+                            <td><ListItem text={item.name} navigate={() => navigate("/recipes", {state:{category: item}})} key={index} /></td>
                         )}
                         </tr>
                     )}
