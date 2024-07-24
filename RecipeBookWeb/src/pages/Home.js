@@ -1,9 +1,18 @@
 // react imports
 import React from 'react';
+import { useState, useEffect } from 'react';
 import {useNavigate} from "react-router-dom"
 
 // style imports
 import '../styling/Home.css';
+
+// function imports
+import { helpers } from 'recipe-book';
+
+const favorites = "Favorites"
+const recents = "Recents"
+const savory = "Savory"
+const sweet = "Sweet"
 
 const Recipe = ({name, image, nav}) => {
     return(
@@ -18,6 +27,8 @@ const Recipe = ({name, image, nav}) => {
 
 const HorizontalRecipe = ({title, nav}) => {
     const navigate = useNavigate()
+
+    const [recipe_data, setData] = useState([])
 
     const data = [{
         image: "image_1",
@@ -46,6 +57,16 @@ const HorizontalRecipe = ({title, nav}) => {
     },
     ]
 
+    // Get the recipes to display in this row for sweet/savory
+    useEffect(() => {
+        const getCatRecipes = async ()=> {
+            const recipes = await helpers.getRandomRecipes(title)
+            setData(recipes)
+        }
+        if (title == savory || title == sweet) getCatRecipes();
+        else setData(data)
+    }, [])
+
     return (
         <>
             <div>
@@ -56,7 +77,7 @@ const HorizontalRecipe = ({title, nav}) => {
                 <table>
                     <tbody>
                         <tr>
-                            {data.map((item, index) => 
+                            {recipe_data.map((item, index) => 
                                 <td>
                                     <Recipe name={item.name} image={item.image} nav={()=>navigate("view-recipe", {state:{recipe: item}})} key={index}/>
                                 </td>
@@ -76,10 +97,10 @@ function HomePage({setHeader}) {
     return(
         <>
             <div>
-                <HorizontalRecipe title="Favorites" nav={()=>navigate("recipes")} />
-                <HorizontalRecipe title="Recents" nav={()=>navigate("recipes")} />
-                <HorizontalRecipe title="Savory" nav={()=>navigate("categories")} />
-                <HorizontalRecipe title="Sweet" nav={()=>navigate("categories")} />
+                <HorizontalRecipe title={favorites} nav={()=>navigate("recipes")} />
+                <HorizontalRecipe title={recents} nav={()=>navigate("recipes")} />
+                <HorizontalRecipe title={savory} nav={()=>navigate("categories")} />
+                <HorizontalRecipe title={sweet} nav={()=>navigate("categories")} />
             </div>
         </>
     )

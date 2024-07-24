@@ -1,0 +1,15 @@
+{
+  "name": "recipe-book",
+  "version": "1.0.0",
+  "description": "functionality for the recipe book app",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --runInBand"
+  },
+  "author": "Sara Harder",
+  "license": "ISC",
+  "dependencies": {
+    "jest": "^29.7.0"
+  },
+  "yalcSig": "63ec7efe2148eb1fffebe60b0f633292"
+}
