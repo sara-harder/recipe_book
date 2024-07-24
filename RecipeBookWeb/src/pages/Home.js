@@ -67,6 +67,7 @@ const HorizontalRecipe = ({title, nav}) => {
         else setData(data)
     }, [])
 
+    // Row of recipe examples with See All button
     return (
         <>
             <div>
@@ -99,8 +100,8 @@ function HomePage({setHeader}) {
             <div>
                 <HorizontalRecipe title={favorites} nav={()=>navigate("recipes")} />
                 <HorizontalRecipe title={recents} nav={()=>navigate("recipes")} />
-                <HorizontalRecipe title={savory} nav={()=>navigate("categories")} />
-                <HorizontalRecipe title={sweet} nav={()=>navigate("categories")} />
+                <HorizontalRecipe title={savory} nav={()=>navigate("categories", {state:{flavor: savory}})} />
+                <HorizontalRecipe title={sweet} nav={()=>navigate("categories", {state:{flavor: sweet}})} />
             </div>
         </>
     )

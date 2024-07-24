@@ -15,10 +15,10 @@ const Ingredient = ({name, quantity, unit}) => {
 }
 
 function ViewRecipe({setHeader}) {
-    setHeader("Recipe")
-
     const location = useLocation();
     const recipe = location.state.recipe
+
+    setHeader(recipe.name)
 
     const ingredients = recipe.ingredients
 
