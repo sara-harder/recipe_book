@@ -14,7 +14,7 @@ function createFlexTable (num_columns, data_length) {
 
     // add one last row for remainders
     const i = data_length % num_columns
-    if (i !== 0 && i !== data_length) {
+    if (i !== 0) {
         row_idxs.push([data_length-i, data_length])
     }
 
