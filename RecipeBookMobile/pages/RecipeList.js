@@ -20,8 +20,8 @@ import styles from '../style.js';
 
 // function imports
 import { recipe_funcs, rec_cat_funcs } from 'recipe-book';
-import { selectR } from '../redux/selectionSlice';
-import { setRecents } from '../redux/userSlice';
+import { selectR } from 'recipe-book/redux/selectionSlice';
+import { setRecents } from 'recipe-book/redux/userSlice';
 
 const favorites = "Favorite"
 const recents = "Recent"
