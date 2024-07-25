@@ -17,8 +17,8 @@ import styles, {text_styles} from '../style.js';
 
 // function imports
 import { helpers, recipe_funcs } from 'recipe-book';
-import { selectR, selectC, selectF } from '../redux/selectionSlice';
-import { setRecents } from '../redux/userSlice';
+import { selectR, selectC, selectF } from 'recipe-book/redux/selectionSlice';
+import { setRecents } from 'recipe-book/redux/userSlice';
 
 const favorites = "Favorites"
 const recents = "Recents"

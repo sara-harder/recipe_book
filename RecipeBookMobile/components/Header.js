@@ -17,7 +17,7 @@ import styles, {text_styles} from '../style.js';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // function imports
-import { setFavorites } from '../redux/userSlice';
+import { setFavorites } from 'recipe-book/redux/userSlice';
 
 
 const Heart = ({route, favorite, setFavorite}) => {

@@ -20,7 +20,7 @@ import styles from '../style.js';
 
 // function imports
 import { category_funcs } from 'recipe-book';
-import { selectC } from '../redux/selectionSlice';
+import { selectC } from 'recipe-book/redux/selectionSlice';
 
 function Categories({route}) {
     let {flavor_type} = route.params;
