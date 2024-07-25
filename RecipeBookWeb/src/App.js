@@ -1,6 +1,6 @@
 // react imports
 import React from 'react';
-import {useState} from "react"
+import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // page imports
@@ -8,6 +8,9 @@ import HomePage from './pages/Home';
 import Categories from './pages/Categories';
 import RecipeList from './pages/RecipeList';
 import ViewRecipe from './pages/ViewRecipe';
+
+// component imports
+import ScrollToTop from './components/ScrollToTop';
 
 // style imports
 import './styling/App.css';
@@ -22,6 +25,7 @@ function App() {
       </header>
       <body className="App-body">
         <Router>
+          <ScrollToTop />
           <Routes>
             <Route path="/" exact element={<HomePage setHeader={setHeader}/>} />
             <Route path="/categories" element={<Categories setHeader={setHeader}/>} />

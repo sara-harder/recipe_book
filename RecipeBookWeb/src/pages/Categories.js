@@ -1,17 +1,14 @@
 // react imports
 import React from 'react';
 import { useState, useEffect } from 'react';
-import {useNavigate} from "react-router-dom";
-import {useLocation} from 'react-router-dom';
-
-// function imports
-import { helpers } from 'recipe-book';
+import { useNavigate} from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 
 // component imports
 import ListItem from '../components/ListItem';
 
 // function imports
-import { category_funcs } from 'recipe-book';
+import { helpers, category_funcs } from 'recipe-book';
 
 function Categories({setHeader}) {
     const navigate = useNavigate();
