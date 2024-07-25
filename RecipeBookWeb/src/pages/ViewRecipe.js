@@ -1,43 +1,26 @@
 // react imports
 import React from 'react';
+import {useLocation} from 'react-router-dom';
 
 // style imports
 import '../styling/Recipe.css';
 
-const Ingredient = ({name, quantity}) => {
+const Ingredient = ({name, quantity, unit}) => {
     return(
         <div className='ingredient row' >
-            <div className='ingr_text quantity' >{quantity},</div>
+            <div className='ingr_text quantity' >{quantity}{unit}  </div>
             <div className='ingr_text ingr_name' >{name}</div>
         </div>
     )
 }
 
 function ViewRecipe({setHeader}) {
-    setHeader("Recipe")
+    const location = useLocation();
+    const recipe = location.state.recipe
 
-    const ingredients = [{
-        name: "Ing 1",
-        qua: "15g"
-    },
-    {
-        name: "Ing 2",
-        qua: "10g"
-    },
-    {
-        name: "Ing 3",
-        qua: "2500g"
-    }]
+    setHeader(recipe.name)
 
-    const directions = [{
-        text: "Dir 1",
-    },
-    {
-        text: "Dir 2",
-    },
-    {
-        text: "Dir 3",
-    }]
+    const ingredients = recipe.ingredients
 
     return(
         <>
@@ -47,13 +30,13 @@ function ViewRecipe({setHeader}) {
                     <div className='list ingrs'>
                         <div className='bold'>Ingredients:</div>
                         {ingredients.map((item, index) => 
-                            <Ingredient name={item.name} quantity={item.qua} key={index} />
+                            <Ingredient name={item.name} quantity={item.quantity} unit={item.unit} key={index} />
                         )}
                     </div>
                     <div className='list dirs'>
                         <div className='bold'>Directions:</div>
-                        {directions.map((item, index) => 
-                            <div className='dir_text' key={index}>{item.text}</div>
+                        {recipe.directions.map((item, index) => 
+                            <div className='dir_text' key={index}>{item}</div>
                         )}
                     </div>
                 </div>

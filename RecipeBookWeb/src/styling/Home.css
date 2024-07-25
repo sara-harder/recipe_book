@@ -17,3 +17,11 @@
     margin: 12px;
     margin-top: 0px;
 }
+
+.no-thumbs {
+    height: 157.5px;
+    width: 300px;
+    margin: 12px;
+    margin-top: 0px;
+    position: relative;
+}

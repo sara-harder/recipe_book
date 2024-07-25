@@ -1,44 +1,45 @@
 // react imports
 import React from 'react';
 import { useState, useEffect } from 'react';
-import {useNavigate} from "react-router-dom"
+import {useNavigate} from "react-router-dom";
 import {useLocation} from 'react-router-dom';
 
 // function imports
 import { helpers } from 'recipe-book';
-import { rec_cat_funcs } from 'recipe-book';
 
 // component imports
 import ListItem from '../components/ListItem';
 
-function RecipeList({setHeader}) {
-    const navigate = useNavigate()
-    const location = useLocation();
-    const category = location.state.category
+// function imports
+import { category_funcs } from 'recipe-book';
 
-    setHeader(category.name + " Recipes")
+function Categories({setHeader}) {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const flavor_type = location.state.flavor
+
+    setHeader(flavor_type + " Recipes")
 
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Get the recipes to display
+    // Get the categories to display
     useEffect(() =>{
-        const getRecipes = async ()=> {
-            const recipes = await rec_cat_funcs.getRecipes(category._id)
-            setData(recipes)
+        const getCategories = async ()=> {
+            const categories = await category_funcs.getFlavorType(flavor_type)
+            setData(categories)
 
             setLoading(false)
         }
-        getRecipes()
+        getCategories()
     }, []);
 
     const rows = helpers.createFlexTable(5, data.length)
-    
+
     // Show loading screen while waiting for data
     if (loading) {
         return  <h1 className='loading'> Loading... </h1>
     }
-
 
     return(
         <>
@@ -47,7 +48,7 @@ function RecipeList({setHeader}) {
                     {rows.map((row, index) => 
                         <tr key={index}>
                         {(data.slice(row[0], row[1])).map((item, index) => 
-                            <td><ListItem text={item.name} navigate={() => navigate("/view-recipe", {state:{recipe: item}})} key={index} /></td>
+                            <td><ListItem text={item.name} navigate={() => navigate("/recipes", {state:{category: item}})} key={index} /></td>
                         )}
                         </tr>
                     )}
@@ -57,4 +58,4 @@ function RecipeList({setHeader}) {
     )
 }
 
-export default RecipeList;
+export default Categories;
