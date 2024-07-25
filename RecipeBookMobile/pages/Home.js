@@ -10,12 +10,21 @@ import {
 } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 
 // style imports
 import styles, {text_styles} from '../style.js';
 
 // function imports
-import { helpers } from 'recipe-book';
+import { helpers, recipe_funcs } from 'recipe-book';
+import { selectR, selectC, selectF } from '../redux/selectionSlice';
+import { setRecents } from '../redux/userSlice';
+
+const favorites = "Favorites"
+const recents = "Recents"
+const savory = "Savory"
+const sweet = "Sweet"
+
 
 const Recipe = ({name, image, nav}) => {
     return(
@@ -27,50 +36,74 @@ const Recipe = ({name, image, nav}) => {
 }
 
 const HorizontalRecipe = ({title, nav}) => {
-    const navigation = useNavigation()
+    const dispatch = useDispatch();
+    const navigation = useNavigation();
 
-    const [real_data, setData] = useState([]);
+    const [recipe_data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const data = [{
-        image: "image_1",
-        name: "Recipe 1",
-        nav: ()=>navigation.navigate("ViewRecipe")
-    },
-    {
-        image: "image_2",
-        name: "Recipe 2",
-        nav: ()=>navigation.navigate("ViewRecipe")
-    },
-    {
-        image: "image_3",
-        name: "Recipe 3",
-        nav: ()=>navigation.navigate("ViewRecipe")
-    },
-    {
-        image: "image_4",
-        name: "Recipe 4",
-        nav: ()=>navigation.navigate("ViewRecipe")
-    },
-    {
-        image: "image_5",
-        name: "Recipe 5",
-        nav: ()=>navigation.navigate("ViewRecipe")
-    },
-    ]
+    const user = useSelector(state=> state.user.value);
 
-    // Pull all products from the database
+    // Get the recipes to display in this row for favorites/recents
     useEffect(() =>{
         const getUserRecipes = async ()=> {
+            let ids;
+            if (title == favorites) ids = user.favorites.slice(0, 5)
+            else ids = user.recents.slice(0, 5)
+
+            const data = []
+            for (const id of ids) {
+                const recipe = await recipe_funcs.getRecipe(id)
+                data.push(recipe)
+            }
             setData(data)
+
+            setLoading(false);
         }
+        if (title == favorites || title == recents) getUserRecipes()
+    }, [user]);
+
+    // Get the recipes to display in this row for sweet/savory
+    useEffect(() =>{
         const getCatRecipes = async ()=> {
             const recipes = await helpers.getRandomRecipes(title)
             setData(recipes)
+
+            setLoading(false);
         }
-        if (title == "Savory" || title == "Sweet") getCatRecipes();
-        else getUserRecipes()
+        if (title == savory || title == sweet) getCatRecipes();
     }, []);
 
+    // Navigate to the view recipe page when a recipe is selected
+    const selectRecipe = (recipe) => {
+        let recents = [recipe._id].concat(user.recents)
+        if (user.recents.includes(recipe._id)) {
+            const set_recents = new Set(recents)
+            recents = Array.from(set_recents)
+        } else recents = recents.slice(0, 15)
+        dispatch(setRecents(recents))
+
+        dispatch(selectR(recipe.name))
+        navigation.navigate("ViewRecipe", {recipe: recipe})
+    }
+
+    // Show loading message while waiting for data
+    if (loading) {
+        return(
+            <View>
+                <View style={styles.row}>
+                    <Text style={text_styles.smallTitle}>{title}</Text>
+                    <Text style={[text_styles.itemText, {paddingTop: 12, paddingRight: 12}]}
+                        onPress={nav}>See All</Text>
+                </View>
+                <View style={home_style.row}>
+                    <Text style={loading_style.title}>Loading...</Text>
+                </View>
+            </View>
+        )
+    }
+
+    // Row of recipe examples with See All button
     return(
         <View>
             <View style={styles.row}>
@@ -80,9 +113,9 @@ const HorizontalRecipe = ({title, nav}) => {
             </View>
             <View style={home_style.row}>
                 <FlatList
-                    data={real_data}
+                    data={recipe_data}
                     horizontal={true}
-                    renderItem={({item}) => <Recipe name={item.name} image={item.image} nav={item.nav} />}
+                    renderItem={({item}) => <Recipe name={item.name} image={item.image} nav={()=>selectRecipe(item)} />}
                 />
             </View>
         </View>
@@ -90,15 +123,28 @@ const HorizontalRecipe = ({title, nav}) => {
 }
 
 function HomeScreen() {
+    const dispatch = useDispatch();
     const navigation = useNavigation()
+
+    // Navigate to the category page when Sweet or Savory see all is selected
+    const selectUserRecipes = (type) => {
+        dispatch(selectC(type))
+        navigation.navigate("Recipes", {category: type})
+    }
+
+    // Navigate to the category page when Sweet or Savory see all is selected
+    const selectFlavor = (flavor_type) => {
+        dispatch(selectF(flavor_type))
+        navigation.navigate("Categories", {flavor_type: flavor_type})
+    }
 
     return(
         <SafeAreaView style={styles.app}>
             <View style={styles.container}>
-                <HorizontalRecipe title="Favorites" nav={()=>navigation.navigate("Recipes")} />
-                <HorizontalRecipe title="Recents" nav={()=>navigation.navigate("Recipes")} />
-                <HorizontalRecipe title="Savory" nav={()=>navigation.navigate("Categories")} />
-                <HorizontalRecipe title="Sweet" nav={()=>navigation.navigate("Categories")} />
+                <HorizontalRecipe title={favorites} nav={()=>selectUserRecipes("Favorite")} />
+                <HorizontalRecipe title={recents} nav={()=>selectUserRecipes("Recent")} />
+                <HorizontalRecipe title={savory} nav={()=>selectFlavor(savory)} />
+                <HorizontalRecipe title={sweet} nav={()=>selectFlavor(sweet)} />
             </View>
         </SafeAreaView>
     )
@@ -133,3 +179,15 @@ const home_style = StyleSheet.create({
         height: 105,
     }
 })
+
+const loading_style = StyleSheet.create({
+    title: {
+        fontSize: 18,
+        color: styles.textColor.color,
+        fontFamily: styles.fontBold.fontFamily,
+
+        paddingTop: 12,
+
+        alignSelf: 'center'
+    },
+});
