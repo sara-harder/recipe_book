@@ -2,6 +2,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom"
+import { useSelector } from 'react-redux';
 
 // style imports
 import '../styling/Home.css';
@@ -25,16 +26,13 @@ const Recipe = ({name, image, nav}) => {
     )
 }
 
-const user = {
-    favorites: ["669542c0f79b4cf01aa2ba14", "669542c0f79b4cf01aa2ba12"],
-    recents: ["669542c0f79b4cf01aa2ba12"]
-}
-
 const HorizontalRecipe = ({title, nav}) => {
     const navigate = useNavigate()
 
     const [recipe_data, setData] = useState([])
     const [loading, setLoading] = useState(true);
+
+    const user = useSelector(state=> state.user.value);
 
     // Get the recipes to display in this row for favorites/recents
     useEffect(() =>{
