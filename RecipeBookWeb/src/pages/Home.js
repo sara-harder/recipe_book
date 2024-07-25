@@ -2,13 +2,14 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom"
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // style imports
 import '../styling/Home.css';
 
 // function imports
 import { helpers, recipe_funcs } from 'recipe-book';
+import { setRecents } from 'recipe-book/redux/userSlice';
 
 const favorites = "Favorites"
 const recents = "Recents"
@@ -27,6 +28,7 @@ const Recipe = ({name, image, nav}) => {
 }
 
 const HorizontalRecipe = ({title, nav}) => {
+    const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const [recipe_data, setData] = useState([])
@@ -64,6 +66,18 @@ const HorizontalRecipe = ({title, nav}) => {
         if (title == savory || title == sweet) getCatRecipes();
     }, [])
 
+    // Navigate to the view recipe page when a recipe is selected
+    const selectRecipe = (recipe) => {
+        let recents = [recipe._id].concat(user.recents)
+        if (user.recents.includes(recipe._id)) {
+            const set_recents = new Set(recents)
+            recents = Array.from(set_recents)
+        }
+        dispatch(setRecents(recents))
+
+        navigate("view-recipe", {state:{recipe: recipe}})
+    }
+
     if (loading) {
         return(
             <>
@@ -91,7 +105,7 @@ const HorizontalRecipe = ({title, nav}) => {
                         <tr>
                             {recipe_data.map((item, index) => 
                                 <td>
-                                    <Recipe name={item.name} image={item.image} nav={()=>navigate("view-recipe", {state:{recipe: item}})} key={index}/>
+                                    <Recipe name={item.name} image={item.image} nav={()=>selectRecipe(item)} key={index}/>
                                 </td>
                             )}
                         </tr>
