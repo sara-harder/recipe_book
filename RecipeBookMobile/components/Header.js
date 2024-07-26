@@ -20,7 +20,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { setFavorites } from 'recipe-book/redux/userSlice';
 
 
-const Heart = ({route, favorite, setFavorite}) => {
+const Heart = ({favorite, setFavorite}) => {
     const [icon, setIcon] = useState("heart-outline");
 
     // Toggle heart icon if favorite is selected or not
@@ -28,6 +28,7 @@ const Heart = ({route, favorite, setFavorite}) => {
         if (favorite) setIcon("heart");
         else setIcon("heart-outline");
     }, [favorite]);
+
 
     return (
         <Pressable onPress={() => setFavorite(!favorite)}>
@@ -88,7 +89,7 @@ const header = ({navigation, route, options, back}) => {
                 <View style={styles.row}>
                     <Text style={text_styles.largeTitle}>{title}</Text>
                     <View style={[header_style.icon, text_styles.largeTitle]}>
-                        {route.name == "ViewRecipe" ? <Heart route={route} favorite={fav} setFavorite={setFav} /> : null}
+                        {route.name == "ViewRecipe" ? <Heart favorite={fav} setFavorite={setFav} /> : null}
                     </View>
                 </View>
             </View>

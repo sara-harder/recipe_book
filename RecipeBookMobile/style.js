@@ -153,7 +153,7 @@ const text_styles = StyleSheet.create({
 
         marginLeft: 8,
         marginTop: 4,
-        paddingBottom: 10,
+        paddingBottom: 6,
     },
     largeTitle: {
         fontSize: 30,
