@@ -14,11 +14,12 @@ const Ingredient = ({name, quantity, unit}) => {
     )
 }
 
-function ViewRecipe({setHeader}) {
+function ViewRecipe({setHeader, setRecipe}) {
     const location = useLocation();
     const recipe = location.state.recipe
 
     setHeader(recipe.name)
+    setRecipe(recipe)
 
     const ingredients = recipe.ingredients
 

@@ -82,3 +82,8 @@ h2, h3 {
   top: 50%;
   right: 45%;
 }
+
+.icon {
+  padding: 30px;
+  padding-right: 50px;
+}
