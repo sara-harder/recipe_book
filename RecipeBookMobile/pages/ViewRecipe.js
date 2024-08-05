@@ -34,7 +34,7 @@ function ViewRecipe({route}) {
         <SafeAreaView style={styles.app}>
             <View style={styles.container}>
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                    <View style={recipe_style.image}></View>
+                    {recipe.image ? <View style={recipe_style.image}></View> : null}
                     <View style={recipe_style.list}>
                         <Text style={text_styles.boldText}>Ingredients:</Text>
                         <View style={styles.row}>

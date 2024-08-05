@@ -27,10 +27,21 @@ const sweet = "Sweet"
 
 
 const Recipe = ({name, image, nav}) => {
+    if (!image) {
+        return (
+            <Pressable onPress={nav} >
+                <View style={[home_style.no_image]}>
+                    <Text style={[text_styles.itemText, {textAlign: 'center'}]}>{name}</Text>
+                </View>
+            </Pressable>
+        )
+    }
     return(
         <Pressable onPress={nav} >
             <View style={home_style.image} ></View>
-            <Text style={[text_styles.itemText, {textAlign: "center"}]}>{name}</Text>
+            <View style={home_style.text_cont}>
+                <Text style={[text_styles.itemText, home_style.name]}>{name}</Text>
+            </View>
         </Pressable>
     )
 }
@@ -155,6 +166,17 @@ export default HomeScreen;
 
 
 const home_style = StyleSheet.create({
+    name: {
+        textAlign: "center",
+        flex: 1,
+        flexGrow: 1,
+    },
+    text_cont: {
+        width: 100,
+        flexDirection: 'row',
+        marginLeft: 12,
+        marginRight: 12,
+    },
     image: {
         alignContent: "center",
         flex: 1,
@@ -164,19 +186,37 @@ const home_style = StyleSheet.create({
         borderColor: styles.borderColor.color,
 
         minHeight: 64,
-        minWidth: 80,
+        minWidth: 100,
         maxHeight: 64,
-        maxWidth: 80,
+        maxWidth: 100,
 
         marginLeft: 12,
         marginRight: 12
 
     },
+    no_image: {
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1,
+
+        borderRadius: 5,
+
+        minHeight: 80,
+        minWidth: 120,
+        maxHeight: 80,
+        maxWidth: 120,
+
+        marginLeft: 8,
+        marginRight: 8,
+        padding: 8,
+
+        backgroundColor: styles.secondaryItemBackground.color,
+    },
     row: {
         paddingRight: 8,
-        paddingBottom: 18,
+        paddingBottom: 8,
 
-        height: 105,
+        height: 110,
     }
 })
 
