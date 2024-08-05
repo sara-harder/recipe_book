@@ -27,6 +27,15 @@ const sweet = "Sweet"
 
 
 const Recipe = ({name, image, nav}) => {
+    if (!image) {
+        return (
+            <Pressable onPress={nav} >
+                <View style={[home_style.no_image]}>
+                    <Text style={[text_styles.itemText, {textAlign: 'center'}]}>{name}</Text>
+                </View>
+            </Pressable>
+        )
+    }
     return(
         <Pressable onPress={nav} >
             <View style={home_style.image} ></View>
@@ -184,6 +193,24 @@ const home_style = StyleSheet.create({
         marginLeft: 12,
         marginRight: 12
 
+    },
+    no_image: {
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1,
+
+        borderRadius: 5,
+
+        minHeight: 80,
+        minWidth: 120,
+        maxHeight: 80,
+        maxWidth: 120,
+
+        marginLeft: 8,
+        marginRight: 8,
+        padding: 8,
+
+        backgroundColor: styles.secondaryItemBackground.color,
     },
     row: {
         paddingRight: 8,

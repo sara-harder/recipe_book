@@ -35,7 +35,7 @@ const Heart = ({favorite, setFavorite}) => {
             <Icon
                 name={icon}
                 size={35}
-                color={styles.secondaryTextColor.color}
+                color={styles.accentColor.color}
             />
         </Pressable>
     )
@@ -118,6 +118,6 @@ const header_style = StyleSheet.create({
     },
     icon: {
         paddingRight: 15,
-        paddingLeft: 0
+        paddingLeft: 0,
     }
 })
