@@ -16,7 +16,21 @@ const recents = "Recents"
 const savory = "Savory"
 const sweet = "Sweet"
 
+
 const Recipe = ({name, image, nav}) => {
+    if (!image) {
+        return(
+            <>
+                <div onClick={nav} className="recipe">
+                    <div className='item'>
+                        <div className='no-image'>
+                            <h3>{name}</h3>
+                        </div>
+                    </div>
+                </div>
+            </>
+        )
+    }
     return(
         <>
             <div onClick={nav} className="recipe">

@@ -13,7 +13,8 @@
     padding: 6px;
     padding-top: 4;
     padding-bottom: 12;
-    background-color: var(--itemBackground);
+    color: var(--secondaryTextColor);
+    background-color: var(--secondaryItemBackground);
 }
 
 .ingrs {
@@ -27,7 +28,7 @@
 .ingredient > div {
     padding: 1px;
     padding-right: 5px;
-    color: var(--textColor);
+    color: var(--secondaryTextColor);
 }
 
 .quantity {

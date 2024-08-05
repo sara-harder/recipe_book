@@ -3,10 +3,9 @@
     color: var(--secondaryTextColor);
     background-color: var(--secondaryItemBackground);
 
-    height: 120px;
+    height: 140px;
     width: 200px;
     
-    border: solid 2px var(--borderColor);
     border-radius: 20px;
 
     padding: 16px;

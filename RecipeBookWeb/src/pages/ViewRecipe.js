@@ -1,6 +1,8 @@
 // react imports
 import React from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 // style imports
 import '../styling/Recipe.css';
@@ -14,7 +16,7 @@ const Ingredient = ({name, quantity, unit}) => {
     )
 }
 
-function ViewRecipe({setHeader, setRecipe}) {
+function ViewRecipe({setHeader, setRecipe, setFavorite}) {
     const location = useLocation();
     const recipe = location.state.recipe
 
@@ -23,10 +25,17 @@ function ViewRecipe({setHeader, setRecipe}) {
 
     const ingredients = recipe.ingredients
 
+
+    const favorites = useSelector(state=> state.user.value.favorites);
+
+    useEffect(()=>{
+        setFavorite(favorites.includes(recipe._id))
+    }, [])
+
     return(
         <>
             <div>
-                <div className='recipe_img'></div>
+                {recipe.image ? <div className='recipe_img'></div> : null}
                 <div className='row'>
                     <div className='list ingrs'>
                         <div className='bold'>Ingredients:</div>

@@ -80,7 +80,7 @@ function App() {
             <Route path="/" exact element={<HomePage setHeader={setHeader}/>} />
             <Route path="/categories" element={<Categories setHeader={setHeader}/>} />
             <Route path="/recipes" element={<RecipeList setHeader={setHeader}/>} />
-            <Route path="/view-recipe" element={<ViewRecipe setHeader={setHeader} setRecipe={setRecipe}/>} />
+            <Route path="/view-recipe" element={<ViewRecipe setHeader={setHeader} setRecipe={setRecipe} setFavorite={setFavorite}/>} />
           </Routes>
         </Router>
       </body>

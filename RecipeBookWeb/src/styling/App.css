@@ -1,22 +1,24 @@
 :root {
   --color1: #000000;
   --color2: white;
-  --color3: #a67c52;
-  --color4: #8c6239;
-  --color5: #754c24;
-  --color6: #d1cdc9;
-  --color7: #603913;
+  --color3: #6A9A77;
+  --color4: #4a7856;
+  --color5: #8a9bae;
+  --color6: #E0E0E0;
+  --color7: #2F5233;
+  --color8: #C75B5B;
 
 
   --textColor: var(--color1);
   --highlightText: var(--color7);
   --itemBackground: var(--color2);
-  --borderColor: var(--color5);
+  --borderColor: var(--color4);
   --footerColor: var(--color3);
   --headerColor: var(--color4);
   --secondaryTextColor: var(--color2);
   --secondaryItemBackground: var(--color5);
   --backgroundColor: var(--color6);
+  --accentColor: var(--color8);
 }
 
 
@@ -86,4 +88,5 @@ h2, h3 {
 .icon {
   padding: 30px;
   padding-right: 50px;
+  color: var(--accentColor);
 }
