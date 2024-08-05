@@ -34,7 +34,9 @@ After adding some real data into MongoDB, the integration between back and front
 Once the connection was running properly, I started adding some random savory and sweet recipes to the mobile home page. I created a function to pick random recipes, then I use the function to display the recipes on the home page. I updated the navigation to the view recipe page from the home page and ensured it was showing real data. I updated the Categories and the Recipe List pages as well, so that they used real data and the navigation between all pages functioned smoothly. 
 
 
-Haf of the home page was set up, but I still needed to add the Favorites and the Recents. I wasn't ready to incorportate the user database data yet, so I started with a mock object instead. I added a user state into redux, so that the user's attributes can be accessed at any time. From there, I added functionality so that when a user opens a recipe, it adds it to their recents, and when they click on the heart in the corner, it adds it to their favorites. 
+Half of the home page was set up, but I still needed to add the Favorites and the Recents. I wasn't ready to incorportate the user database data yet, so I started with a mock object instead. I added a user state into redux, so that the user's attributes can be accessed at any time. From there, I added functionality so that when a user opens a recipe, it adds it to their recents, and when they click on the heart in the corner, it adds it to their favorites. 
+
+I repeated the same steps with the web version. Then, I updated the style to make both versions of the app more visually appealing. At this point, the app has some basic functionality, so I made the GitHub repository officially public.
 
 
 
