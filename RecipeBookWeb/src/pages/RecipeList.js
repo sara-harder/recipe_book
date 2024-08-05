@@ -39,18 +39,23 @@ function RecipeList({setHeader}) {
             if (category == favorites) ids = user.favorites
             else ids = user.recents
 
-            const data = []
+            const recipes = []
             for (const id of ids) {
                 const recipe = await recipe_funcs.getRecipe(id)
-                data.push(recipe)
+                recipes.push(recipe)
             }
-            setData(data)
+            setData(recipes)
 
             setLoading(false);
         }
 
         const getRecipes = async ()=> {
             const recipes = await rec_cat_funcs.getRecipes(category._id)
+            if (recipes == undefined) {
+                alert("There are currently no recipes in this category")
+                navigate("/categories", {state:{flavor: category.flavor_type}})
+            }
+
             setData(recipes)
 
             setLoading(false)
@@ -60,7 +65,8 @@ function RecipeList({setHeader}) {
         else getRecipes()
     }, [user]);
 
-    const rows = helpers.createFlexTable(5, data.length)
+    let rows = []
+    if (data != undefined) rows = helpers.createFlexTable(5, data.length)
     
     // Show loading screen while waiting for data
     if (loading) {
