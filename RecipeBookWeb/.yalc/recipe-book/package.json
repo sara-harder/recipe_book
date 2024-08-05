@@ -9,7 +9,10 @@
   "author": "Sara Harder",
   "license": "ISC",
   "dependencies": {
-    "jest": "^29.7.0"
+    "@react-native-async-storage/async-storage": "^1.24.0",
+    "@reduxjs/toolkit": "^2.2.6",
+    "jest": "^29.7.0",
+    "redux-persist": "^6.0.0"
   },
-  "yalcSig": "e20b3bec0ee20e810397238e99795b58"
+  "yalcSig": "43f0d768f8d22c2c22fe08dce990b4a6"
 }
