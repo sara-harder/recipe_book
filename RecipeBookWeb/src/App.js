@@ -20,6 +20,8 @@ import { setFavorites } from 'recipe-book/redux/userSlice';
 import './styling/App.css';
 import { FaHeart as HeartFilled } from "react-icons/fa";
 import { FaRegHeart as HeartOutline } from "react-icons/fa";
+import Row from 'react-bootstrap/esm/Row';
+import Col from 'react-bootstrap/esm/Col';
 
 const Heart = ({favorite, setFavorite}) => {
   // Toggle heart icon if favorite is selected or not
@@ -69,10 +71,17 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <h1 class="fw-bold">{header}</h1>
-        {!header.includes("Recipes") ? <Heart favorite={favorite} setFavorite={setFavorite} /> : null}
+      <header className="App-header container-fluid">
+        <Row>
+          <Col xs={10} lg={11}>
+            <h1 className="fw-bold">{header}</h1>
+          </Col>
+          <Col xs={2} lg={1} className="heart-container center-vertical">
+            {!header.includes("Recipes") ? <Heart favorite={favorite} setFavorite={setFavorite} /> : null}
+          </Col>
+        </Row>
       </header>
+
       <body className="App-body container-fluid">
         <Router>
           <ScrollToTop />

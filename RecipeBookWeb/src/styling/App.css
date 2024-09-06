@@ -21,6 +21,10 @@
   --accentColor: var(--color6);
 }
 
+.container, .container-fluid {
+  background-color: var(--backgroundColor);
+}
+
 
 .App {
   align-items: center;
@@ -44,10 +48,6 @@
   margin-bottom: 15px;
 }
 
-.container, .container-fluid {
-  background-color: var(--backgroundColor);
-}
-
 .card {
   width: 200px; 
   min-height: 160px;
@@ -55,7 +55,7 @@
 }
 
 .no-cards {
-  min-height: 185px;
+  min-height: 160px;
 }
 
 h1 {
@@ -94,8 +94,10 @@ h2, h3 {
   top: 30%;
 }
 
+.heart-container {
+  height: 110px;
+}
+
 .icon {
-  padding: 30px;
-  padding-right: 50px;
   color: var(--accentColor);
 }

@@ -12,10 +12,10 @@ function ListPage({data, navigate}) {
         <Container fluid>
             <Row className="g-3 py-4 row-cols-auto">
                 {data.map((item, index) => 
-                    <Col class="d-inline-block" key={index}> 
+                    <Col className="d-inline-block" key={index}> 
                         <Card onClick={() => navigate(item)}>
                             <Card.Body className='card-body rounded'>
-                                    <Card.Title class="h4 text-center text-white">{item.name}</Card.Title>
+                                    <Card.Title className="h4 text-center text-white">{item.name}</Card.Title>
                             </Card.Body>
                         </Card>
                     </Col>

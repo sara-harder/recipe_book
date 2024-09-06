@@ -28,7 +28,7 @@ const Recipe = ({name, image, nav}) => {
             <Card onClick={nav}>
                 <Card.Img variant="top" src={image} />
                 <Card.Body className='card-body rounded-bottom'>
-                        <Card.Title class="h5 text-center text-white">{name}</Card.Title>
+                        <Card.Title className="h5 text-center text-white">{name}</Card.Title>
                 </Card.Body>
             </Card>
         )
@@ -37,7 +37,7 @@ const Recipe = ({name, image, nav}) => {
     return(
         <Card onClick={nav}>
             <Card.Body className='card-body rounded'>
-                    <Card.Title class="h4 text-center text-white">{name}</Card.Title>
+                    <Card.Title className="h4 text-center text-white">{name}</Card.Title>
             </Card.Body>
         </Card>
     )
@@ -46,16 +46,12 @@ const Recipe = ({name, image, nav}) => {
 const TitleRow = ({title, nav}) => {
     // title and see all button
     return(
-        <>
-            <div class="pb-4"></div>
-            <Row class="justify-content-between" xl={12}>
-                <Col><h2 class="fw-bold">{title}</h2></Col>
-                <Col>
-                    <div class="pb-3"></div>
-                    <h5 class="text-end pb-3" onClick={nav}>See All</h5>
-                </Col>
-            </Row>
-        </>
+        <Row className="justify-content-between" xl={12}>
+            <Col><h2 className="fw-bold">{title}</h2></Col>
+            <Col>
+                <h5 className="text-end py-3" onClick={nav}>See All</h5>
+            </Col>
+        </Row>
     )
 }
 
@@ -113,12 +109,12 @@ const HorizontalRecipe = ({title, nav}) => {
     // Loading row
     if (loading) {
         return(
-            <Container fluid>
+            <Container fluid className="py-4">
                 <TitleRow title={title} nav={nav} />
 
-                <Row className="pb-4 no-cards d-flex align-items-center">
+                <Row className="no-cards d-flex align-items-center">
                     <Col> 
-                        <h3 class="ms-5"> Loading... </h3>
+                        <h3 className="ms-5"> Loading... </h3>
                     </Col>
                 </Row>
             </Container>
@@ -127,12 +123,12 @@ const HorizontalRecipe = ({title, nav}) => {
 
     // Row of recipes
     return (
-            <Container fluid>
+            <Container fluid className="py-4">
                 <TitleRow title={title} nav={nav} />
 
-                <Row className="g-3 pb-4 row-cols-auto overflow-x-scroll flex-nowrap">
+                <Row className="g-3 row-cols-auto overflow-x-scroll flex-nowrap">
                     {recipe_data.map((item, index) => 
-                        <Col class="d-inline-block" key={index}> 
+                        <Col className="d-inline-block" key={index}> 
                             <Recipe name={item.name} image={item.image} nav={() => selectRecipe(item)} />
                         </Col>
                     )}

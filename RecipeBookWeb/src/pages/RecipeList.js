@@ -90,8 +90,8 @@ function RecipeList({setHeader}) {
     // Show loading screen while waiting for data
     if (loading) {
         return(
-            <div class="center-content">
-                <h1 class="loading"> Loading... </h1>
+            <div className="center-content">
+                <h1 className="loading"> Loading... </h1>
             </div>
         )
     }
