@@ -4,17 +4,13 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
+// bootstrap imports
+import Container from 'react-bootstrap/Container';
+
 // style imports
 import '../styling/Recipe.css';
-
-const Ingredient = ({name, quantity, unit}) => {
-    return(
-        <div className='ingredient row' >
-            <div className='ingr_text quantity' >{quantity}{unit}  </div>
-            <div className='ingr_text ingr_name' >{name}</div>
-        </div>
-    )
-}
+import Row from 'react-bootstrap/esm/Row';
+import Col from 'react-bootstrap/esm/Col';
 
 function ViewRecipe({setHeader, setRecipe, setFavorite}) {
     const location = useLocation();
@@ -33,25 +29,34 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
     }, [])
 
     return(
-        <>
+        <Container fluid>
+            <Row className='bg-color3 my-3 py-3 fs-5'>
+                <Col xs={5} md={4} lg={3}>
+                    <h4 className='fw-bold px-3'>Ingredients:</h4>
+                    <ul className='list-unstyled'>
+                        {ingredients.map((item, index) => 
+                            <li className='row' key={index}>
+                                <Col className='col-4 right' >{item.quantity}{item.unit}  </Col>
+                                <Col className='col-8 left' >{item.name}</Col>
+                            </li>
+                        )}
+                    </ul>
+                </Col>
+                
+                <Col xs={7} md={8} lg={9} className='border-start border-primary'>
+                    <h4 className='fw-bold px-3'>Directions:</h4>
+                    <ul>
+                        {recipe.directions.map((item, index) => 
+                            <li key={index}>{item}</li>
+                        )}
+                    </ul>
+                </Col>
+            </Row>
             <div>
                 {recipe.image ? <div className='recipe_img'></div> : null}
-                <div className='row'>
-                    <div className='list ingrs'>
-                        <div className='bold'>Ingredients:</div>
-                        {ingredients.map((item, index) => 
-                            <Ingredient name={item.name} quantity={item.quantity} unit={item.unit} key={index} />
-                        )}
-                    </div>
-                    <div className='list dirs'>
-                        <div className='bold'>Directions:</div>
-                        {recipe.directions.map((item, index) => 
-                            <div className='dir_text' key={index}>{item}</div>
-                        )}
-                    </div>
-                </div>
+                
             </div>
-        </>
+        </Container>
     )
 }
 

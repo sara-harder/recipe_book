@@ -4,9 +4,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate} from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 
-// bootstrap imports
-import Container from 'react-bootstrap/esm/Container';
-
 // component imports
 import ListPage from '../components/ListPage';
 

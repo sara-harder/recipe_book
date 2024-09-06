@@ -15,7 +15,7 @@ function ListPage({data, navigate}) {
                     <Col className="d-inline-block" key={index}> 
                         <Card onClick={() => navigate(item)}>
                             <Card.Body className='card-body rounded'>
-                                    <Card.Title className="h4 text-center text-white">{item.name}</Card.Title>
+                                    <Card.Title className="fs-4 text-center text-white">{item.name}</Card.Title>
                             </Card.Body>
                         </Card>
                     </Col>

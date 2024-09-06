@@ -37,7 +37,7 @@ const Recipe = ({name, image, nav}) => {
     return(
         <Card onClick={nav}>
             <Card.Body className='card-body rounded'>
-                    <Card.Title className="h4 text-center text-white">{name}</Card.Title>
+                    <Card.Title className="fs-4 text-center text-white">{name}</Card.Title>
             </Card.Body>
         </Card>
     )

@@ -4,6 +4,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+// bootstrap imports
+import Row from 'react-bootstrap/esm/Row';
+import Col from 'react-bootstrap/esm/Col';
+
 // page imports
 import HomePage from './pages/Home';
 import Categories from './pages/Categories';
@@ -20,8 +24,6 @@ import { setFavorites } from 'recipe-book/redux/userSlice';
 import './styling/App.css';
 import { FaHeart as HeartFilled } from "react-icons/fa";
 import { FaRegHeart as HeartOutline } from "react-icons/fa";
-import Row from 'react-bootstrap/esm/Row';
-import Col from 'react-bootstrap/esm/Col';
 
 const Heart = ({favorite, setFavorite}) => {
   // Toggle heart icon if favorite is selected or not
