@@ -73,7 +73,7 @@ function App() {
         <h1>{header}</h1>
         {!header.includes("Recipes") ? <Heart favorite={favorite} setFavorite={setFavorite} /> : null}
       </header>
-      <body className="App-body">
+      <body className="App-body container-fluid">
         <Router>
           <ScrollToTop />
           <Routes>
