@@ -5,12 +5,11 @@ import { useNavigate } from "react-router-dom"
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-
 // component imports
-import ListItem from '../components/ListItem';
+import ListPage from '../components/ListPage';
 
 // function imports
-import { helpers, recipe_funcs, rec_cat_funcs } from 'recipe-book';
+import { recipe_funcs, rec_cat_funcs } from 'recipe-book';
 import { setRecents } from 'recipe-book/redux/userSlice';
 
 const favorites = "Favorite"
@@ -32,8 +31,11 @@ function RecipeList({setHeader}) {
 
     const user = useSelector(state=> state.user.value);
 
+
+
     // Get the recipes to display
     useEffect(() =>{
+        // retrieve favorite / recent recipes (as specified in category var)
         const getUserRecipes = async ()=> {
             let ids;
             if (category == favorites) ids = user.favorites
@@ -49,6 +51,7 @@ function RecipeList({setHeader}) {
             setLoading(false);
         }
 
+        // retrieve recipes in the specified category
         const getRecipes = async ()=> {
             const recipes = await rec_cat_funcs.getRecipes(category._id)
             if (recipes == undefined) {
@@ -64,14 +67,8 @@ function RecipeList({setHeader}) {
         if (category == favorites || category == recents) getUserRecipes();
         else getRecipes()
     }, [user]);
-
-    let rows = []
-    if (data != undefined) rows = helpers.createFlexTable(5, data.length)
     
-    // Show loading screen while waiting for data
-    if (loading) {
-        return  <h1 className='loading'> Loading... </h1>
-    }
+
 
     // Navigate to the view recipe page when a recipe is selected
     const selectRecipe = (recipe) => {
@@ -86,20 +83,14 @@ function RecipeList({setHeader}) {
     }
 
 
+
+    // Show loading screen while waiting for data
+    if (loading) {
+        return  <h1 className='loading'> Loading... </h1>
+    }
+
     return(
-        <>
-            <table className='recipe-table'>
-                <tbody>
-                    {rows.map((row, index) => 
-                        <tr key={index}>
-                        {(data.slice(row[0], row[1])).map((item, index) => 
-                            <td><ListItem text={item.name} navigate={() => selectRecipe(item)} key={index} /></td>
-                        )}
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-        </>
+        <ListPage data={data} navigate={(item) => selectRecipe(item)}/>
     )
 }
 

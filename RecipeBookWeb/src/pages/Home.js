@@ -130,7 +130,7 @@ const HorizontalRecipe = ({title, nav}) => {
             <Container fluid>
                 <TitleRow title={title} nav={nav} />
 
-                <Row className="g-4 pb-4 row-cols-auto overflow-x-scroll flex-nowrap">
+                <Row className="g-3 pb-4 row-cols-auto overflow-x-scroll flex-nowrap">
                     {recipe_data.map((item, index) => 
                         <Col class="d-inline-block" key={index}> 
                             <Recipe name={item.name} image={item.image} nav={() => selectRecipe(item)} />

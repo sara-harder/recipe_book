@@ -69,8 +69,8 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header row">
-        <h1>{header}</h1>
+      <header className="App-header">
+        <h1 class="fw-bold">{header}</h1>
         {!header.includes("Recipes") ? <Heart favorite={favorite} setFavorite={setFavorite} /> : null}
       </header>
       <body className="App-body container-fluid">
