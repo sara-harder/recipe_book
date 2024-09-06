@@ -14,11 +14,15 @@ $theme-colors: (
   "color6": $color6
 );
 
+.center-content{
+  @extend .d-flex;
+  @extend .align-items-center;
+  @extend .justify-content-center;
+}
+
 .card-body{
     @extend .bg-color3;
-    @extend .d-flex;
-    @extend .align-items-center;
-    @extend .justify-content-center;
+    @extend .center-content;
  }
 
 @import '~bootstrap/scss/bootstrap';

@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom"
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
+// bootstrap imports
+import Container from 'react-bootstrap/esm/Container';
+
 // component imports
 import ListPage from '../components/ListPage';
 
@@ -86,7 +89,11 @@ function RecipeList({setHeader}) {
 
     // Show loading screen while waiting for data
     if (loading) {
-        return  <h1 className='loading'> Loading... </h1>
+        return(
+            <div class="center-content">
+                <h1 class="loading"> Loading... </h1>
+            </div>
+        )
     }
 
     return(

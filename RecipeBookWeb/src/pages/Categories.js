@@ -4,11 +4,16 @@ import { useState, useEffect } from 'react';
 import { useNavigate} from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 
+// bootstrap imports
+import Container from 'react-bootstrap/esm/Container';
+
 // component imports
 import ListPage from '../components/ListPage';
 
 // function imports
 import { category_funcs } from 'recipe-book';
+import Row from 'react-bootstrap/esm/Row';
+import Col from 'react-bootstrap/esm/Col';
 
 function Categories({setHeader}) {
     const navigate = useNavigate();
@@ -34,10 +39,14 @@ function Categories({setHeader}) {
     }, []);
 
 
-    
+
     // Show loading screen while waiting for data
     if (loading) {
-        return  <h1 className='loading'> Loading... </h1>
+        return(
+            <div class="center-content">
+                <h1 class="loading"> Loading... </h1>
+            </div>
+        )
     }
 
     return(
