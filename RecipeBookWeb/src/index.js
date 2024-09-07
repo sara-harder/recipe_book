@@ -4,6 +4,10 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+// bootstrap imports
+import './App.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 // function imports
 import store, {persistor} from 'recipe-book/redux/store.js';
 import { Provider } from 'react-redux';

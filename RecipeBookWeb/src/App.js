@@ -4,6 +4,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+// bootstrap imports
+import Row from 'react-bootstrap/esm/Row';
+import Col from 'react-bootstrap/esm/Col';
+
 // page imports
 import HomePage from './pages/Home';
 import Categories from './pages/Categories';
@@ -69,11 +73,18 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header row">
-        <h1>{header}</h1>
-        {!header.includes("Recipes") ? <Heart favorite={favorite} setFavorite={setFavorite} /> : null}
+      <header className="App-header container-fluid">
+        <Row>
+          <Col xs={10} lg={11}>
+            <h1 className="fw-bold">{header}</h1>
+          </Col>
+          <Col xs={2} lg={1} className="heart-container center-vertical">
+            {!header.includes("Recipes") ? <Heart favorite={favorite} setFavorite={setFavorite} /> : null}
+          </Col>
+        </Row>
       </header>
-      <body className="App-body">
+
+      <body className="App-body container-fluid">
         <Router>
           <ScrollToTop />
           <Routes>

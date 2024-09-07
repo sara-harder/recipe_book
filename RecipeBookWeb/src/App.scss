@@ -1,0 +1,42 @@
+$color1: #6A9A77;
+$color2: #4a7856;
+$color3: #8a9bae;
+$color4: #E0E0E0;
+$color5: #2F5233;
+$color6: #C75B5B;
+
+$theme-colors: (
+  "color1": $color1,
+  "color2": $color2,
+  "color3": $color3,
+  "color4": $color4,
+  "color5": $color5,
+  "color6": $color6
+);
+
+$font-sizes: (
+  7: 16px,
+);
+
+.center-vertical{
+  @extend .d-flex;
+  @extend .align-items-center;
+}
+
+.center-horizontal{
+  @extend .d-flex;
+  @extend .justify-content-center;
+}
+
+.center-content{
+  @extend .d-flex;
+  @extend .align-items-center;
+  @extend .justify-content-center;
+}
+
+.card-body{
+    @extend .bg-color3;
+    @extend .center-content;
+ }
+
+@import '~bootstrap/scss/bootstrap';
