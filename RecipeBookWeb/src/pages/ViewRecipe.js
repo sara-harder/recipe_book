@@ -81,8 +81,8 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
                     </Col>
                 </Row>
             : null }
-            <Row className={[recipe_round, 'bg-color3 p-3 g-0 fs-5']}>
-                <Col xs={5} md={4} lg={3} className='pt-3'>
+            <Row className={[recipe_round, 'bg-color3 p-3 pt-4 g-0 fs-5']}>
+                <Col xs={5} md={4} lg={3}>
                     <h4 className='fw-bold px-3'>Ingredients:</h4>
                     <ul className='list-unstyled'>
                         {ingredients.map((item, index) => 
@@ -94,7 +94,7 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
                     </ul>
                 </Col>
 
-                <Col xs={7} md={8} lg={9} className='border-start border-primary px-3 pt-3'>
+                <Col xs={7} md={8} lg={9} className='border-start border-primary px-3'>
                     <h4 className='fw-bold px-3'>Directions:</h4>
                     <ul>
                         {recipe.directions.map((item, index) => 
