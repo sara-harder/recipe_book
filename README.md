@@ -36,7 +36,11 @@ Once the connection was running properly, I started adding some random savory an
 
 Half of the home page was set up, but I still needed to add the Favorites and the Recents. I wasn't ready to incorportate the user database data yet, so I started with a mock object instead. I added a user state into redux, so that the user's attributes can be accessed at any time. From there, I added functionality so that when a user opens a recipe, it adds it to their recents, and when they click on the heart in the corner, it adds it to their favorites. 
 
+
 I repeated the same steps with the web version. Then, I updated the style to make both versions of the app more visually appealing. At this point, the app has some basic functionality, so I made the GitHub repository officially public.
+
+
+The web version was still having some style issues, and a friend had previously recommended to me that I try using the Bootstrap framework. I decided to test it out, and instantly noticed some improvements. With the proper setup, I could now scroll on the Home page when the browser was smaller. Shrinking the browser shrank the elements on the web page as well, allowing for much better readability. On the pages where you select categories or recipes, I could easily create a grid that adjusted with the browser as well. Instead of 5 columns, shrinking the browser would adapt the page to use 4, 3, etc. columns. I no longer needed the clunky algorithm that I had created for this. Overall, everything was an improvement, and the style is much nicer and more readable thanks to bootstrap. 
 
 
 
