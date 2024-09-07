@@ -6,11 +6,12 @@ import { useSelector } from 'react-redux';
 
 // bootstrap imports
 import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/esm/Row';
+import Col from 'react-bootstrap/esm/Col';
+import Image from 'react-bootstrap/Image';
 
 // style imports
 import '../styling/Recipe.css';
-import Row from 'react-bootstrap/esm/Row';
-import Col from 'react-bootstrap/esm/Col';
 
 function ViewRecipe({setHeader, setRecipe, setFavorite}) {
     const location = useLocation();
@@ -68,10 +69,20 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
         return num
     }
 
+    let recipe_round = "rounded"
+    if (recipe.image) recipe_round = "rounded-bottom"
+
     return(
-        <Container fluid>
-            <Row className='bg-color3 my-3 py-3 fs-5'>
-                <Col xs={5} md={4} lg={3}>
+        <Container fluid className='mt-4'>
+            {recipe.image ? 
+                <Row className='g-0'>
+                    <Col>
+                        <Image src={recipe.image} className='rounded-top recipe_img px-0'/>
+                    </Col>
+                </Row>
+            : null }
+            <Row className={[recipe_round, 'bg-color3 p-3 g-0 fs-5']}>
+                <Col xs={5} md={4} lg={3} className='pt-3'>
                     <h4 className='fw-bold px-3'>Ingredients:</h4>
                     <ul className='list-unstyled'>
                         {ingredients.map((item, index) => 
@@ -83,7 +94,7 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
                     </ul>
                 </Col>
 
-                <Col xs={7} md={8} lg={9} className='border-start border-primary'>
+                <Col xs={7} md={8} lg={9} className='border-start border-primary px-3 pt-3'>
                     <h4 className='fw-bold px-3'>Directions:</h4>
                     <ul>
                         {recipe.directions.map((item, index) => 
@@ -92,10 +103,6 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
                     </ul>
                 </Col>
             </Row>
-            <div>
-                {recipe.image ? <div className='recipe_img'></div> : null}
-                
-            </div>
         </Container>
     )
 }

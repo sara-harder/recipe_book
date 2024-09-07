@@ -9,8 +9,6 @@ import ListPage from '../components/ListPage';
 
 // function imports
 import { category_funcs } from 'recipe-book';
-import Row from 'react-bootstrap/esm/Row';
-import Col from 'react-bootstrap/esm/Col';
 
 function Categories({setHeader}) {
     const navigate = useNavigate();
