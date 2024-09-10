@@ -46,13 +46,30 @@ async function getRandomRecipes(flavor_type) {
 
     const rands = generateRandoms(categories.length, len)
     const res = []
+    const ids = []
 
     for (const r of rands) {
         const cat = categories[r]
         const recipes = await rec_cat_funcs.getRecipes(cat._id)
 
-        const i = Math.floor(Math.random() * recipes.length)
-        const recipe = recipes[i]
+        if (recipes == undefined) continue
+
+        let i = Math.floor(Math.random() * recipes.length)
+        let recipe = recipes[i]
+        let id = recipe._id
+
+        while (ids.includes(id)) {
+            recipes.splice(i, 1)
+
+            if (recipes.length == 0) break
+
+            i = Math.floor(Math.random() * recipes.length)
+            recipe = recipes[i]
+            id = recipe._id
+        }
+        if (recipes.length == 0) continue
+
+        ids.push(id)
         res.push(recipe)
     }
 

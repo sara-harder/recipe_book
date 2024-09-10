@@ -3,16 +3,18 @@ import * as rec_cat_funcs from "./backend_connection/recipes_in_categories.js"
 
 function createFlexTable (num_columns, data_length) {
     // determine the num of rows required based on num columns
-    const num_rows = Math.ceil(data_length / num_columns)
+    const num_rows = Math.floor(data_length / num_columns)
     const row_idxs = []
-    for (let i=0; i < num_rows; i+=num_columns) {
+    let n = 0
+    for (let i=0; i < num_rows; i+=1) {
         // push the idx to slice from the data for each row
-        row_idxs.push([i, i+num_columns])
+        row_idxs.push([n, n+num_columns])
+        n += num_columns
     }
 
     // add one last row for remainders
     const i = data_length % num_columns
-    if (i !== 0 && i !== data_length) {
+    if (i !== 0) {
         row_idxs.push([data_length-i, data_length])
     }
 
@@ -44,13 +46,30 @@ async function getRandomRecipes(flavor_type) {
 
     const rands = generateRandoms(categories.length, len)
     const res = []
+    const ids = []
 
     for (const r of rands) {
         const cat = categories[r]
         const recipes = await rec_cat_funcs.getRecipes(cat._id)
 
-        const i = Math.floor(Math.random() * recipes.length)
-        const recipe = recipes[i]
+        if (recipes == undefined) continue
+
+        let i = Math.floor(Math.random() * recipes.length)
+        let recipe = recipes[i]
+        let id = recipe._id
+
+        while (ids.includes(id)) {
+            recipes.splice(i, 1)
+
+            if (recipes.length == 0) break
+
+            i = Math.floor(Math.random() * recipes.length)
+            recipe = recipes[i]
+            id = recipe._id
+        }
+        if (recipes.length == 0) continue
+
+        ids.push(id)
         res.push(recipe)
     }
 

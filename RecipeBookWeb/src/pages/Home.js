@@ -1,62 +1,87 @@
 // react imports
 import React from 'react';
 import { useState, useEffect } from 'react';
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom"
+import { useDispatch, useSelector } from 'react-redux';
 
-// style imports
-import '../styling/Home.css';
+// bootstrap imports
+import Container from 'react-bootstrap/Container';
+import Card from 'react-bootstrap/Card';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 // function imports
-import { helpers } from 'recipe-book';
+import { helpers, recipe_funcs } from 'recipe-book';
+import { setRecents } from 'recipe-book/redux/userSlice';
 
+// constants
 const favorites = "Favorites"
 const recents = "Recents"
 const savory = "Savory"
 const sweet = "Sweet"
 
+
 const Recipe = ({name, image, nav}) => {
+    // recipe card with image
+    if (image) {
+        return(
+            <Card onClick={nav}>
+                <Card.Img variant="top" src={image} />
+                <Card.Body className='card-body rounded-bottom'>
+                        <Card.Title className="h5 text-center text-white">{name}</Card.Title>
+                </Card.Body>
+            </Card>
+        )
+    }
+    // recipe card without image
     return(
-        <>
-            <div onClick={nav} className="recipe">
-                <div className="thumbnail"></div>
-                <div>{name}</div>
-            </div>
-        </>
+        <Card onClick={nav}>
+            <Card.Body className='card-body rounded'>
+                    <Card.Title className="fs-4 text-center text-white">{name}</Card.Title>
+            </Card.Body>
+        </Card>
+    )
+}
+
+const TitleRow = ({title, nav}) => {
+    // title and see all button
+    return(
+        <Row className="justify-content-between" xl={12}>
+            <Col><h2 className="fw-bold">{title}</h2></Col>
+            <Col>
+                <h5 className="text-end py-3" onClick={nav}>See All</h5>
+            </Col>
+        </Row>
     )
 }
 
 const HorizontalRecipe = ({title, nav}) => {
+    const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const [recipe_data, setData] = useState([])
     const [loading, setLoading] = useState(true);
 
-    const data = [{
-        image: "image_1",
-        name: "Recipe 1",
-        nav: ()=>navigate("view-recipe")
-    },
-    {
-        image: "image_2",
-        name: "Recipe 2",
-        nav: ()=>navigate("view-recipe")
-    },
-    {
-        image: "image_3",
-        name: "Recipe 3",
-        nav: ()=>navigate("view-recipe")
-    },
-    {
-        image: "image_4",
-        name: "Recipe 4",
-        nav: ()=>navigate("view-recipe")
-    },
-    {
-        image: "image_5",
-        name: "Recipe 5",
-        nav: ()=>navigate("view-recipe")
-    },
-    ]
+    const user = useSelector(state=> state.user.value);
+
+    // Get the recipes to display in this row for favorites/recents
+    useEffect(() =>{
+        const getUserRecipes = async ()=> {
+            let ids;
+            if (title == favorites) ids = user.favorites.slice(0, 5)
+            else ids = user.recents.slice(0, 5)
+
+            const data = []
+            for (const id of ids) {
+                const recipe = await recipe_funcs.getRecipe(id)
+                data.push(recipe)
+            }
+            setData(data)
+
+            setLoading(false);
+        }
+        if (title == favorites || title == recents) getUserRecipes()
+    }, [user]);
 
     // Get the recipes to display in this row for sweet/savory
     useEffect(() => {
@@ -67,47 +92,48 @@ const HorizontalRecipe = ({title, nav}) => {
             setLoading(false)
         }
         if (title == savory || title == sweet) getCatRecipes();
-        else {
-            setData(data)
-            setLoading(false)
-        }
     }, [])
 
+    // Navigate to the view recipe page when a recipe is selected
+    const selectRecipe = (recipe) => {
+        let recents = [recipe._id].concat(user.recents)
+        if (user.recents.includes(recipe._id)) {
+            const set_recents = new Set(recents)
+            recents = Array.from(set_recents)
+        }
+        dispatch(setRecents(recents))
+
+        navigate("view-recipe", {state:{recipe: recipe}})
+    }
+
+    // Loading row
     if (loading) {
         return(
-            <>
-                <div className="row wide">
-                    <div className='home_rows'><h2 className="left">{title}</h2></div>
-                    <div onClick={nav} className="right home_rows">See All</div>
-                </div>
-                <div className="no-thumbs">
-                    <h3 className='loading'> Loading... </h3>
-                </div>
-            </>
+            <Container fluid className="py-4">
+                <TitleRow title={title} nav={nav} />
+
+                <Row className="no-cards d-flex align-items-center">
+                    <Col> 
+                        <h3 className="ms-5"> Loading... </h3>
+                    </Col>
+                </Row>
+            </Container>
         )
     }
 
-    // Row of recipe examples with See All button
+    // Row of recipes
     return (
-        <>
-            <div>
-                <div className="row wide">
-                    <div className='home_rows'><h2 className="left">{title}</h2></div>
-                    <div onClick={nav} className="right home_rows">See All</div>
-                </div>
-                <table>
-                    <tbody>
-                        <tr>
-                            {recipe_data.map((item, index) => 
-                                <td>
-                                    <Recipe name={item.name} image={item.image} nav={()=>navigate("view-recipe", {state:{recipe: item}})} key={index}/>
-                                </td>
-                            )}
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </>
+            <Container fluid className="py-4">
+                <TitleRow title={title} nav={nav} />
+
+                <Row className="g-3 row-cols-auto overflow-x-scroll flex-nowrap">
+                    {recipe_data.map((item, index) => 
+                        <Col className="d-inline-block" key={index}> 
+                            <Recipe name={item.name} image={item.image} nav={() => selectRecipe(item)} />
+                        </Col>
+                    )}
+                </Row>
+            </Container>
     )
 }
 
@@ -117,12 +143,12 @@ function HomePage({setHeader}) {
 
     return(
         <>
-            <div>
-                <HorizontalRecipe title={favorites} nav={()=>navigate("recipes")} />
-                <HorizontalRecipe title={recents} nav={()=>navigate("recipes")} />
+            <Container fluid>
+                <HorizontalRecipe title={favorites} nav={()=>navigate("recipes", {state:{category: "Favorite"}})} />
+                <HorizontalRecipe title={recents} nav={()=>navigate("recipes", {state:{category: "Recent"}})} />
                 <HorizontalRecipe title={savory} nav={()=>navigate("categories", {state:{flavor: savory}})} />
                 <HorizontalRecipe title={sweet} nav={()=>navigate("categories", {state:{flavor: sweet}})} />
-            </div>
+            </Container>
         </>
     )
 }

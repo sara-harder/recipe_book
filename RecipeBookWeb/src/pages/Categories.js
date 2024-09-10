@@ -1,14 +1,11 @@
 // react imports
 import React from 'react';
 import { useState, useEffect } from 'react';
-import {useNavigate} from "react-router-dom";
-import {useLocation} from 'react-router-dom';
-
-// function imports
-import { helpers } from 'recipe-book';
+import { useNavigate} from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 
 // component imports
-import ListItem from '../components/ListItem';
+import ListPage from '../components/ListPage';
 
 // function imports
 import { category_funcs } from 'recipe-book';
@@ -23,6 +20,8 @@ function Categories({setHeader}) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
 
+
+
     // Get the categories to display
     useEffect(() =>{
         const getCategories = async ()=> {
@@ -34,27 +33,19 @@ function Categories({setHeader}) {
         getCategories()
     }, []);
 
-    const rows = helpers.createFlexTable(5, data.length)
+
 
     // Show loading screen while waiting for data
     if (loading) {
-        return  <h1 className='loading'> Loading... </h1>
+        return(
+            <div className="center-content">
+                <h1 className="loading"> Loading... </h1>
+            </div>
+        )
     }
 
     return(
-        <>
-            <table className='recipe-table'>
-                <tbody>
-                    {rows.map((row, index) => 
-                        <tr key={index}>
-                        {(data.slice(row[0], row[1])).map((item, index) => 
-                            <td><ListItem text={item.name} navigate={() => navigate("/recipes", {state:{category: item}})} key={index} /></td>
-                        )}
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-        </>
+        <ListPage data={data} navigate={(item) => navigate("/recipes", {state:{category: item}})}/>
     )
 }
 
