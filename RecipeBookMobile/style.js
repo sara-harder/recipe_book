@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
 
 const text_styles = StyleSheet.create({
     itemText: {
+        fontSize: 15,
         color: styles.textColor.color,
         fontFamily: styles.fontMedium.fontFamily,
 
@@ -116,9 +117,11 @@ const text_styles = StyleSheet.create({
     boldText: {
         color: styles.textColor.color,
         fontFamily: styles.fontBold.fontFamily,
+        fontWeight: "bold",
 
         paddingTop: 4,
         paddingBottom: 4,
+        paddingLeft: 6,
     },
     inputText: {
         color: styles.textColor.color,
@@ -162,6 +165,7 @@ const text_styles = StyleSheet.create({
         fontSize: 30,
         color: styles.secondaryTextColor.color,
         fontFamily: styles.fontBold.fontFamily,
+        fontWeight: "bold",
 
         padding: 12,
         paddingTop: 0,

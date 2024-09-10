@@ -82,12 +82,12 @@ const header = ({navigation, route, options, back}) => {
         <SafeAreaView style={header_style.header}>
             <View>
                 {title == "My Recipes" ? <Text></Text> : (
-                    <Text onPress={backButton} style={header_style.text}>
+                    <Text onPress={backButton} style={header_style.back}>
                         Back
                     </Text>
                 )}
-                <View style={styles.row}>
-                    <Text style={text_styles.largeTitle}>{title}</Text>
+                <View style={[styles.row, {alignItems: 'center', paddingTop: 4}]}>
+                    <Text style={[text_styles.largeTitle, {maxWidth: "80%", paddingBottom: 4}]}>{title}</Text>
                     <View style={[header_style.icon, text_styles.largeTitle]}>
                         {route.name == "ViewRecipe" ? <Heart favorite={fav} setFavorite={setFav} /> : null}
                     </View>
@@ -102,13 +102,12 @@ export default header
 
 const header_style = StyleSheet.create({
     header: {
-        height: 100,
         minWidth: '100%',
         borderColor: styles.backgroundColor.color,
         borderBottomWidth: 15,
         backgroundColor: styles.headerColor.color,
     },
-    text: {
+    back: {
         color: styles.secondaryTextColor.color,
         fontFamily: styles.fontRegular.fontFamily,
 
