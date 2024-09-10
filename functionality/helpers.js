@@ -1,24 +1,20 @@
 import * as category_funcs from "./backend_connection/categories.js"
 import * as rec_cat_funcs from "./backend_connection/recipes_in_categories.js"
 
-function createFlexTable (num_columns, data_length) {
-    // determine the num of rows required based on num columns
-    const num_rows = Math.floor(data_length / num_columns)
-    const row_idxs = []
-    let n = 0
-    for (let i=0; i < num_rows; i+=1) {
-        // push the idx to slice from the data for each row
-        row_idxs.push([n, n+num_columns])
-        n += num_columns
+import fractionUnicode from 'fraction-unicode';
+
+function twoColumns(data) {
+// separates data into two columns, one by one instead of split in half
+    const col_1 = []
+    const col_2 = []
+
+    for (const elem of data) {
+        if (data.indexOf(elem) % 2 == 0){
+            col_1.push(elem)
+        } else col_2.push(elem)
     }
 
-    // add one last row for remainders
-    const i = data_length % num_columns
-    if (i !== 0) {
-        row_idxs.push([data_length-i, data_length])
-    }
-
-    return row_idxs
+    return [col_1, col_2]
 }
 
 function generateRandoms(int, result_length) {
@@ -76,4 +72,31 @@ async function getRandomRecipes(flavor_type) {
     return res
 }
 
-export {createFlexTable, getRandomRecipes}
+const getFraction = (num) => {
+// evaluates a number less than one and determines what fraction it is based on predetermined fractions
+    if (Math.abs(num - 0.75)    < 0.01) return [3, 4]
+    if (Math.abs(num - 0.666)   < 0.01) return [2, 3]
+    if (Math.abs(num - 0.5)     < 0.01) return [1, 2]
+    if (Math.abs(num - 0.333)   < 0.01) return [1, 3]
+    if (Math.abs(num - 0.25)    < 0.01) return [1, 4]
+    if (Math.abs(num - 0.166)   < 0.01) return [1, 6]
+    if (Math.abs(num - 0.125)   < 0.01) return [1, 8]
+    return [num, 1]
+}
+
+const checkFraction = (num) => {
+// checks if a number needs to be converted to a fraction. if it does, returns the unicode form
+    if (num == undefined) return undefined
+    if (num < 1) {
+        const res = getFraction(num)
+        return `${fractionUnicode(res[0], res[1])} `
+    }
+    // if fraction required but it's greater than 1, combine whole number with unicode fraction
+    if (num % 1 !== 0) {
+        const res = getFraction(num % 1)
+        return `${Math.floor(num/1)}${fractionUnicode(res[0], res[1])} `
+    }
+    return num
+}
+
+export {twoColumns, getRandomRecipes, checkFraction}
