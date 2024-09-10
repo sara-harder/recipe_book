@@ -13,6 +13,9 @@ import Image from 'react-bootstrap/Image';
 // style imports
 import '../styling/Recipe.css';
 
+// function imports
+import { checkFraction } from 'recipe-book/helpers';
+
 function ViewRecipe({setHeader, setRecipe, setFavorite}) {
     const location = useLocation();
     const recipe = location.state.recipe
@@ -28,46 +31,6 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
     useEffect(()=>{
         setFavorite(favorites.includes(recipe._id))
     }, [])
-
-
-    const getFraction = (num, cls='fs-7 pe-1') => {
-        if (Math.abs(num - 0.75)    < 0.01) return [3, 4]
-        if (Math.abs(num - 0.666)   < 0.01) return [2, 3]
-        if (Math.abs(num - 0.5)     < 0.01) return [1, 2]
-        if (Math.abs(num - 0.333)   < 0.01) return [1, 3]
-        if (Math.abs(num - 0.25)    < 0.01) return [1, 4]
-        if (Math.abs(num - 0.166)   < 0.01) return [1, 6]
-        if (Math.abs(num - 0.125)   < 0.01) return [1, 8]
-        return num
-    }
-
-    const checkFraction = (num) => {
-        if (num == undefined) return undefined
-        if (num < 1) {
-            const frac = getFraction(num)
-            return(
-                <span className='pe-1'>
-                    <sup>{frac[0]}</sup>
-                    /
-                    <sub>{frac[1]}</sub>
-                </span>
-            )
-        }
-        if (num % 1 !== 0) {
-            const frac = getFraction(num % 1)
-            return (
-                <>
-                    {Math.floor(num/1)}
-                    <span className='fs-7 pe-1'>
-                        <sup>{frac[0]}</sup>
-                        /
-                        <sub>{frac[1]}</sub>
-                    </span>
-                </>
-            )
-        }
-        return num
-    }
 
     let recipe_round = "rounded"
     if (recipe.image) recipe_round = "rounded-bottom"
