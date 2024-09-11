@@ -45,6 +45,7 @@ const Header = ({navigation, route, options, back}) => {
 
     const title = getHeaderTitle(options, route.name);
 
+    // let the header know whether the back button should be enabled
     useEffect(() => {
         options.setCanGoBack(navigation.canGoBack())
     }, [navigation.canGoBack()])
@@ -79,6 +80,7 @@ const Header = ({navigation, route, options, back}) => {
 
             navigation.goBack()
         }
+        // let the header know to use new backButton function
         useEffect(() => {
             options.setBack(backButton)
         }, [backButton])
