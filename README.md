@@ -66,8 +66,6 @@ Checkbox to filter items by seasonal vegetables only
 
 Add recipes into multiple categories, so you can find it anywhere you think of (including vegan, vegetarian, and gluten free)
 
-Search for recipes
-
 Add all ingredients for a recipe to a shopping list (Bring!)
 
 Coordination with Alexa for adding ingredients (and reading recipes?)
