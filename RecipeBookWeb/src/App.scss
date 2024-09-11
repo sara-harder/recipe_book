@@ -18,6 +18,12 @@ $font-sizes: (
   7: 16px,
 );
 
+$spacer: 1rem;
+$spacers: (
+  6: $spacer * 5,
+  7: $spacer * 8,
+);
+
 .center-vertical{
   @extend .d-flex;
   @extend .align-items-center;

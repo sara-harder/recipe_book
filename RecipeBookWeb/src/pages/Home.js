@@ -142,14 +142,12 @@ function HomePage({setHeader}) {
     const navigate = useNavigate()
 
     return(
-        <>
-            <Container fluid>
-                <HorizontalRecipe title={favorites} nav={()=>navigate("recipes", {state:{category: "Favorite"}})} />
-                <HorizontalRecipe title={recents} nav={()=>navigate("recipes", {state:{category: "Recent"}})} />
-                <HorizontalRecipe title={savory} nav={()=>navigate("categories", {state:{flavor: savory}})} />
-                <HorizontalRecipe title={sweet} nav={()=>navigate("categories", {state:{flavor: sweet}})} />
-            </Container>
-        </>
+        <Container fluid className='pb-5'>
+            <HorizontalRecipe title={favorites} nav={()=>navigate("recipes", {state:{category: "Favorite"}})} />
+            <HorizontalRecipe title={recents} nav={()=>navigate("recipes", {state:{category: "Recent"}})} />
+            <HorizontalRecipe title={savory} nav={()=>navigate("categories", {state:{flavor: savory}})} />
+            <HorizontalRecipe title={sweet} nav={()=>navigate("categories", {state:{flavor: sweet}})} />
+        </Container>
     )
 }
 

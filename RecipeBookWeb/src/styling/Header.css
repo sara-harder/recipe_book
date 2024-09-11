@@ -1,0 +1,16 @@
+.App-header {
+    color: var(--secondaryTextColor);
+    width: 100%;
+    height: 110px; 
+    margin-bottom: 15px;
+}
+
+.header-container {
+    height: 110px;
+    min-width: 75px;
+}
+
+.search-bar {
+    width: 70% !important;
+    min-width: 100px;
+}

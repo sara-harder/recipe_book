@@ -40,14 +40,6 @@
   flex-direction: column;
 }
 
-.App-header {
-  background-color: var(--headerColor);
-  color: var(--secondaryTextColor);
-  width: 100%;
-  height: 110px; 
-  margin-bottom: 15px;
-}
-
 .card {
   width: 200px; 
   min-height: 160px;
@@ -56,16 +48,6 @@
 
 .no-cards {
   min-height: 160px;
-}
-
-h1 {
-  margin: 0px;
-  padding: 30px;
-  padding-left: 50px;
-}
-
-h2, h3 {
-  margin: 0px;
 }
 
 .bold {
@@ -94,14 +76,10 @@ h2, h3 {
   top: 30%;
 }
 
-.heart-container {
-  height: 110px;
-}
-
 .icon {
   color: var(--accentColor);
 }
 
-.border {
+.add-border {
   border: 2px solid red;
 }

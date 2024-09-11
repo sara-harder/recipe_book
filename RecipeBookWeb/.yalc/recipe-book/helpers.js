@@ -14,13 +14,7 @@ function twoColumns(data) {
         } else col_2.push(elem)
     }
 
-    // add one last row for remainders
-    const i = data_length % num_columns
-    if (i !== 0) {
-        row_idxs.push([data_length-i, data_length])
-    }
-
-    return row_idxs
+    return [col_1, col_2]
 }
 
 function generateRandoms(int, result_length) {
@@ -104,5 +98,6 @@ const checkFraction = (num) => {
     }
     return num
 }
+
 
 export {twoColumns, getRandomRecipes, checkFraction}
