@@ -2,7 +2,6 @@
 import React from 'react';
 import {
   SafeAreaView,
-  FlatList,
   Pressable,
   StyleSheet,
   Text,
@@ -17,10 +16,10 @@ import styles, {text_styles} from '../style.js';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // function imports
-import { setFavorites } from '../redux/userSlice';
+import { setFavorites } from 'recipe-book/redux/userSlice';
 
 
-const Heart = ({route, favorite, setFavorite}) => {
+const Heart = ({favorite, setFavorite}) => {
     const [icon, setIcon] = useState("heart-outline");
 
     // Toggle heart icon if favorite is selected or not
@@ -29,22 +28,28 @@ const Heart = ({route, favorite, setFavorite}) => {
         else setIcon("heart-outline");
     }, [favorite]);
 
+
     return (
         <Pressable onPress={() => setFavorite(!favorite)}>
             <Icon
                 name={icon}
                 size={35}
-                color={styles.secondaryTextColor.color}
+                color={styles.accentColor.color}
             />
         </Pressable>
     )
 }
 
-const header = ({navigation, route, options, back}) => {
+const Header = ({navigation, route, options, back}) => {
     const dispatch = useDispatch();
 
     const title = getHeaderTitle(options, route.name);
-    let backButton = navigation.goBack;
+
+    // let the header know whether the back button should be enabled
+    useEffect(() => {
+        options.setCanGoBack(navigation.canGoBack())
+    }, [navigation.canGoBack()])
+
 
     let fav = false;
     let setFav = () => {};
@@ -61,8 +66,13 @@ const header = ({navigation, route, options, back}) => {
         fav = favorite
         setFav = setFavorite
 
+        // When page changes to a different recipe, update the favorite state
+        useEffect(() => {
+            setFavorite(start_fav)
+        }, [recipe])
+
         // Update favorites when leave page if recipe is favorited / unfavorited
-        backButton = () => {
+        const backButton = () => {
             if (start_fav != favorite) {
                 if (favorite) dispatch(setFavorites(favorites.concat(recipe._id)))
                 else {
@@ -75,48 +85,36 @@ const header = ({navigation, route, options, back}) => {
 
             navigation.goBack()
         }
+        // let the header know to use new backButton function
+        useEffect(() => {
+            options.setBack(backButton)
+        }, [backButton])
     }
+
 
     return (
         <SafeAreaView style={header_style.header}>
             <View>
-                {title == "My Recipes" ? <Text></Text> : (
-                    <Text onPress={backButton} style={header_style.text}>
-                        Back
-                    </Text>
-                )}
-                <View style={styles.row}>
-                    <Text style={text_styles.largeTitle}>{title}</Text>
-                    <View style={[header_style.icon, text_styles.largeTitle]}>
-                        {route.name == "ViewRecipe" ? <Heart route={route} favorite={fav} setFavorite={setFav} /> : null}
+                <View style={[styles.row, {justifyContent: 'left'}]}>
+                    <View style={[text_styles.largeTitle, {paddingTop: 3}]}>
+                        {route.name == "ViewRecipe" ? <Heart favorite={fav} setFavorite={setFav} /> : null}
                     </View>
+                    <Text style={[text_styles.largeTitle, {maxWidth: "80%"}]}>{title}</Text>
                 </View>
             </View>
         </SafeAreaView>
     )
 }
 
-export default header
+export default Header
 
 
 const header_style = StyleSheet.create({
     header: {
-        height: 100,
         minWidth: '100%',
         borderColor: styles.backgroundColor.color,
         borderBottomWidth: 15,
         backgroundColor: styles.headerColor.color,
+        paddingLeft: 8,
     },
-    text: {
-        color: styles.secondaryTextColor.color,
-        fontFamily: styles.fontRegular.fontFamily,
-
-        paddingLeft: 10,
-        paddingBottom: 0,
-        paddingTop: 5
-    },
-    icon: {
-        paddingRight: 15,
-        paddingLeft: 0
-    }
 })

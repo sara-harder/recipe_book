@@ -3,25 +3,25 @@ import {StyleSheet} from 'react-native';
 
 const colors = StyleSheet.create({
     color1: {
-        color: '#000000'
-    },
-    color2: {
         color: 'white'
     },
+    color2: {
+        color: '#C75B5B'
+    },
     color3: {
-        color: '#a67c52'
+        color: '#6A9A77'
     },
     color4: {
-        color: '#8c6239'
+        color: '#4a7856'
     },
     color5: {
-        color: '#754c24'
+        color: '#8a9bae'
     },
     color6: {
-        color: '#d1cdc9'
+        color: '#3E3E3E'
     },
     color7: {
-        color: '#603913'
+        color: '#2F5233'
     },
 })
 
@@ -33,10 +33,10 @@ const styles = StyleSheet.create({
         color: colors.color7.color
     },
     itemBackground: {
-        color: colors.color2.color
+        color: colors.color5.color
     },
     borderColor: {
-        color: colors.color5.color
+        color: colors.color6.color
     },
     footerColor: {
         color: colors.color3.color
@@ -45,13 +45,16 @@ const styles = StyleSheet.create({
         color: colors.color4.color
     },
     secondaryTextColor: {
-        color: colors.color2.color
+        color: colors.color1.color
     },
     secondaryItemBackground: {
         color: colors.color5.color
     },
     backgroundColor: {
         color: colors.color6.color
+    },
+    accentColor: {
+        color: colors.color2.color
     },
 
 
@@ -104,6 +107,7 @@ const styles = StyleSheet.create({
 
 const text_styles = StyleSheet.create({
     itemText: {
+        fontSize: 15,
         color: styles.textColor.color,
         fontFamily: styles.fontMedium.fontFamily,
 
@@ -113,9 +117,11 @@ const text_styles = StyleSheet.create({
     boldText: {
         color: styles.textColor.color,
         fontFamily: styles.fontBold.fontFamily,
+        fontWeight: "bold",
 
         paddingTop: 4,
         paddingBottom: 4,
+        paddingLeft: 6,
     },
     inputText: {
         color: styles.textColor.color,
@@ -153,17 +159,17 @@ const text_styles = StyleSheet.create({
 
         marginLeft: 8,
         marginTop: 4,
-        paddingBottom: 10,
+        paddingBottom: 6,
     },
     largeTitle: {
         fontSize: 30,
         color: styles.secondaryTextColor.color,
         fontFamily: styles.fontBold.fontFamily,
+        fontWeight: "bold",
 
-        padding: 12,
-        paddingTop: 0,
-        marginLeft: 8,
-        marginTop: 10,
+        paddingBottom: 12,
+        paddingRight: 4,
+        marginLeft: 4,
     },
     footnote: {
         fontSize: 11,

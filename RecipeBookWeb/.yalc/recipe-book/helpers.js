@@ -4,6 +4,7 @@ import * as rec_cat_funcs from "./backend_connection/recipes_in_categories.js"
 import fractionUnicode from 'fraction-unicode';
 
 function twoColumns(data) {
+// separates data into two columns, one by one instead of split in half
     const col_1 = []
     const col_2 = []
 
@@ -72,6 +73,7 @@ async function getRandomRecipes(flavor_type) {
 }
 
 const getFraction = (num) => {
+// evaluates a number less than one and determines what fraction it is based on predetermined fractions
     if (Math.abs(num - 0.75)    < 0.01) return [3, 4]
     if (Math.abs(num - 0.666)   < 0.01) return [2, 3]
     if (Math.abs(num - 0.5)     < 0.01) return [1, 2]
@@ -83,16 +85,19 @@ const getFraction = (num) => {
 }
 
 const checkFraction = (num) => {
+// checks if a number needs to be converted to a fraction. if it does, returns the unicode form
     if (num == undefined) return undefined
     if (num < 1) {
         const res = getFraction(num)
         return `${fractionUnicode(res[0], res[1])} `
     }
+    // if fraction required but it's greater than 1, combine whole number with unicode fraction
     if (num % 1 !== 0) {
         const res = getFraction(num % 1)
         return `${Math.floor(num/1)}${fractionUnicode(res[0], res[1])} `
     }
     return num
 }
+
 
 export {twoColumns, getRandomRecipes, checkFraction}

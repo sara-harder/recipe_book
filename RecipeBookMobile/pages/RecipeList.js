@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 
 // component imports
-import ListItem from '../components/ListItem.js'
+import ListPage from '../components/ListPage.js'
 import Loading from '../components/LoadingScreen.js'
 
 // style imports
@@ -20,8 +20,8 @@ import styles from '../style.js';
 
 // function imports
 import { recipe_funcs, rec_cat_funcs } from 'recipe-book';
-import { selectR } from '../redux/selectionSlice';
-import { setRecents } from '../redux/userSlice';
+import { selectR } from 'recipe-book/redux/selectionSlice';
+import { setRecents } from 'recipe-book/redux/userSlice';
 
 const favorites = "Favorite"
 const recents = "Recent"
@@ -45,18 +45,23 @@ function RecipeList({route}) {
             if (category == favorites) ids = user.favorites
             else ids = user.recents
 
-            const data = []
+            const recipes = []
             for (const id of ids) {
                 const recipe = await recipe_funcs.getRecipe(id)
-                data.push(recipe)
+                recipes.push(recipe)
             }
-            setData(data)
+            setData(recipes)
 
             setLoading(false);
         }
 
         const getRecipes = async ()=> {
             const recipes = await rec_cat_funcs.getRecipes(category._id)
+            if (recipes == undefined) {
+                alert("There are currently no recipes in this category")
+                navigation.navigate("Categories", {flavor_type: category.flavor_type})
+            }
+
             setData(recipes)
 
             setLoading(false)
@@ -85,14 +90,7 @@ function RecipeList({route}) {
     }
 
     return(
-        <SafeAreaView style={styles.app}>
-            <View style={styles.container}>
-                <FlatList
-                    data={data}
-                    renderItem={({item}) => <ListItem text={item.name} navigate={() => selectRecipe(item)} />}
-                />
-            </View>
-        </SafeAreaView>
+        <ListPage data={data} navigate={(item) => selectRecipe(item)} />
     )
 }
 
