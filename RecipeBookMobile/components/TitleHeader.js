@@ -66,6 +66,11 @@ const Header = ({navigation, route, options, back}) => {
         fav = favorite
         setFav = setFavorite
 
+        // When page changes to a different recipe, update the favorite state
+        useEffect(() => {
+            setFavorite(start_fav)
+        }, [recipe])
+
         // Update favorites when leave page if recipe is favorited / unfavorited
         const backButton = () => {
             if (start_fav != favorite) {

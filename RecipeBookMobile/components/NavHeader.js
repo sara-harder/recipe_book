@@ -11,6 +11,7 @@ import { useState } from 'react';
 
 // component imports
 import Menu from './MenuModal.js'
+import SearchBar from './SearchModal.js'
 
 // style imports
 import styles from '../style.js';
@@ -25,12 +26,15 @@ const Header = ({navigation, route, options}) => {
     // page tells header whether back button should be visible or not
     const canGoBack = options.back
 
+    // bool for the search popup when magnifying glass is clicked
+    const [search, popSearch] = useState(false)
     // bool for the menu popup when hamburger is clicked
-    const [popup, setPopup] = useState(false)
+    const [menu, popMenu] = useState(false)
 
     return(
         <SafeAreaView style={header_style.header}>
-            <Menu popup={popup} close={() => setPopup(false)}/>
+            <SearchBar popup={search} close={() => popSearch(false)}/>
+            <Menu popup={menu} close={() => popMenu(false)}/>
             <View style={styles.row}>
                 {canGoBack ? (
                     <Text onPress={backButton} style={header_style.back}>
@@ -38,13 +42,15 @@ const Header = ({navigation, route, options}) => {
                     </Text>
                 ) : <Text></Text>}
                 <View style={[styles.row, {justifyContent: 'right'}]}>
-                    <Icon
-                        name={"magnify"}
-                        size={30}
-                        color={styles.textColor.color}
-                        style={{paddingTop: 9}}
-                    />
-                    <Pressable onPress={() => {setPopup(true)}}>
+                    <Pressable onPress={() => {popSearch(true)}}>
+                        <Icon
+                            name={"magnify"}
+                            size={30}
+                            color={styles.textColor.color}
+                            style={{paddingTop: 9}}
+                        />
+                    </Pressable>
+                    <Pressable onPress={() => {popMenu(true)}}>
                         <Icon
                             name={"menu"}
                             size={35}

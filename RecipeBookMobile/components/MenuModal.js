@@ -1,7 +1,6 @@
 // react imports
 import React from 'react';
 import {
-  SafeAreaView,
   Pressable,
   StyleSheet,
   Text,
