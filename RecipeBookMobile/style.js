@@ -167,10 +167,9 @@ const text_styles = StyleSheet.create({
         fontFamily: styles.fontBold.fontFamily,
         fontWeight: "bold",
 
-        padding: 12,
-        paddingTop: 0,
-        marginLeft: 8,
-        marginTop: 10,
+        paddingBottom: 12,
+        paddingRight: 4,
+        marginLeft: 4,
     },
     footnote: {
         fontSize: 11,

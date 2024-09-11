@@ -2,7 +2,6 @@
 import React from 'react';
 import {
   SafeAreaView,
-  FlatList,
   Pressable,
   StyleSheet,
   Text,
@@ -41,11 +40,15 @@ const Heart = ({favorite, setFavorite}) => {
     )
 }
 
-const header = ({navigation, route, options, back}) => {
+const Header = ({navigation, route, options, back}) => {
     const dispatch = useDispatch();
 
     const title = getHeaderTitle(options, route.name);
-    let backButton = navigation.goBack;
+
+    useEffect(() => {
+        options.setCanGoBack(navigation.canGoBack())
+    }, [navigation.canGoBack()])
+
 
     let fav = false;
     let setFav = () => {};
@@ -63,7 +66,7 @@ const header = ({navigation, route, options, back}) => {
         setFav = setFavorite
 
         // Update favorites when leave page if recipe is favorited / unfavorited
-        backButton = () => {
+        const backButton = () => {
             if (start_fav != favorite) {
                 if (favorite) dispatch(setFavorites(favorites.concat(recipe._id)))
                 else {
@@ -76,28 +79,27 @@ const header = ({navigation, route, options, back}) => {
 
             navigation.goBack()
         }
+        useEffect(() => {
+            options.setBack(backButton)
+        }, [backButton])
     }
+
 
     return (
         <SafeAreaView style={header_style.header}>
             <View>
-                {title == "My Recipes" ? <Text></Text> : (
-                    <Text onPress={backButton} style={header_style.back}>
-                        Back
-                    </Text>
-                )}
-                <View style={[styles.row, {alignItems: 'center', paddingTop: 4}]}>
-                    <Text style={[text_styles.largeTitle, {maxWidth: "80%", paddingBottom: 4}]}>{title}</Text>
-                    <View style={[header_style.icon, text_styles.largeTitle]}>
+                <View style={[styles.row, {justifyContent: 'left'}]}>
+                    <View style={[text_styles.largeTitle, {paddingTop: 3}]}>
                         {route.name == "ViewRecipe" ? <Heart favorite={fav} setFavorite={setFav} /> : null}
                     </View>
+                    <Text style={[text_styles.largeTitle, {maxWidth: "80%"}]}>{title}</Text>
                 </View>
             </View>
         </SafeAreaView>
     )
 }
 
-export default header
+export default Header
 
 
 const header_style = StyleSheet.create({
@@ -106,17 +108,6 @@ const header_style = StyleSheet.create({
         borderColor: styles.backgroundColor.color,
         borderBottomWidth: 15,
         backgroundColor: styles.headerColor.color,
+        paddingLeft: 8,
     },
-    back: {
-        color: styles.secondaryTextColor.color,
-        fontFamily: styles.fontRegular.fontFamily,
-
-        paddingLeft: 10,
-        paddingBottom: 0,
-        paddingTop: 5
-    },
-    icon: {
-        paddingRight: 15,
-        paddingLeft: 0,
-    }
 })
