@@ -147,6 +147,11 @@ describe("RECIPES FUNCTIONALITY TESTS", () => {
         expect(response).toBeUndefined()
     })
 
+    performSyncTest("Empty search", async () => {
+        const response = await recipe_funcs.searchForRecipe("")
+        expect(response).toBeUndefined()
+    })
+
     performSyncTest("Update portions", async () => {
         recipe_1.portions = 2
         const recipe = await recipe_funcs.updateRecipe(id_1, {portions: recipe_1.portions})
