@@ -10,14 +10,15 @@ import Col from 'react-bootstrap/esm/Col';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Offcanvas from 'react-bootstrap/Offcanvas';
-
 import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
 
 // style imports
 import '../styling/Header.css';
 import { FaHeart as HeartFilled } from "react-icons/fa";
 import { FaRegHeart as HeartOutline } from "react-icons/fa";
+
+// component imports
+import SearchBar from './SearchBar';
 
 // function imports
 import { setFavorites } from 'recipe-book/redux/userSlice';
@@ -27,7 +28,7 @@ const Hamburger = () => {
     return(
         <Navbar expand={"false"} className="bg-color2">
             <Container fluid className="bg-color2">
-                <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-false`} />
+                <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-false`} className="navbar-dark"/>
                 <Navbar.Offcanvas
                     id={`offcanvasNavbar-expand-false`}
                     aria-labelledby={`offcanvasNavbarLabel-expand-false`}
@@ -51,13 +52,7 @@ const NavBar = ({}) => {
         <>
             <Col xs={4} className='header-container center-vertical pe-3'>
                 <Form className="d-flex w-100 right">
-                    <Form.Control
-                        type="search"
-                        placeholder="Search Recipes"
-                        className="me-2 search-bar"
-                        aria-label="Search"
-                    />
-                    <Button variant="outline-light" size="sm">Search</Button>
+                    <SearchBar />
                 </Form>
             </Col>
             <Col xs={1} className='header-container center-vertical right w-auto'>

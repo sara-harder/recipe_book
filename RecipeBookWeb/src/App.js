@@ -25,10 +25,10 @@ function App() {
 
   return (
     <div className="App">
-      <Header header={header} favorite={favorite} setFavorite={setFavorite} recipe={recipe} />
+      <Router>
+        <Header header={header} favorite={favorite} setFavorite={setFavorite} recipe={recipe} />
 
-      <body className="App-body container-fluid pt-7">
-        <Router>
+        <body className="App-body container-fluid pt-7">
           <ScrollToTop />
           <Routes>
             <Route path="/" exact element={<HomePage setHeader={setHeader}/>} />
@@ -36,8 +36,8 @@ function App() {
             <Route path="/recipes" element={<RecipeList setHeader={setHeader}/>} />
             <Route path="/view-recipe" element={<ViewRecipe setHeader={setHeader} setRecipe={setRecipe} setFavorite={setFavorite}/>} />
           </Routes>
-        </Router>
-      </body>
+        </body>
+      </Router>
     </div>
   );
 }
