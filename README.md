@@ -43,6 +43,16 @@ I repeated the same steps with the web version. Then, I updated the style to mak
 The web version was still having some style issues, and a friend had previously recommended to me that I try using the Bootstrap framework. I decided to test it out, and instantly noticed some improvements. With the proper setup, I could now scroll on the Home page when the browser was smaller. Shrinking the browser shrank the elements on the web page as well, allowing for much better readability. On the pages where you select categories or recipes, I could easily create a grid that adjusted with the browser as well. Instead of 5 columns, shrinking the browser would adapt the page to use 4, 3, etc. columns. I no longer needed the clunky algorithm that I had created for this. Overall, everything was an improvement, and the style is much nicer and more readable thanks to bootstrap. 
 
 
+I decided to work on a navbar next. Instead of just displaying the title, I wanted the header to also have a search function and a popup menu. Adding these on web was simple enough thanks to bootstrap. On mobile, I had to do a bit more work to get the styles that I wanted:
+
+I decided to separate the header into two components, one with the title and one with the icons for the hamburger menu and magnifying glass, and with the back button. The title I wanted to move together with the page animation, but it was disorienting to see the icons move with it as well. By separating the header, I could keep the icons in the same place, even when switching pages. I also learned some useful things about React Native nested Stack Navigators along the way.
+
+Another difficulty was getting the popup to function. On web, it was easy to use the OffCanvas component (part of the NavBar component). I could base my code on the bootstrap documentation: https://react-bootstrap.netlify.app/docs/components/navbar/#offcanvas. On mobile, I had to install the react-native-modal, and figure out what settings to use to get it to appear correctly. All the extra effort was worth it though, because both the mobile and web styles and navigation look very smooth.
+
+
+Once the style for the new navbar components was set up, I just had to add the functionality. The navigation was simple to add on the hamburger menu, since (for now) I was only navigating to the home page. I also already had a function that searched through the recipes, so adding that functionality onto the search bar was relatively simple as well. I did come across an issue with empty strings, because the request to the backend registered as a 'get("/:id")' request (with "search" as the id) instead of a 'get("/search/:search")' request. This emphasizes the importance of using thorough test cases. I added a new test case in the functionality tests to verify that sending an empty string functioned correctly. 
+
+
 
 Stretch Goals:
 
