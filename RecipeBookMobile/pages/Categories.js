@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 
 // component imports
-import ListItem from '../components/ListItem.js'
+import ListPage from '../components/ListPage.js'
 import Loading from '../components/LoadingScreen.js'
 
 // style imports
@@ -54,14 +54,7 @@ function Categories({route}) {
     }
 
     return(
-        <SafeAreaView style={styles.app}>
-            <View style={styles.container}>
-                <FlatList
-                    data={data}
-                    renderItem={({item}) => <ListItem text={item.name} navigate={() => selectCategory(item)} />}
-                />
-            </View>
-        </SafeAreaView>
+        <ListPage data={data} navigate={(item) => selectCategory(item)} />
     )
 }
 

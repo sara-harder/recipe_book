@@ -27,20 +27,22 @@ const sweet = "Sweet"
 
 
 const Recipe = ({name, image, nav}) => {
-    if (!image) {
+    // recipe card with image
+    if (image) {
         return (
             <Pressable onPress={nav} >
-                <View style={[home_style.no_image]}>
-                    <Text style={[text_styles.itemText, {textAlign: 'center'}]}>{name}</Text>
+                <View style={home_style.image} ></View>
+                <View style={home_style.text_cont}>
+                    <Text style={[text_styles.itemText, home_style.name]}>{name}</Text>
                 </View>
             </Pressable>
         )
     }
+    // recipe card without image
     return(
         <Pressable onPress={nav} >
-            <View style={home_style.image} ></View>
-            <View style={home_style.text_cont}>
-                <Text style={[text_styles.itemText, home_style.name]}>{name}</Text>
+            <View style={[home_style.no_image]}>
+                <Text style={[text_styles.itemText, {textAlign: 'center'}]}>{name}</Text>
             </View>
         </Pressable>
     )
