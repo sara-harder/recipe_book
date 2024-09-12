@@ -86,10 +86,10 @@ function Header({header, favorite, setFavorite, recipe}) {
         if (favorites.includes(recipe._id)) {
             // if favorite is deselected, remove from favorites
             if (!favorite) {
-            const i = favorites.indexOf(recipe._id)
-            const new_favs = favorites.slice()
-            new_favs.splice(i, 1)
-            dispatch(setFavorites(new_favs))
+                const i = favorites.indexOf(recipe._id)
+                const new_favs = favorites.slice()
+                new_favs.splice(i, 1)
+                dispatch(setFavorites(new_favs))
             }
         }
         // if recipe is not in favorites

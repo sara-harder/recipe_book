@@ -30,7 +30,7 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
 
     useEffect(()=>{
         setFavorite(favorites.includes(recipe._id))
-    }, [])
+    }, [recipe])
 
     let recipe_round = "rounded"
     if (recipe.image) recipe_round = "rounded-bottom"

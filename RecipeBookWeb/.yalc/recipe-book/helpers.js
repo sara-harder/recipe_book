@@ -37,7 +37,7 @@ async function getRandomRecipes(flavor_type) {
 // takes a flavor type and returns 5 random recipes from random categories in that flavor_type
     const categories = await category_funcs.getFlavorType(flavor_type)
 
-    let len = 5
+    let len = 6
     if (categories.length < len) len = categories.length
 
     const rands = generateRandoms(categories.length, len)
@@ -98,6 +98,5 @@ const checkFraction = (num) => {
     }
     return num
 }
-
 
 export {twoColumns, getRandomRecipes, checkFraction}

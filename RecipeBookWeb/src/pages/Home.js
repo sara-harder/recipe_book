@@ -68,8 +68,8 @@ const HorizontalRecipe = ({title, nav}) => {
     useEffect(() =>{
         const getUserRecipes = async ()=> {
             let ids;
-            if (title == favorites) ids = user.favorites.slice(0, 5)
-            else ids = user.recents.slice(0, 5)
+            if (title == favorites) ids = user.favorites.slice(0, 6)
+            else ids = user.recents.slice(0, 6)
 
             const data = []
             for (const id of ids) {

@@ -11,6 +11,15 @@
 }
 
 .search-bar {
-    width: 80% !important;
+    width: 100% !important;
     min-width: 100px;
+}
+
+.search-results {
+    background-color: white;
+    color: black;
+    text-align: left;
+    align-items: left;
+    justify-content: left;
+    width: 100%;
 }
