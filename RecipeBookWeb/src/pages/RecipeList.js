@@ -23,8 +23,10 @@ function RecipeList({setHeader}) {
     const location = useLocation();
     const category = location.state.category
 
-    if (category == favorites || category == recents) setHeader(category + " Recipes")
-    else setHeader(category.name + " Recipes")
+    useEffect(() => {
+        if (category == favorites || category == recents) setHeader(category + " Recipes")
+        else setHeader(category.name + " Recipes")
+    }, [category])
 
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -59,6 +61,8 @@ function RecipeList({setHeader}) {
                 navigate("/categories", {state:{flavor: category.flavor_type}})
             }
 
+            recipes.push({name: "New"})
+
             setData(recipes)
 
             setLoading(false)
@@ -70,8 +74,14 @@ function RecipeList({setHeader}) {
     
 
 
-    // Navigate to the view recipe page when a recipe is selected
     const selectRecipe = (recipe) => {
+        // Navigate to the add recipe page when new recipe is selected
+        if (recipe.name == "New") {
+            navigate("/add-recipe")
+            return
+        }
+        
+        // Navigate to the view recipe page when a recipe is selected
         let recents = [recipe._id].concat(user.recents)
         if (user.recents.includes(recipe._id)) {
             const set_recents = new Set(recents)

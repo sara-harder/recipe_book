@@ -20,7 +20,9 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
     const location = useLocation();
     const recipe = location.state.recipe
 
-    setHeader(recipe.name)
+    useEffect(() => {
+        setHeader(recipe.name)
+    }, [])
     setRecipe(recipe)
 
     const ingredients = recipe.ingredients

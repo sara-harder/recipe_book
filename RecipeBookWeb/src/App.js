@@ -9,6 +9,8 @@ import Categories from './pages/Categories';
 import RecipeList from './pages/RecipeList';
 import ViewRecipe from './pages/ViewRecipe';
 
+import AddRecipe from './pages/AddRecipe';
+
 // component imports
 import ScrollToTop from './components/ScrollToTop';
 import Header from './components/Header';
@@ -35,6 +37,8 @@ function App() {
             <Route path="/categories" element={<Categories setHeader={setHeader}/>} />
             <Route path="/recipes" element={<RecipeList setHeader={setHeader}/>} />
             <Route path="/view-recipe" element={<ViewRecipe setHeader={setHeader} setRecipe={setRecipe} setFavorite={setFavorite}/>} />
+
+            <Route path="/add-recipe" element={<AddRecipe setHeader={setHeader}/>} />
           </Routes>
         </body>
       </Router>
