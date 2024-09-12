@@ -61,8 +61,8 @@ const HorizontalRecipe = ({title, nav}) => {
     useEffect(() =>{
         const getUserRecipes = async ()=> {
             let ids;
-            if (title == favorites) ids = user.favorites.slice(0, 5)
-            else ids = user.recents.slice(0, 5)
+            if (title == favorites) ids = user.favorites.slice(0, 6)
+            else ids = user.recents.slice(0, 6)
 
             const data = []
             for (const id of ids) {
@@ -124,12 +124,14 @@ const HorizontalRecipe = ({title, nav}) => {
                 <Text style={[text_styles.itemText, {paddingTop: 12, paddingRight: 12}]}
                     onPress={nav}>See All</Text>
             </View>
-            <View style={home_style.row}>
-                <FlatList
-                    data={recipe_data}
-                    horizontal={true}
-                    renderItem={({item}) => <Recipe name={item.name} image={item.image} nav={()=>selectRecipe(item)} />}
-                />
+            <View style={home_style.left}>
+                <View style={home_style.row}>
+                    <FlatList
+                        data={recipe_data}
+                        horizontal={true}
+                        renderItem={({item}) => <Recipe name={item.name} image={item.image} nav={()=>selectRecipe(item)} />}
+                    />
+                </View>
             </View>
         </View>
     )
@@ -219,6 +221,9 @@ const home_style = StyleSheet.create({
         paddingBottom: 8,
 
         height: 110,
+    },
+    left: {
+        alignItems: 'flex-start'
     }
 })
 
