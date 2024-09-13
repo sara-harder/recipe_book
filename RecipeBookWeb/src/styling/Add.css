@@ -2,3 +2,8 @@
     width: 50% !important;
     min-width: 450px;
 }
+
+.form-select {
+    background-color: white;
+    min-height: 38px;
+}
