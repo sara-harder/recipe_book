@@ -53,7 +53,7 @@ function RecipeList({setHeader}) {
             setLoading(false);
         }
 
-        // retrieve recipes in the specified category
+        // retrieve recipes in the specified category (not favorite / recent)
         const getRecipes = async ()=> {
             const recipes = await rec_cat_funcs.getRecipes(category._id)
             if (recipes == undefined) {
@@ -77,7 +77,7 @@ function RecipeList({setHeader}) {
     const selectRecipe = (recipe) => {
         // Navigate to the add recipe page when new recipe is selected
         if (recipe.name == "New") {
-            navigate("/add-recipe")
+            navigate("/add-recipe", {state:{precategory: category}})
             return
         }
         

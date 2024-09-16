@@ -18,16 +18,24 @@ import { FaAngleDown as DownArrow } from "react-icons/fa6";
 
 
 const SelectedItems = ({selected, updateSelected}) => {
+    const [highlightIdx, setHighlight] = useState("transparent")
+
     return(
         Array.from(selected).map((item, index) => {
             return(
                 <Col key={index} xs={1} className='multi-select-selected-items'>
                     {item.name}
-                    <div className='px-2 center-vertical' onClick={(e) => {
-                        e.stopPropagation()
-                        updateSelected(item, false)}
-                    }>
-                        <CloseIcon size="1em" color="	#404040"/>
+                    <div className='mx-1 px-1 h-100 center-vertical rounded'
+                        style={highlightIdx == index ? {background: '#e5e5e5'} : {}}
+                        onMouseEnter={() => setHighlight(index)} 
+                        onMouseLeave={() => setHighlight(-1)}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            updateSelected(item, false)
+                            setHighlight(-1)
+                        }}
+                    >
+                        <CloseIcon size="1em" color="#404040"/>
                     </div>
                 </Col>
             )
@@ -125,7 +133,8 @@ const DropdownList = ({data, showDropdown, hide_list, selected, updateSelected})
         <ul className="mutli-select-dropdown-list" hidden={hide_list} onClick={() => showDropdown()}>
             {(data).map((item, index) =>
                 <li key={index}>
-                    <Row style={highlightIdx == index ? {background: '#e0e0e0'} : {}} className='rounded'
+                    <Row className='rounded' 
+                        style={highlightIdx == index ? {background: '#e0e0e0'} : {}}
                         onMouseEnter={() => setHighlight(index)} 
                         onMouseLeave={() => setHighlight(-1)}
                     >
@@ -149,9 +158,9 @@ const DropdownList = ({data, showDropdown, hide_list, selected, updateSelected})
     )
 }
 
-function  MultiSelectDropdown ({data}) {
-    const [selected, setSelected] = useState(new Set())
-
+// takes an array of data, a set of selected items, and a function to update the selected items
+// to function properly, utilize react's useState() function to define [selected, setSelected]
+function  MultiSelectDropdown ({data, selected, setSelected}) {
     // updates the list of selected items whenever an option is checked or unchecked
     const updateSelected = (item, checked) => {
         const copy = new Set(selected)
@@ -198,7 +207,7 @@ function  MultiSelectDropdown ({data}) {
     const [search, setSearch] = useState("")
     const [dropdownData, setData] = useState(data)
 
-    
+
     // update dropdown list whenever the user searches
     useEffect(() => {
         const search_results = []
