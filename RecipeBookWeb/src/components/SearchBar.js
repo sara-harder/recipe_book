@@ -36,7 +36,7 @@ const SearchResults = ({recipes, search, setSearch}) => {
     // leave a message for user when recipe list is empty
     if (recipes.length == 0 && search != '')  {
         return (
-            <div className='search-results'>No recipes found</div>
+            <div className='search-results text-muted'>No recipes found</div>
         )
     }
 

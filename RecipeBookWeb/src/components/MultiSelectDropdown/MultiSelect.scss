@@ -24,4 +24,13 @@
     @extend .rounded;
 }
 
+.mutli-select-dropdown-list{
+    @extend .position-absolute;
+    @extend .px-3;
+    @extend .py-2;
+    @extend .rounded;
+    @extend .shadow;
+    @extend .list-unstyled;
+}
+
 @import '~bootstrap/scss/bootstrap';

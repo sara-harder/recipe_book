@@ -35,22 +35,28 @@ const SelectedItems = ({selected, updateSelected}) => {
     )
 }
 
-const SearchInput = ({showDropdown, selected}) => {
-    const [search, setSearch] = useState("")
-    const [searchWidth, setWidth] = useState('14ch')
+const SearchInput = ({showDropdown, selected, search, setSearch}) => {
+    const [inputWidth, setWidth] = useState('14ch')
 
+    // determine the appropriate width of the search input
     useEffect(() => {
+        // approximate length of input (len of char 0 * num of chars)
         const len = search.length + 'ch'
+
+        // set to 14ch if placeholder showing over input
         if (selected.size == 0 && search.length == 0) setWidth('14ch')
+
+        // grow length with content, min width = 9ch, max width = search bar length
         else if (search.length > 9) setWidth(len)
         else setWidth('9ch')
+
     }, [search, selected])
 
     return(
         <Col className='ps-2 pe-0'>
             <input 
                 className='multi-select-search-input' 
-                style={{width: searchWidth}}
+                style={{width: inputWidth}}
                 id='multi-select search'
                 value={search} 
                 placeholder={selected.size == 0 ? "Select Categories" : ""}
@@ -65,7 +71,7 @@ const SearchInput = ({showDropdown, selected}) => {
     )
 }
 
-const SearchBar = ({showDropdown, selected, updateSelected}) => {
+const SearchBar = ({showDropdown, selected, updateSelected, search, setSearch}) => {
     return(
         <Col className='px-0 multi-select-search-bar'>
             <div className='ps-3 py-1 w-100' onClick={() => showDropdown()}>
@@ -75,7 +81,9 @@ const SearchBar = ({showDropdown, selected, updateSelected}) => {
                         updateSelected={updateSelected}/>
                     <SearchInput 
                         showDropdown={showDropdown} 
-                        selected={selected}/>
+                        selected={selected}
+                        search={search}
+                        setSearch={setSearch}/>
                 </Row>
             </div>
         </Col>
@@ -83,13 +91,13 @@ const SearchBar = ({showDropdown, selected, updateSelected}) => {
 }
 
 const DropdownButton = ({showDropdown, hide_list, setHidden}) =>  {
-    const [dropdownButton, setButton] = useState("transparent")
+    const [buttonColor, setColor] = useState("transparent")
 
     return (
         <Col className='multi-select-dropdown-button' 
-                    style={{backgroundColor: dropdownButton}}
-                    onMouseEnter={() => setButton('#f2f2f2')} 
-                    onMouseLeave={() => setButton('transparent')}
+                    style={{backgroundColor: buttonColor}}
+                    onMouseEnter={() => setColor('#f2f2f2')} 
+                    onMouseLeave={() => setColor('transparent')}
                     onClick={() => {
                         if (hide_list) showDropdown()
                         else setHidden(true)
@@ -103,10 +111,20 @@ const DropdownButton = ({showDropdown, hide_list, setHidden}) =>  {
 const DropdownList = ({data, showDropdown, hide_list, selected, updateSelected}) => {
     const [highlightIdx, setHighlight] = useState(-1)
 
+    // show msg if search results yield nothing
+    if (data.length == 0) return(
+        <div className="mutli-select-dropdown-list" hidden={hide_list} onClick={() => showDropdown()}>
+            <div className='ps-1 py-1 text-muted'>
+                No results found
+            </div>
+        </div>
+    )
+
+    // display all categories that match search results
     return(
-        <ul className="list-unstyled search-results" hidden={hide_list} onClick={() => showDropdown()}>
+        <ul className="mutli-select-dropdown-list" hidden={hide_list} onClick={() => showDropdown()}>
             {(data).map((item, index) =>
-                <li key={index} className='indiv-result'>
+                <li key={index}>
                     <Row style={highlightIdx == index ? {background: '#e0e0e0'} : {}} className='rounded'
                         onMouseEnter={() => setHighlight(index)} 
                         onMouseLeave={() => setHighlight(-1)}
@@ -142,7 +160,9 @@ function  MultiSelectDropdown ({data}) {
         else copy.delete(item)
 
         setSelected(copy)
+        setSearch('')
     }
+
 
     // var determines if dropdown list should be hidden or not
     const [hide_list,  setHidden] = useState(true)
@@ -154,7 +174,7 @@ function  MultiSelectDropdown ({data}) {
 
     // closes the dropdown when user clicks outside the dropdown
     const useClickOutsideDropdown = () => {
-        // code source: https://www.robinwieruch.de/react-hook-detect-click-outside-component/
+    // function source: https://www.robinwieruch.de/react-hook-detect-click-outside-component/
         const ref = React.useRef();
 
         React.useEffect(() => {
@@ -173,8 +193,26 @@ function  MultiSelectDropdown ({data}) {
       
         return ref;
     };
-
     const ref = useClickOutsideDropdown()
+
+    const [search, setSearch] = useState("")
+    const [dropdownData, setData] = useState(data)
+
+    
+    // update dropdown list whenever the user searches
+    useEffect(() => {
+        const search_results = []
+
+        // iterate over each category
+        for (const item of data){
+            const name = item.name.toLowerCase()
+            const srch = search.toLowerCase()
+
+            // add category to results if any part of its name contains the search
+            if (name.includes(srch)) search_results.push(item)
+        }
+        setData(search_results)
+    }, [search, data])
 
     return(
         <div ref={ref} className='multi-select-dropdown' tabIndex={-1}>
@@ -182,7 +220,9 @@ function  MultiSelectDropdown ({data}) {
                 <SearchBar 
                     showDropdown={showDropdown} 
                     selected={selected} 
-                    updateSelected={updateSelected}/>
+                    updateSelected={updateSelected}
+                    search={search}
+                    setSearch={setSearch}/>
                 <DropdownButton 
                     showDropdown={showDropdown} 
                     hide_list={hide_list} 
@@ -190,7 +230,7 @@ function  MultiSelectDropdown ({data}) {
             </Row>
 
             <DropdownList 
-                data={data} 
+                data={dropdownData} 
                 showDropdown={showDropdown} 
                 hide_list={hide_list} 
                 selected={selected} 
