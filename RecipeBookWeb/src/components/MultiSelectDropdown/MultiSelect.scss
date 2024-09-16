@@ -1,0 +1,27 @@
+.center-vertical{
+    @extend .d-flex;
+    @extend .align-items-center;
+}
+
+.center-content{
+    @extend .d-flex;
+    @extend .align-items-center;
+    @extend .justify-content-center;
+}
+
+.multi-select-dropdown-button{
+    @extend .center-content;
+    @extend .border-start;
+    @extend .rounded-end;
+}
+
+.multi-select-selected-items{
+    @extend .center-vertical;
+    @extend .py-1;
+    @extend .pe-1;
+    @extend .w-auto;
+    @extend .border;
+    @extend .rounded;
+}
+
+@import '~bootstrap/scss/bootstrap';

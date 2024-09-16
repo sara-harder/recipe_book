@@ -43,8 +43,8 @@ $spacers: (
 }
 
 .card-body{
-    @extend .bg-color3;
-    @extend .center-content;
- }
+  @extend .bg-color3;
+  @extend .center-content;
+}
 
 @import '~bootstrap/scss/bootstrap';

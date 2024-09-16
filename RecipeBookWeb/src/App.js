@@ -9,7 +9,7 @@ import Categories from './pages/Categories';
 import RecipeList from './pages/RecipeList';
 import ViewRecipe from './pages/ViewRecipe';
 
-import AddRecipe from './pages/AddRecipe';
+import AddRecipe from './pages/AddRecipe/AddRecipe';
 
 // component imports
 import ScrollToTop from './components/ScrollToTop';

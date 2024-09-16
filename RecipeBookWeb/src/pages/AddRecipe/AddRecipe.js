@@ -13,21 +13,14 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
 // style imports
-import '../styling/Add.css';
-import { FaXmark as CloseIcon } from "react-icons/fa6";
-import { FaAngleDown as DownArrow } from "react-icons/fa6";
+import './Add.css';
 
 // function imports
 import { category_funcs } from 'recipe-book';
+import MultiSelectDropdown from '../../components/MultiSelectDropdown/MultiSelectDropdown';
 
 
 const CategorySelector = () => {
-    const [selected, setSelected] = useState(new Set())
-    const [search, setSearch] = useState("")
-
-    // var determines if category options list should be hidden or not
-    const [hide_list,  setHidden] = useState(true)
-
     // Get the categories for the dropdown
     const [savory, setSavory] = useState([])
     const [sweet, setSweet] = useState([])
@@ -44,127 +37,12 @@ const CategorySelector = () => {
         getSweet()
     }, []);
 
-    // updates the list of selected categories whenever an option is checked or uncheckedi
-    const updateCategories = (category, checked) => {
-        const copy = new Set(selected)
-
-        if (checked) copy.add(category)
-        else copy.delete(category)
-
-        setSelected(copy)
-    }
-
-    // closes the dropdown when user clicks outside the dropdown
-    const useClickOutsideDropdown = () => {
-        // code source: https://www.robinwieruch.de/react-hook-detect-click-outside-component/
-        const ref = React.useRef();
-
-        React.useEffect(() => {
-            const handleClick = (event) => {
-                // executes if element with ref is not a parent of the element clicked
-                if (ref.current && !ref.current.contains(event.target)) {
-                    setHidden(true);
-                }
-            };
-        
-            document.addEventListener('click', handleClick);
-            return () => {
-                document.removeEventListener('click', handleClick);
-            };
-        }, [ref]);
-      
-        return ref;
-    };
-
-    const ref = useClickOutsideDropdown()
-
-    const [highlightIdx, setHighlight] = useState(-1)
-    const [dropdownButton, setButton] = useState("transparent")
-
-    const [searchWidth, setWidth] = useState('14ch')
-
-    useEffect(() => {
-        const len = search.length + 'ch'
-        if (selected.size == 0 && search.length == 0) setWidth('14ch')
-        else if (search.length > 9) setWidth(len)
-        else setWidth('9ch')
-    }, [search, selected])
-
     return(
         <Form.Group className="mb-4 position-relative m-0" controlId="recipeCategory">
             <Form.Label>Category</Form.Label>
-
-            <div ref={ref} className='category-input' tabIndex={-1}>
-                <Row className="mx-0 rounded bg-white">
-                    <Col className='px-0 category-search-label'>
-                        <label className='py-1 ps-3 w-100' htmlFor='category search'>
-                            <Row className='me-0'>
-                                {Array.from(selected).map((item, index) => {
-                                    return(
-                                        <Col key={index} xs={1} className='py-1 ps-3 w-auto border rounded selected center-vertical'>
-                                            {item.name}
-                                            <div className='ps-2 center-vertical' onClick={() => updateCategories(item, false)}>
-                                                <CloseIcon size="1em" color="	#404040"/>
-                                            </div>
-                                        </Col>
-                                    )
-                                })}
-                                <Col className='pe-0 ps-2'>
-                                    <input 
-                                        className='category-search' 
-                                        style={{width: searchWidth}}
-                                        id='category search'
-                                        value={search} 
-                                        placeholder={selected.size == 0 ? "Select Categories" : ""}
-                                        onChange={(e) => {
-                                            setSearch(e.target.value)
-                                            setHidden(false)
-                                        }}
-                                        onClick={() => {
-                                            setHidden(false)
-                                        }}
-                                    >
-                                    </input>
-                                </Col>
-                            </Row>
-                        </label>
-                    </Col>
-
-                    <Col onClick={() => setHidden(!hide_list)} className='center-content rounded-end dropdown-button border-start' 
-                                style={{backgroundColor: dropdownButton}}
-                                onMouseEnter={() => setButton('#f2f2f2')} 
-                                onMouseLeave={() => setButton('transparent')}
-                    >
-                        <DownArrow size=".9rem" color="#404040" style={hide_list ? {} : {transform:   'rotate(180deg)'}}/>
-                    </Col>
-                </Row>
-
-                <ul className="list-unstyled search-results" hidden={hide_list}>
-                    {(savory.concat(sweet)).map((item, index) =>           
-                        <li key={index} className='indiv-result'>
-                            <Row style={highlightIdx == index ? {background: '#e0e0e0'} : {}} className='rounded'
-                                onMouseEnter={() => setHighlight(index)} 
-                                onMouseLeave={() => setHighlight(-1)}
-                            >
-                                <Col xs={1} className='w-auto pe-0 py-1 center-vertical'>
-                                    <Form.Check
-                                        type='checkbox'
-                                        id={`${item.name} checkbox`}
-                                        onChange={(e) => updateCategories(item, e.target.checked)}
-                                        checked={selected.has(item)}
-                                    />
-                                </Col>
-                                <Col className='pe-0'>
-                                    <label className='form-check-label w-100 py-1' htmlFor={`${item.name} checkbox`}>
-                                        {item.name}
-                                    </label>
-                                </Col>
-                            </Row>
-                        </li>
-                    )}
-                </ul>
-            </div>
+            <MultiSelectDropdown data={savory.concat(sweet)}/>
         </Form.Group>
+            
     )
 }
 
