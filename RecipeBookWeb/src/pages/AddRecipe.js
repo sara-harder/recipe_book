@@ -14,7 +14,8 @@ import Button from 'react-bootstrap/Button';
 
 // style imports
 import '../styling/Add.css';
-import { FaXmark } from "react-icons/fa6";
+import { FaXmark as CloseIcon } from "react-icons/fa6";
+import { FaAngleDown as DownArrow } from "react-icons/fa6";
 
 // function imports
 import { category_funcs } from 'recipe-book';
@@ -78,6 +79,7 @@ const CategorySelector = () => {
     const ref = useClickOutsideDropdown()
 
     const [highlightIdx, setHighlight] = useState(-1)
+    const [dropdownButton, setButton] = useState("transparent")
 
     const [searchWidth, setWidth] = useState('14ch')
 
@@ -93,47 +95,49 @@ const CategorySelector = () => {
             <Form.Label>Category</Form.Label>
 
             <div ref={ref} className='category-input' tabIndex={-1}>
-                <div onClick={() => setHidden(!hide_list)} className="form-select ps-0 py-0 center-vertical">
-                    <label className='w-100 py-1 ps-3 border-end' htmlFor='category search'>
-                        <Row className='h-100 me-0'>
-                            {Array.from(selected).map((item, index) => {
-                                return(
-                                    <Col key={index} xs={1} className='py-1 ps-3 w-auto border border-grey rounded selected center-vertical' 
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    setHidden(false)
-                                                }}>
-                                        {item.name}
-                                        <div className='ps-2 center-vertical' onClick={(e) => {
-                                                e.stopPropagation()
-                                                updateCategories(item, false)
-                                            }}>
-                                            <FaXmark size="1em" color="	#404040"/>
-                                        </div>
-                                    </Col>
-                                )
-                            })}
-                            <Col className='pe-0 ps-2'>
-                                <input 
-                                    className='category-search' 
-                                    style={{width: searchWidth}}
-                                    id='category search'
-                                    value={search} 
-                                    placeholder={selected.size == 0 ? "Select Categories" : ""}
-                                    onChange={(e) => {
-                                        setSearch(e.target.value)
-                                        setHidden(false)
-                                    }}
-                                    onClick={(e) => {
-                                        e.stopPropagation()
-                                        setHidden(false)
-                                    }}
-                                >
-                                </input>
-                            </Col>
-                        </Row>
-                    </label>
-                </div>
+                <Row className="mx-0 rounded bg-white">
+                    <Col className='px-0 category-search-label'>
+                        <label className='py-1 ps-3 w-100' htmlFor='category search'>
+                            <Row className='me-0'>
+                                {Array.from(selected).map((item, index) => {
+                                    return(
+                                        <Col key={index} xs={1} className='py-1 ps-3 w-auto border rounded selected center-vertical'>
+                                            {item.name}
+                                            <div className='ps-2 center-vertical' onClick={() => updateCategories(item, false)}>
+                                                <CloseIcon size="1em" color="	#404040"/>
+                                            </div>
+                                        </Col>
+                                    )
+                                })}
+                                <Col className='pe-0 ps-2'>
+                                    <input 
+                                        className='category-search' 
+                                        style={{width: searchWidth}}
+                                        id='category search'
+                                        value={search} 
+                                        placeholder={selected.size == 0 ? "Select Categories" : ""}
+                                        onChange={(e) => {
+                                            setSearch(e.target.value)
+                                            setHidden(false)
+                                        }}
+                                        onClick={() => {
+                                            setHidden(false)
+                                        }}
+                                    >
+                                    </input>
+                                </Col>
+                            </Row>
+                        </label>
+                    </Col>
+
+                    <Col onClick={() => setHidden(!hide_list)} className='center-content rounded-end dropdown-button border-start' 
+                                style={{backgroundColor: dropdownButton}}
+                                onMouseEnter={() => setButton('#f2f2f2')} 
+                                onMouseLeave={() => setButton('transparent')}
+                    >
+                        <DownArrow size=".9rem" color="#404040" style={hide_list ? {} : {transform:   'rotate(180deg)'}}/>
+                    </Col>
+                </Row>
 
                 <ul className="list-unstyled search-results" hidden={hide_list}>
                     {(savory.concat(sweet)).map((item, index) =>           
