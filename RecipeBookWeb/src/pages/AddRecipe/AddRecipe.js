@@ -23,26 +23,31 @@ import { category_funcs } from 'recipe-book';
 
 
 const CategorySelector = ({selected, setSelected}) => {
+    const location = useLocation();
+
     // Get the categories for the dropdown
-    const [savory, setSavory] = useState([])
-    const [sweet, setSweet] = useState([])
+    const [categories, setCategories] = useState([])
     useEffect(() =>{
-        const getSavory = async ()=> {
-            const categories = await category_funcs.getFlavorType("Savory")
-            setSavory(categories)
+        const getCategories = async ()=> {
+            const savory = await category_funcs.getFlavorType("Savory")
+            const sweet = await category_funcs.getFlavorType("Sweet")
+            const cats = savory.concat(sweet)
+            setCategories(cats)
+
+            // add any preselected categories to the selected list
+            if (location.state){
+                for (const item of cats){
+                    if (item.name == location.state.precategory.name) {
+                        setSelected(new Set([item]))
+            }}}
         }
-        const getSweet = async ()=> {
-            const categories = await category_funcs.getFlavorType("Sweet")
-            setSweet(categories)
-        }
-        getSavory()
-        getSweet()
+        getCategories()
     }, []);
 
     return(
         <Form.Group className="mb-4 position-relative m-0" controlId="recipeCategory">
             <Form.Label>Category</Form.Label>
-            <MultiSelectDropdown data={savory.concat(sweet)} selected={selected} setSelected={setSelected}/>
+            <MultiSelectDropdown data={categories} selected={selected} setSelected={setSelected}/>
         </Form.Group>
             
     )
@@ -54,10 +59,6 @@ function AddRecipe({setHeader}) {
         setHeader("Add a Recipe")
     }, [])
 
-    const location = useLocation();
-    let precategory = undefined
-    if (location.state) precategory = location.state.precategory
-
     class Ingredient {
         constructor(name, quantity=undefined, unit=undefined) {
           this.name = name;
@@ -68,7 +69,7 @@ function AddRecipe({setHeader}) {
 
     const [name, setName] = useState('')
     const [portions, setPortions] = useState(4)
-    const [categories, setCategories] = useState(precategory == undefined ? new Set() : new Set([precategory]))
+    const [categories, setCategories] = useState(new Set())
     const [ingredients, setIngredients] = useState([new Ingredient("")])
     const [directions, setDirections] = useState([""])
     const [image, setImage] = useState('')
