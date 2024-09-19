@@ -78,7 +78,7 @@ function AddRecipe({setHeader}) {
     return(
         <Container fluid className='mt-4 form-container'>
                 <Form>
-                    <Row className='pe-0'>
+                    <Row className='pe-0'><Col xs={11} className='pe-0'><Row>
                         <Col xs={10} className='pe-1'>
                             <Form.Group className="mb-4" controlId="recipeName">
                                 <Form.Label>Recipe Name</Form.Label>
@@ -102,16 +102,18 @@ function AddRecipe({setHeader}) {
                                 />
                             </Form.Group>
                         </Col>
-                    </Row>
+                    </Row></Col></Row>
 
-                    <CategorySelector selected={categories} setSelected={setCategories}/>
+                    <Row className='pe-0'><Col xs={11} className='pe-0'>
+                        <CategorySelector selected={categories} setSelected={setCategories}/>
+                    </Col></Row>
 
                     <IngredientsList Ingredient={Ingredient} ingredients={ingredients} setIngredients={setIngredients} />
                     <DirectionsList directions={directions} setDirections={setDirections} />
 
                     <Row>
-                        <Col className='right py-5 pe-0'>
-                            <Button variant="primary" type="submit">
+                        <Col className='right py-5 px-4'>
+                            <Button variant="success" type="submit">
                                 Add Recipe
                             </Button>
                         </Col>
