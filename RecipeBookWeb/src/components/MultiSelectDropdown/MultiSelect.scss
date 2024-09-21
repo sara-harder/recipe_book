@@ -26,6 +26,7 @@
 
 .mutli-select-dropdown-list{
     @extend .position-absolute;
+    @extend .z-1;
     @extend .px-3;
     @extend .py-2;
     @extend .rounded;

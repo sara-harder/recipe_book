@@ -12,8 +12,11 @@ import { FaRegTrashAlt as TrashIcon } from "react-icons/fa";
 
 
 const DirectionsList = ({directions, setDirections}) => {
+    // index of last direction
+    const end_idx = directions.length-1
+
     // when user starts typing, add a new empty input line
-    if (directions[directions.length-1] != "") {
+    if (directions[end_idx] != "") {
         const copy = directions.slice()
         copy.push("")
         setDirections(copy)
@@ -36,12 +39,16 @@ const DirectionsList = ({directions, setDirections}) => {
     // change the trash-can color on hover
     const [trashIdx, setTrash] = useState(-1)
 
+    const visible = directions.length <= 1
+    const [rowOpacity, setOpacity] = useState(-1)
+
     return(
         <Form.Group className="mb-4" controlId="recipeDirections">
             <Form.Label className='mb-1'>Directions</Form.Label>
             <ol className='list-unstyled'>
                 {directions.map((item, index) => 
-                    <li className='row py-1 flex-nowrap' key={index}>
+                    <li className='row py-1 flex-nowrap' key={index} 
+                    style={index != end_idx || visible || rowOpacity == index ? {} : {opacity: .5}}>
                         <Col xs={11} className='pe-0'><Row className='pe-0'>
                             <Col className='col-1 w-auto center-vertical pe-1'>
                                 {index + 1}.
@@ -52,11 +59,17 @@ const DirectionsList = ({directions, setDirections}) => {
                                     placeholder="Write directions"
                                     value={item}
                                     onChange={(e) => addDirection(e.target.value, index)}
+                                    onFocus={() => setOpacity(index)}
+                                    onBlur = {() => setOpacity(-1)}
+                                    required={directions.length <= 1}
                                 />
+                                <Form.Control.Feedback type="invalid" className='ps-2'>
+                                    Please add some directions
+                                </Form.Control.Feedback>
                             </Col>
                         </Row></Col>
                         <Col className='col-1 w-auto center-vertical'>
-                            {index == directions.length-1 ? 
+                            {index == end_idx ? 
                                 <TrashIcon size='1.15em' color='transparent' /> 
                             : 
                                 <TrashIcon 

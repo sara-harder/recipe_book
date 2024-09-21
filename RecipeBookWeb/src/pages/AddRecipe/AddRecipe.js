@@ -1,7 +1,7 @@
 // react imports
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from "react-router-dom"
 
 // bootstrap imports
 import Container from 'react-bootstrap/Container';
@@ -20,9 +20,11 @@ import './Add.css';
 
 // function imports
 import { category_funcs } from 'recipe-book';
+import { recipe_funcs } from 'recipe-book';
+import { rec_cat_funcs } from 'recipe-book';
 
 
-const CategorySelector = ({selected, setSelected}) => {
+const CategorySelector = ({selected, setSelected, validated}) => {
     const location = useLocation();
 
     // Get the categories for the dropdown
@@ -47,7 +49,7 @@ const CategorySelector = ({selected, setSelected}) => {
     return(
         <Form.Group className="mb-4 position-relative m-0" controlId="recipeCategory">
             <Form.Label>Category</Form.Label>
-            <MultiSelectDropdown data={categories} selected={selected} setSelected={setSelected}/>
+            <MultiSelectDropdown data={categories} selected={selected} setSelected={setSelected} validated={validated}/>
         </Form.Group>
             
     )
@@ -55,6 +57,8 @@ const CategorySelector = ({selected, setSelected}) => {
 
 
 function AddRecipe({setHeader}) {
+    const navigate = useNavigate()
+
     useEffect(() => {
         setHeader("Add a Recipe")
     }, [])
@@ -75,9 +79,36 @@ function AddRecipe({setHeader}) {
     const [image, setImage] = useState('')
     const [source, setSource] = useState('')
 
+    const [validated, setValidated] = useState(false)
+    const validateRecipe = () => {
+        setValidated(true)
+        if (name == '') return false
+        if (portions <= 0 || portions > 100) return false
+        if (categories.size == 0) return false
+        if (ingredients.length == 1) return false
+        if (directions.length == 1) return false
+        return true
+    }
+
+
+    // add the new recipe to the database
+    const createRecipe = async () => {
+        if (validateRecipe() == false) return
+        const new_recipe = await recipe_funcs.addRecipe(name, portions, ingredients.slice(0, ingredients.length-1), 
+                    directions.slice(0, directions.length-1), image, source)
+
+        // connect the recipe to the chosen categories
+        for (const cat of categories) {
+            rec_cat_funcs.connectRecipeCat(new_recipe._id, cat._id)
+        }
+
+        // go back to the previous page
+        navigate(-1)
+    }
+
     return(
         <Container fluid className='mt-4 form-container'>
-                <Form>
+                <Form noValidate validated={validated}>
                     <Row className='pe-0'><Col xs={11} className='pe-0'><Row>
                         <Col xs={10} className='pe-1'>
                             <Form.Group className="mb-4" controlId="recipeName">
@@ -87,7 +118,11 @@ function AddRecipe({setHeader}) {
                                     placeholder="Enter name" 
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
+                                    required
                                 />
+                                <Form.Control.Feedback type="invalid" className='ps-2'>
+                                    Please give your recipe a name
+                                </Form.Control.Feedback>
                             </Form.Group>
                         </Col>
 
@@ -99,13 +134,19 @@ function AddRecipe({setHeader}) {
                                     type="number"
                                     value={portions}
                                     onChange={(e) => setPortions(e.target.value)}
+                                    min={1}
+                                    max={100}
+                                    required
                                 />
+                                <Form.Control.Feedback type="invalid" className='ps-2'>
+                                    Please indicate a portion size greater than 0
+                                </Form.Control.Feedback>
                             </Form.Group>
                         </Col>
                     </Row></Col></Row>
 
                     <Row className='pe-0'><Col xs={11} className='pe-0'>
-                        <CategorySelector selected={categories} setSelected={setCategories}/>
+                        <CategorySelector selected={categories} setSelected={setCategories} validated={validated}/>
                     </Col></Row>
 
                     <IngredientsList Ingredient={Ingredient} ingredients={ingredients} setIngredients={setIngredients} />
@@ -113,7 +154,7 @@ function AddRecipe({setHeader}) {
 
                     <Row>
                         <Col className='right py-5 px-4'>
-                            <Button variant="success" type="submit">
+                            <Button variant="success" type="button" onClick={() => createRecipe()}>
                                 Add Recipe
                             </Button>
                         </Col>

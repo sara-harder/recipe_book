@@ -31,6 +31,14 @@
     border: 4px solid transparent;
 }
 
+.multi-select-dropdown:has(.multi-select-search-input:required) {
+    border: 1px solid #da1f4b;
+}
+
+.multi-select-dropdown:has(.multi-select-search-input:required):focus-within {
+    box-shadow: 0px 0px 0px 4px #d7232337;
+}
+
 .mutli-select-dropdown-list {
     width: 100%;
     max-height: 250px;

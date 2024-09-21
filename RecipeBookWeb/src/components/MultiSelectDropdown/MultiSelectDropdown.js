@@ -43,7 +43,7 @@ const SelectedItems = ({selected, updateSelected}) => {
     )
 }
 
-const SearchInput = ({showDropdown, selected, search, setSearch}) => {
+const SearchInput = ({showDropdown, selected, search, setSearch, validated}) => {
     const [inputWidth, setWidth] = useState('14ch')
 
     // determine the appropriate width of the search input
@@ -73,13 +73,15 @@ const SearchInput = ({showDropdown, selected, search, setSearch}) => {
                     showDropdown()
                 }}
                 onClick={() => showDropdown()}
+                onFocus={() => showDropdown()}
+                required={validated && selected.size <= 0}
             >
             </input>
         </Col>
     )
 }
 
-const SearchBar = ({showDropdown, selected, updateSelected, search, setSearch}) => {
+const SearchBar = ({showDropdown, selected, updateSelected, search, setSearch, validated}) => {
     return(
         <Col className='px-0 multi-select-search-bar'>
             <div className='ps-3 py-1 w-100' onClick={() => showDropdown()}>
@@ -91,7 +93,8 @@ const SearchBar = ({showDropdown, selected, updateSelected, search, setSearch}) 
                         showDropdown={showDropdown} 
                         selected={selected}
                         search={search}
-                        setSearch={setSearch}/>
+                        setSearch={setSearch}
+                        validated={validated}/>
                 </Row>
             </div>
         </Col>
@@ -160,7 +163,7 @@ const DropdownList = ({data, showDropdown, hide_list, selected, updateSelected})
 
 // takes an array of data, a set of selected items, and a function to update the selected items
 // to function properly, utilize react's useState() function to define [selected, setSelected]
-function  MultiSelectDropdown ({data, selected, setSelected}) {
+function  MultiSelectDropdown ({data, selected, setSelected, validated=false}) {
     // updates the list of selected items whenever an option is checked or unchecked
     const updateSelected = (item, checked) => {
         const copy = new Set(selected)
@@ -224,6 +227,7 @@ function  MultiSelectDropdown ({data, selected, setSelected}) {
     }, [search, data])
 
     return(
+        <>
         <div ref={ref} className='multi-select-dropdown' tabIndex={-1}>
             <Row className="mx-0 rounded bg-white">
                 <SearchBar 
@@ -231,7 +235,8 @@ function  MultiSelectDropdown ({data, selected, setSelected}) {
                     selected={selected} 
                     updateSelected={updateSelected}
                     search={search}
-                    setSearch={setSearch}/>
+                    setSearch={setSearch}
+                    validated={validated}/>
                 <DropdownButton 
                     showDropdown={showDropdown} 
                     hide_list={hide_list} 
@@ -245,6 +250,13 @@ function  MultiSelectDropdown ({data, selected, setSelected}) {
                 selected={selected} 
                 updateSelected={updateSelected}/>
         </div>
+
+        {validated == true && selected.size == 0 ? 
+            <div className="text-danger fs-8 p-1 ps-2">
+                Please select at least one category
+            </div> 
+        : null}
+        </>
     )
 }
 

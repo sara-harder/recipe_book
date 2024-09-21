@@ -59,6 +59,7 @@ function RecipeList({setHeader}) {
             if (recipes == undefined) {
                 alert("There are currently no recipes in this category")
                 navigate("/categories", {state:{flavor: category.flavor_type}})
+                return
             }
 
             recipes.push({name: "New"})
