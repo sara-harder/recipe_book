@@ -62,6 +62,8 @@ function RecipeList({route}) {
                 navigation.navigate("Categories", {flavor_type: category.flavor_type})
             }
 
+            recipes.push({name: "New"})
+
             setData(recipes)
 
             setLoading(false)
@@ -78,6 +80,12 @@ function RecipeList({route}) {
 
     // Navigate to the view recipe page when a recipe is selected
     const selectRecipe = (recipe) => {
+        // Navigate to the add recipe page when new recipe is selected
+        if (recipe.name == "New") {
+            navigation.navigate("AddRecipe", {preselected: category})
+            return
+        }
+
         let recents = [recipe._id].concat(user.recents)
         if (user.recents.includes(recipe._id)) {
             const set_recents = new Set(recents)

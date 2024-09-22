@@ -2,6 +2,7 @@
 import React from 'react';
 import {
   Pressable,
+  FlatList,
   StyleSheet,
   Text,
   View
@@ -16,6 +17,12 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Menu = ({popup, close}) => {
     const navigation = useNavigation()
+
+    options = [
+        {title: 'My Recipes', screen: 'Home'},
+        {title: 'Explore New Recipes', screen: 'Home'},
+        {title: 'Add a Recipe', screen: 'AddRecipe'},
+    ]
     return(
         <View>
             <Modal
@@ -36,12 +43,17 @@ const Menu = ({popup, close}) => {
                                 style={{alignSelf:'flex-end'}}
                             />
                         </Pressable>
-                        <Pressable onPress={() => {
-                                navigation.navigate("AppPages", {screen: "Home"})
-                                close()
-                        }}>
-                            <Text style={[text_styles.smallTitle, {color: 'black'}]}>My Recipes</Text>
-                        </Pressable>
+                        <FlatList
+                            data={options}
+                            renderItem={({item}) => { return(
+                                <Pressable style={{paddingTop: 4}} onPress={() => {
+                                        navigation.navigate("AppPages", {screen: item.screen})
+                                        close()
+                                }}>
+                                    <Text style={[text_styles.smallTitle, {color: 'black'}]}>{item.title}</Text>
+                                </Pressable>
+                            )}}
+                        />
                     </View>
                 </View>
             </Modal>

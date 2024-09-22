@@ -119,7 +119,7 @@ const SearchBar = ({popup, close}) => {
                                     name={"close"}
                                     size={30}
                                     color={'black'}
-                                    style={{paddingTop: 6}}
+                                    style={{paddingTop: 9}}
                                 />
                             </Pressable>
                         </View>
@@ -145,7 +145,8 @@ const search_style = StyleSheet.create({
         width: '100%',
         backgroundColor: 'white',
         padding: 9,
-        paddingLeft: 24
+        paddingLeft: 24,
+        paddingTop: 16,
     },
     search: {
         color: 'black',

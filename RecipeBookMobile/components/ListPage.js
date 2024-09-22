@@ -11,6 +11,7 @@ import {
 
 // style imports
 import styles, {text_styles} from '../style.js';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // function imports
 import { twoColumns } from 'recipe-book/helpers';
@@ -23,7 +24,17 @@ const List = ({data, navigate}) => {
             renderItem={({item}) => { return(
                 <Pressable onPress={() => navigate(item)} >
                     <View style={[item_style.no_image]}>
-                        <Text style={[text_styles.itemText, {textAlign: 'center', fontSize: 18}]}>{item.name}</Text>
+                        {item.name == "New" ?
+                            <View style={[text_styles.itemText, {justifyContent: 'center'}]}>
+                                <Icon
+                                    name='plus'
+                                    size={30}
+                                    color={styles.textColor.color}
+                                />
+                            </View>
+                        :
+                            <Text style={[text_styles.itemText, {textAlign: 'center', fontSize: 18}]}>{item.name}</Text>
+                        }
                     </View>
                 </Pressable>
             )}}

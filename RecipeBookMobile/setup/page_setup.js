@@ -9,6 +9,8 @@ import Categories from '../pages/Categories.js'
 import RecipeList from '../pages/RecipeList.js'
 import ViewRecipe from '../pages/ViewRecipe.js'
 
+import AddRecipe from '../pages/AddRecipe/AddRecipe.js'
+
 const Stack = createNativeStackNavigator();
 
 const PageSetup = ({navigation}) => {
@@ -43,6 +45,12 @@ const PageSetup = ({navigation}) => {
           name="ViewRecipe"
           component={ViewRecipe}
           options={{title: recipe, animation: "slide_from_right"}}
+        />
+
+        <Stack.Screen
+          name="AddRecipe"
+          component={AddRecipe}
+          options={{title: "Add a Recipe", animation: "slide_from_bottom"}}
         />
       </Stack.Navigator>
   );

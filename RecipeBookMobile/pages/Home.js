@@ -118,7 +118,7 @@ const HorizontalRecipe = ({title, nav}) => {
 
     // Row of recipe examples with See All button
     return(
-        <View>
+        <View style={{height: '25%'}}>
             <View style={styles.row}>
                 <Text style={text_styles.smallTitle}>{title}</Text>
                 <Text style={[text_styles.itemText, {paddingTop: 12, paddingRight: 12}]}
