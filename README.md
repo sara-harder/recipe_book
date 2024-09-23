@@ -1,4 +1,4 @@
-Process:
+### Process:
 
 I started by creating empty react and react native projects in two separate folders, for web and mobile.
 
@@ -59,7 +59,7 @@ I added the AddRecipe page on mobile next. This was simpler, because I was able 
 
 
 
-Stretch Goals:
+### Stretch Goals:
 
 Have the ingredients follow along with the directions. When the user clicks a direction, the ingredients jump next to it, and highlight the ingredients needed for the direction
 
