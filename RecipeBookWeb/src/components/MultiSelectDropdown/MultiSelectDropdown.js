@@ -252,7 +252,7 @@ function  MultiSelectDropdown ({data, selected, setSelected, validated=false}) {
         </div>
 
         {validated == true && selected.size == 0 ? 
-            <div className="text-danger fs-8 p-1 ps-2">
+            <div className="text-danger fs-7 p-1 ps-2">
                 Please select at least one category
             </div> 
         : null}

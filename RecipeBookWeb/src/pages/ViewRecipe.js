@@ -47,12 +47,12 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
                 </Row>
             : null }
             <Row className={[recipe_round, 'bg-color3 p-3 pt-4 g-0 fs-5']}>
-                <Col xs={5} md={4} lg={3}>
-                    <h4 className='fw-bold px-3'>Ingredients:</h4>
+                <Col xs={5} md={4} lg={3} className='overflow-hidden'>
+                    <h5 className='fw-bold px-3'>Ingredients:</h5>
                     <ul className='list-unstyled'>
                         {ingredients.map((item, index) => 
                             <li className='row' key={index}>
-                                <Col className='col-5 right' >{checkFraction(item.quantity)}{item.unit}</Col>
+                                <Col className='col-5 right text-nowrap overflow-hidden' >{checkFraction(item.quantity)}{item.unit}</Col>
                                 <Col className='col-7 left' >{item.name}</Col>
                             </li>
                         )}
@@ -60,10 +60,10 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
                 </Col>
 
                 <Col xs={7} md={8} lg={9} className='border-start border-success px-3'>
-                    <h4 className='fw-bold px-3'>Directions:</h4>
+                    <h5 className='fw-bold px-3'>Directions:</h5>
                     <ul>
                         {recipe.directions.map((item, index) => 
-                            <li key={index}>{item}</li>
+                            <li key={index} className='fs-55'>{item}</li>
                         )}
                     </ul>
                 </Col>
