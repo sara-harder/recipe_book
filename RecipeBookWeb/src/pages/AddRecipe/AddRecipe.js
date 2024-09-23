@@ -73,11 +73,28 @@ function AddRecipe({setHeader}) {
 
     const [name, setName] = useState('')
     const [portions, setPortions] = useState(4)
+    const [imageName, setImage] = useState('')
+    const [imageFile, setFile] = useState('')
+    const [source, setSource] = useState('')
     const [categories, setCategories] = useState(new Set())
     const [ingredients, setIngredients] = useState([new Ingredient("")])
     const [directions, setDirections] = useState([""])
-    const [image, setImage] = useState('')
-    const [source, setSource] = useState('')
+
+    /* not in use atm: need to use alternate server for uploading images to database
+    // read the image file and add it to the database
+    function readImageFile(fileInput) {
+    // function source: https://mdbootstrap.com/docs/standard/extended/file-input-image/
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+    
+            reader.onload = function(e) {
+                setFile(e.target.result)
+            };
+    
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+    }
+    */
 
     const [validated, setValidated] = useState(false)
     const validateRecipe = () => {
@@ -95,7 +112,7 @@ function AddRecipe({setHeader}) {
     const createRecipe = async () => {
         if (validateRecipe() == false) return
         const new_recipe = await recipe_funcs.addRecipe(name, portions, ingredients.slice(0, ingredients.length-1), 
-                    directions.slice(0, directions.length-1), image, source)
+                    directions.slice(0, directions.length-1), imageName.replace("C:\\fakepath\\", "../images/"), source)
 
         // connect the recipe to the chosen categories
         for (const cat of categories) {
@@ -144,6 +161,44 @@ function AddRecipe({setHeader}) {
                             </Form.Group>
                         </Col>
                     </Row></Col></Row>
+
+                    <Row className='pe-0'><Col xs={11} className='pe-0'><Row>
+                        <Col xs={5} className='pe-1'>
+                            <Form.Group className="mb-4" controlId="recipeImage">
+                                <Form.Label>Image</Form.Label>
+                                <Form.Control 
+                                    type="file" 
+                                    value={imageName}
+                                    onChange={(e) => {
+                                        setImage(e.target.value)
+                                        // readImageFile(e.target)
+                                    }}
+                                    required
+                                />
+                                <Form.Control.Feedback type="invalid" className='ps-2'>
+                                    Please provide an image
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+
+                        <Col xs={7} className='ps-1'>
+                            <Form.Group className="mb-4" controlId="recipeSource">
+                                <Form.Label>Recipe Source</Form.Label>
+                                <Form.Control 
+                                    type="source" 
+                                    placeholder="URL, (last name) family recipe, recipe book..." 
+                                    value={source}
+                                    onChange={(e) => setSource(e.target.value)}
+                                    required
+                                />
+                                <Form.Control.Feedback type="invalid" className='ps-2'>
+                                    Please add a source
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+                    </Row></Col></Row>
+
+                    <Row className='p-3'></Row>
 
                     <Row className='pe-0'><Col xs={11} className='pe-0'>
                         <CategorySelector selected={categories} setSelected={setCategories} validated={validated}/>

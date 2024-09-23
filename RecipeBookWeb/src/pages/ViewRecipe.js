@@ -22,7 +22,7 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
 
     useEffect(() => {
         setHeader(recipe.name)
-    }, [])
+    }, [recipe])
     setRecipe(recipe)
 
     const ingredients = recipe.ingredients
@@ -38,7 +38,7 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
     if (recipe.image) recipe_round = "rounded-bottom"
 
     return(
-        <Container fluid className='mt-4'>
+        <Container fluid className='mt-4 mb-5'>
             {recipe.image ? 
                 <Row className='g-0'>
                     <Col>
@@ -52,14 +52,14 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
                     <ul className='list-unstyled'>
                         {ingredients.map((item, index) => 
                             <li className='row' key={index}>
-                                <Col className='col-4 right' >{checkFraction(item.quantity)}{item.unit}</Col>
-                                <Col className='col-8 left' >{item.name}</Col>
+                                <Col className='col-5 right' >{checkFraction(item.quantity)}{item.unit}</Col>
+                                <Col className='col-7 left' >{item.name}</Col>
                             </li>
                         )}
                     </ul>
                 </Col>
 
-                <Col xs={7} md={8} lg={9} className='border-start border-primary px-3'>
+                <Col xs={7} md={8} lg={9} className='border-start border-success px-3'>
                     <h4 className='fw-bold px-3'>Directions:</h4>
                     <ul>
                         {recipe.directions.map((item, index) => 

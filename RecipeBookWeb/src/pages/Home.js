@@ -26,7 +26,7 @@ const Recipe = ({name, image, nav}) => {
     if (image) {
         return(
             <Card onClick={nav}>
-                <Card.Img variant="top" src={image} />
+                <Card.Img variant="top" src={image} className='recipe_thumb'/>
                 <Card.Body className='card-body rounded-bottom'>
                         <Card.Title className="h5 text-center text-white">{name}</Card.Title>
                 </Card.Body>
@@ -37,7 +37,7 @@ const Recipe = ({name, image, nav}) => {
     return(
         <Card onClick={nav}>
             <Card.Body className='card-body rounded'>
-                    <Card.Title className="fs-4 text-center text-white">{name}</Card.Title>
+                    <Card.Title className="pt-2 fs-4 text-center text-white">{name}</Card.Title>
             </Card.Body>
         </Card>
     )
