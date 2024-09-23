@@ -9,6 +9,8 @@ import Categories from './pages/Categories';
 import RecipeList from './pages/RecipeList';
 import ViewRecipe from './pages/ViewRecipe';
 
+import AddRecipe from './pages/AddRecipe/AddRecipe';
+
 // component imports
 import ScrollToTop from './components/ScrollToTop';
 import Header from './components/Header';
@@ -25,19 +27,21 @@ function App() {
 
   return (
     <div className="App">
-      <Header header={header} favorite={favorite} setFavorite={setFavorite} recipe={recipe} />
+      <Router>
+        <Header header={header} favorite={favorite} setFavorite={setFavorite} recipe={recipe} />
 
-      <body className="App-body container-fluid pt-7">
-        <Router>
+        <body className="App-body container-fluid pt-7">
           <ScrollToTop />
           <Routes>
             <Route path="/" exact element={<HomePage setHeader={setHeader}/>} />
             <Route path="/categories" element={<Categories setHeader={setHeader}/>} />
             <Route path="/recipes" element={<RecipeList setHeader={setHeader}/>} />
             <Route path="/view-recipe" element={<ViewRecipe setHeader={setHeader} setRecipe={setRecipe} setFavorite={setFavorite}/>} />
+
+            <Route path="/add-recipe" element={<AddRecipe setHeader={setHeader}/>} />
           </Routes>
-        </Router>
-      </body>
+        </body>
+      </Router>
     </div>
   );
 }

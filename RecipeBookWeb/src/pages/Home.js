@@ -47,7 +47,7 @@ const TitleRow = ({title, nav}) => {
     // title and see all button
     return(
         <Row className="justify-content-between" xl={12}>
-            <Col><h2 className="fw-bold">{title}</h2></Col>
+            <Col xs={9} md={10} xxl={11}><h2 className="fw-bold">{title}</h2></Col>
             <Col>
                 <h5 className="text-end py-3" onClick={nav}>See All</h5>
             </Col>
@@ -68,8 +68,8 @@ const HorizontalRecipe = ({title, nav}) => {
     useEffect(() =>{
         const getUserRecipes = async ()=> {
             let ids;
-            if (title == favorites) ids = user.favorites.slice(0, 5)
-            else ids = user.recents.slice(0, 5)
+            if (title == favorites) ids = user.favorites.slice(0, 6)
+            else ids = user.recents.slice(0, 6)
 
             const data = []
             for (const id of ids) {
@@ -138,7 +138,9 @@ const HorizontalRecipe = ({title, nav}) => {
 }
 
 function HomePage({setHeader}) {
-    setHeader("My Recipes")
+    useEffect(() => {
+        setHeader("My Recipes")
+    }, [])
     const navigate = useNavigate()
 
     return(

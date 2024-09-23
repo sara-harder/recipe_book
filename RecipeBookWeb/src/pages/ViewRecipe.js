@@ -20,7 +20,9 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
     const location = useLocation();
     const recipe = location.state.recipe
 
-    setHeader(recipe.name)
+    useEffect(() => {
+        setHeader(recipe.name)
+    }, [])
     setRecipe(recipe)
 
     const ingredients = recipe.ingredients
@@ -30,7 +32,7 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
 
     useEffect(()=>{
         setFavorite(favorites.includes(recipe._id))
-    }, [])
+    }, [recipe])
 
     let recipe_round = "rounded"
     if (recipe.image) recipe_round = "rounded-bottom"

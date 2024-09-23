@@ -1,5 +1,6 @@
-let PORT = 5001;
-let url = "http://10.0.2.2:" + PORT
+const URL = require("./connection")
+
+let url = URL;
 
 function resetPort (port) {
 // used to set the correct port during testing

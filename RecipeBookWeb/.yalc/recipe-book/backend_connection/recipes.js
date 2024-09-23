@@ -1,5 +1,6 @@
-let PORT = 5001;
-let url = "http://localhost:" + PORT
+const URL = require("./connection")
+
+let url = URL;
 
 function resetPort (port) {
 // used to set the correct port during testing
@@ -55,6 +56,7 @@ async function getRecipe (recipe_id) {
 async function searchForRecipe (search) {
 // returns a list of recipes that match the provided search
     let found_recipes;
+    if (search.length == 0) return undefined
     try {
         const response = await fetch(url + `/recipes/search/${search}`)
         found_recipes = await response.json()

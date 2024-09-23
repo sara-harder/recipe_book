@@ -1,7 +1,7 @@
 // react imports
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 
 // component imports
@@ -15,7 +15,9 @@ function Categories({setHeader}) {
     const location = useLocation();
     const flavor_type = location.state.flavor
 
-    setHeader(flavor_type + " Recipes")
+    useEffect(() => {
+        setHeader(flavor_type + " Recipes")
+    }, [])
 
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);

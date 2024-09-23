@@ -1,0 +1,37 @@
+.center-vertical{
+    @extend .d-flex;
+    @extend .align-items-center;
+}
+
+.center-content{
+    @extend .d-flex;
+    @extend .align-items-center;
+    @extend .justify-content-center;
+}
+
+.multi-select-dropdown-button{
+    @extend .center-content;
+    @extend .border-start;
+    @extend .rounded-end;
+}
+
+.multi-select-selected-items{
+    @extend .center-vertical;
+    @extend .py-1;
+    @extend .pe-1;
+    @extend .w-auto;
+    @extend .border;
+    @extend .rounded;
+}
+
+.mutli-select-dropdown-list{
+    @extend .position-absolute;
+    @extend .z-1;
+    @extend .px-3;
+    @extend .py-2;
+    @extend .rounded;
+    @extend .shadow;
+    @extend .list-unstyled;
+}
+
+@import '~bootstrap/scss/bootstrap';

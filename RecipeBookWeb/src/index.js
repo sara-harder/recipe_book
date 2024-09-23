@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 // bootstrap imports
-import './App.scss';
+import './styling/App.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // function imports

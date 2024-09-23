@@ -11,6 +11,22 @@
 }
 
 .search-bar {
-    width: 70% !important;
+    width: 100% !important;
     min-width: 100px;
+}
+
+.search-results {
+    width: 100%;
+    max-height: 250px;
+    
+    color: black;
+    background-color: #f5f5f5;
+    border: 1px solid #c5c5c5;
+
+    text-align: left;
+    align-items: left;
+    justify-content: left;
+
+    flex: 1;
+    overflow: auto;
 }
