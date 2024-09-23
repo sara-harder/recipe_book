@@ -276,6 +276,12 @@ describe("RECIPE_CAT CONTROLLER TESTS", () => {
         )
     })
 
+    performSyncTest("Count all recipes in a category", async () => {
+        const response = await fetch(`${proxy}/recipe-in-category/recipes/count/${category_id}`)
+        const res = await response.json()
+        expect(res.count).toEqual(2)
+    })
+
     performSyncTest("Get all recipes for a category", async () => {
         const response = await fetch(`${proxy}/recipe-in-category/recipes/${category_id}`)
         const recipes = await response.json()

@@ -16,6 +16,12 @@ reccatRouter.post("/", asyncHandler(async(req, res, next) => {
     res.type("application/json").status(201).send(recipe_cat)
 }))
 
+reccatRouter.get('/recipes/count/:category', asyncHandler(async(req, res, next) => {
+    // checks if a category is empty of recipes, returns num of recipes in category
+    const results = await recipe_cats.getAllRecipeCategories({category: req.params.category})
+    res.type("application/json").status(200).send({count: results.length})
+}))
+
 reccatRouter.get("/recipes/:category", asyncHandler(async(req, res, next) => {
     // returns the all of the recipes in the specified category
     const results = await recipe_cats.getAllRecipeCategories({category: req.params.category})

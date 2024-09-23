@@ -25,6 +25,7 @@ yarn-error.log*
 # yalc package
 .yalc/recipe-book/.env
 .yalc/recipe-book/tests/
+.yalc/recipe-book/node_modules/
 
 
 # local images

@@ -8,7 +8,7 @@ import { useLocation } from 'react-router-dom';
 import ListPage from '../components/ListPage';
 
 // function imports
-import { category_funcs } from 'recipe-book';
+import { category_funcs, rec_cat_funcs } from 'recipe-book';
 
 function Categories({setHeader}) {
     const navigate = useNavigate();
@@ -28,7 +28,13 @@ function Categories({setHeader}) {
     useEffect(() =>{
         const getCategories = async ()=> {
             const categories = await category_funcs.getFlavorType(flavor_type)
-            setData(categories)
+
+            const cats = []
+            for (const category of categories) {
+                const len = await rec_cat_funcs.countRecipes(category._id)
+                if (len != 0) cats.push(category)
+            }
+            setData(cats)
 
             setLoading(false)
         }

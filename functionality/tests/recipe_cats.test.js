@@ -159,6 +159,11 @@ describe("RECIPES IN CATEGORIES FUNCTIONALITY TESTS", () => {
     })
 
     performSyncTest("Get all recipes in a category", async () => {
+        const count = await rec_cat_funcs.countRecipes(category_id)
+        expect(count).toEqual(2)
+    })
+
+    performSyncTest("Get all recipes in a category", async () => {
         const results = await rec_cat_funcs.getRecipes(category_id)
         expect(
             results
