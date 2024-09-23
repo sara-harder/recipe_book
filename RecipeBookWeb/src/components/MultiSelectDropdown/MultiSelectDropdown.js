@@ -67,7 +67,7 @@ const SearchInput = ({showDropdown, selected, search, setSearch, validated}) => 
                 style={{width: inputWidth}}
                 id='multi-select search'
                 value={search} 
-                placeholder={selected.size == 0 ? "Select Categories" : ""}
+                placeholder={selected.size == 0 ? "Select categories" : ""}
                 onChange={(e) => {
                     setSearch(e.target.value)
                     showDropdown()

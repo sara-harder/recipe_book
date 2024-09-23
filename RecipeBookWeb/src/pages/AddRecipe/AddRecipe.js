@@ -154,7 +154,7 @@ function AddRecipe({setHeader}) {
 
                     <Row>
                         <Col className='right py-5 px-4'>
-                            <Button variant="success" type="button" onClick={() => createRecipe()}>
+                            <Button variant="success" type="button" className='bg-color5 border-color5' onClick={() => createRecipe()}>
                                 Add Recipe
                             </Button>
                         </Col>
