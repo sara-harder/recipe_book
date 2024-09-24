@@ -68,6 +68,7 @@ const recipe_2 = {
     portions: 4,
     ingredients: [new Ingredient("Pasta", 360, "g"), new Ingredient("Pecorino", 100, "g")],
     directions: ["Boil water", "Add salt", "Cook the pasta", "Grate the cheese"],
+    connections: {2: [0], 3: [1]},
     source: "website/carbonara"
 }
 const category = {
@@ -91,7 +92,7 @@ describe("CREATE TEST DATA", () => {
     })
 
     performSyncTest("Create recipe_2", async () => {
-        const recipe = await recipes.createRecipe(recipe_2.name, recipe_2.portions, recipe_2.ingredients, recipe_2.directions, recipe_2.image, recipe_2.source)
+        const recipe = await recipes.createRecipe(recipe_2.name, recipe_2.portions, recipe_2.ingredients, recipe_2.directions, recipe_2.connections, recipe_2.image, recipe_2.source)
         expect(
             recipe
         ).toMatchObject(

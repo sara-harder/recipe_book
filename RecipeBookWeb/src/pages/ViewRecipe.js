@@ -25,9 +25,6 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
     }, [recipe])
     setRecipe(recipe)
 
-    const ingredients = recipe.ingredients
-
-
     const favorites = useSelector(state=> state.user.value.favorites);
 
     useEffect(()=>{
@@ -50,7 +47,7 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
                 <Col xs={5} md={4} lg={3} className='overflow-hidden'>
                     <h5 className='fw-bold px-3'>Ingredients:</h5>
                     <ul className='list-unstyled'>
-                        {ingredients.map((item, index) => 
+                        {recipe.ingredients.map((item, index) => 
                             <li className='row' key={index}>
                                 <Col className='col-5 right text-nowrap overflow-hidden' >{checkFraction(item.quantity)}{item.unit}</Col>
                                 <Col className='col-7 left' >{item.name}</Col>
