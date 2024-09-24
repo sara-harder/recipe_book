@@ -28,17 +28,18 @@ const CategorySelector = ({selected, setSelected, validated}) => {
     const location = useLocation();
 
     // Get the categories for the dropdown
-    const [categories, setCategories] = useState([])
+    const [savory, setSavory] = useState([])
+    const [sweet, setSweet] = useState([])
     useEffect(() =>{
         const getCategories = async ()=> {
-            const savory = await category_funcs.getFlavorType("Savory")
-            const sweet = await category_funcs.getFlavorType("Sweet")
-            const cats = savory.concat(sweet)
-            setCategories(cats)
+            const sav = await category_funcs.getFlavorType("Savory")
+            setSavory(sav)
+            const sw = await category_funcs.getFlavorType("Sweet")
+            setSweet(sw)
 
             // add any preselected categories to the selected list
             if (location.state){
-                for (const item of cats){
+                for (const item of savory.concat(sweet)){
                     if (item.name == location.state.precategory.name) {
                         setSelected(new Set([item]))
             }}}
@@ -49,7 +50,7 @@ const CategorySelector = ({selected, setSelected, validated}) => {
     return(
         <Form.Group className="mb-4 position-relative m-0" controlId="recipeCategory">
             <Form.Label>Category</Form.Label>
-            <MultiSelectDropdown data={categories} selected={selected} setSelected={setSelected} validated={validated}/>
+            <MultiSelectDropdown data_lists={[{label: "Savory", list: savory}, {label: "Sweet", list: sweet}]} selected={selected} setSelected={setSelected} validated={validated}/>
         </Form.Group>
             
     )
