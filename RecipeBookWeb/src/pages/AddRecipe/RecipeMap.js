@@ -19,6 +19,7 @@ import { checkFraction } from 'recipe-book/helpers';
 
 
 const Lines = ({ingr, dir}) => {
+    // draw the lines between the radio buttons
     const ingredient = document.getElementById(`ingredient-${ingr}`)
     const direction = document.getElementById(`direction-${dir}`)
 
@@ -97,6 +98,7 @@ function MapPage({setHeader}) {
     };
     const ref = useClickOutsideDropdown()
 
+    
     // add the new recipe to the database
     const createRecipe = async () => {
         const final_connections = {}
@@ -108,8 +110,8 @@ function MapPage({setHeader}) {
                 return
             }
 
-            if (final_connections[dir]) final_connections[dir].push(ingr)
-            else final_connections[dir] = [ingr]
+            if (final_connections[dir]) final_connections[dir].push(Number(ingr))
+            else final_connections[dir] = [Number(ingr)]
         }
 
         const new_recipe = await recipe_funcs.addRecipe(recipe.name, recipe.portions, recipe.ingredients, recipe.directions, final_connections, recipe.image, recipe.source)

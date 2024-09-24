@@ -9,6 +9,8 @@ import Categories from './pages/Categories';
 import RecipeList from './pages/RecipeList';
 import ViewRecipe from './pages/ViewRecipe';
 
+import StartCooking from './pages/StartCooking';
+
 import AddRecipe from './pages/AddRecipe/AddRecipe';
 import MapPage from './pages/AddRecipe/RecipeMap';
 
@@ -38,6 +40,8 @@ function App() {
             <Route path="/categories" element={<Categories setHeader={setHeader}/>} />
             <Route path="/recipes" element={<RecipeList setHeader={setHeader}/>} />
             <Route path="/view-recipe" element={<ViewRecipe setHeader={setHeader} setRecipe={setRecipe} setFavorite={setFavorite}/>} />
+
+            <Route path="/cooking" element={<StartCooking setHeader={setHeader}/>} />
 
             <Route path="/add-recipe" element={<AddRecipe setHeader={setHeader}/>} />
             <Route path="/add-recipe/map-recipe" element={<MapPage setHeader={setHeader}/>} />

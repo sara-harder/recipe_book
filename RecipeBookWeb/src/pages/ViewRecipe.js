@@ -1,7 +1,7 @@
 // react imports
 import React from 'react';
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 // bootstrap imports
@@ -9,6 +9,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/esm/Row';
 import Col from 'react-bootstrap/esm/Col';
 import Image from 'react-bootstrap/Image';
+import Button from 'react-bootstrap/esm/Button';
 
 // style imports
 import '../styling/Recipe.css';
@@ -17,6 +18,7 @@ import '../styling/Recipe.css';
 import { checkFraction } from 'recipe-book/helpers';
 
 function ViewRecipe({setHeader, setRecipe, setFavorite}) {
+    const navigate = useNavigate();
     const location = useLocation();
     const recipe = location.state.recipe
 
@@ -43,7 +45,7 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
                     </Col>
                 </Row>
             : null }
-            <Row className={[recipe_round, 'bg-color3 p-3 pt-4 g-0 fs-5']}>
+            <Row className={[recipe_round, 'bg-color3 p-3 pt-4 g-0 fs-55']}>
                 <Col xs={5} md={4} lg={3} className='overflow-hidden'>
                     <h5 className='fw-bold px-3'>Ingredients:</h5>
                     <ul className='list-unstyled'>
@@ -60,9 +62,16 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
                     <h5 className='fw-bold px-3'>Directions:</h5>
                     <ul>
                         {recipe.directions.map((item, index) => 
-                            <li key={index} className='fs-55'>{item}</li>
+                            <li key={index}>{item}</li>
                         )}
                     </ul>
+                </Col>
+            </Row>
+            <Row>
+                <Col className='py-5 px-4 center-content'>
+                    <Button variant="success" type="button" size='lg' className='bg-color5 border-color5' onClick={() => { if (recipe.connections)navigate('/cooking', {state: {recipe: recipe}})}}>
+                        Start Cooking!
+                    </Button>
                 </Col>
             </Row>
         </Container>
