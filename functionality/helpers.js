@@ -35,7 +35,13 @@ function generateRandoms(int, result_length) {
 
 async function getRandomRecipes(flavor_type) {
 // takes a flavor type and returns 5 random recipes from random categories in that flavor_type
-    const categories = await category_funcs.getFlavorType(flavor_type)
+    const data = await category_funcs.getFlavorType(flavor_type)
+
+    const categories = []
+    for (const category of data) {
+        const len = await rec_cat_funcs.countRecipes(category._id)
+        if (len != 0) categories.push(category)
+    }
 
     let len = 6
     if (categories.length < len) len = categories.length
@@ -47,8 +53,6 @@ async function getRandomRecipes(flavor_type) {
     for (const r of rands) {
         const cat = categories[r]
         const recipes = await rec_cat_funcs.getRecipes(cat._id)
-
-        if (recipes == undefined) continue
 
         let i = Math.floor(Math.random() * recipes.length)
         let recipe = recipes[i]

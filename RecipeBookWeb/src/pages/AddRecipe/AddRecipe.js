@@ -28,17 +28,18 @@ const CategorySelector = ({selected, setSelected, validated}) => {
     const location = useLocation();
 
     // Get the categories for the dropdown
-    const [categories, setCategories] = useState([])
+    const [savory, setSavory] = useState([])
+    const [sweet, setSweet] = useState([])
     useEffect(() =>{
         const getCategories = async ()=> {
-            const savory = await category_funcs.getFlavorType("Savory")
-            const sweet = await category_funcs.getFlavorType("Sweet")
-            const cats = savory.concat(sweet)
-            setCategories(cats)
+            const sav = await category_funcs.getFlavorType("Savory")
+            setSavory(sav)
+            const sw = await category_funcs.getFlavorType("Sweet")
+            setSweet(sw)
 
             // add any preselected categories to the selected list
             if (location.state){
-                for (const item of cats){
+                for (const item of savory.concat(sweet)){
                     if (item.name == location.state.precategory.name) {
                         setSelected(new Set([item]))
             }}}
@@ -49,7 +50,7 @@ const CategorySelector = ({selected, setSelected, validated}) => {
     return(
         <Form.Group className="mb-4 position-relative m-0" controlId="recipeCategory">
             <Form.Label>Category</Form.Label>
-            <MultiSelectDropdown data={categories} selected={selected} setSelected={setSelected} validated={validated}/>
+            <MultiSelectDropdown data_lists={[{label: "Savory", list: savory}, {label: "Sweet", list: sweet}]} selected={selected} setSelected={setSelected} validated={validated}/>
         </Form.Group>
             
     )
@@ -73,11 +74,28 @@ function AddRecipe({setHeader}) {
 
     const [name, setName] = useState('')
     const [portions, setPortions] = useState(4)
+    const [imageName, setImage] = useState('')
+    const [imageFile, setFile] = useState('')
+    const [source, setSource] = useState('')
     const [categories, setCategories] = useState(new Set())
     const [ingredients, setIngredients] = useState([new Ingredient("")])
     const [directions, setDirections] = useState([""])
-    const [image, setImage] = useState('')
-    const [source, setSource] = useState('')
+
+    /* not in use atm: need to use alternate server for uploading images to database
+    // read the image file and add it to the database
+    function readImageFile(fileInput) {
+    // function source: https://mdbootstrap.com/docs/standard/extended/file-input-image/
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+    
+            reader.onload = function(e) {
+                setFile(e.target.result)
+            };
+    
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+    }
+    */
 
     const [validated, setValidated] = useState(false)
     const validateRecipe = () => {
@@ -95,7 +113,7 @@ function AddRecipe({setHeader}) {
     const createRecipe = async () => {
         if (validateRecipe() == false) return
         const new_recipe = await recipe_funcs.addRecipe(name, portions, ingredients.slice(0, ingredients.length-1), 
-                    directions.slice(0, directions.length-1), image, source)
+                    directions.slice(0, directions.length-1), imageName.replace("C:\\fakepath\\", "../images/"), source)
 
         // connect the recipe to the chosen categories
         for (const cat of categories) {
@@ -145,6 +163,44 @@ function AddRecipe({setHeader}) {
                         </Col>
                     </Row></Col></Row>
 
+                    <Row className='pe-0'><Col xs={11} className='pe-0'><Row>
+                        <Col xs={5} className='pe-1'>
+                            <Form.Group className="mb-4" controlId="recipeImage">
+                                <Form.Label>Image</Form.Label>
+                                <Form.Control 
+                                    type="file" 
+                                    value={imageName}
+                                    onChange={(e) => {
+                                        setImage(e.target.value)
+                                        // readImageFile(e.target)
+                                    }}
+                                    required
+                                />
+                                <Form.Control.Feedback type="invalid" className='ps-2'>
+                                    Please provide an image
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+
+                        <Col xs={7} className='ps-1'>
+                            <Form.Group className="mb-4" controlId="recipeSource">
+                                <Form.Label>Recipe Source</Form.Label>
+                                <Form.Control 
+                                    type="source" 
+                                    placeholder="URL, (last name) family recipe, recipe book..." 
+                                    value={source}
+                                    onChange={(e) => setSource(e.target.value)}
+                                    required
+                                />
+                                <Form.Control.Feedback type="invalid" className='ps-2'>
+                                    Please add a source
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+                    </Row></Col></Row>
+
+                    <Row className='p-3'></Row>
+
                     <Row className='pe-0'><Col xs={11} className='pe-0'>
                         <CategorySelector selected={categories} setSelected={setCategories} validated={validated}/>
                     </Col></Row>
@@ -154,7 +210,7 @@ function AddRecipe({setHeader}) {
 
                     <Row>
                         <Col className='right py-5 px-4'>
-                            <Button variant="success" type="button" onClick={() => createRecipe()}>
+                            <Button variant="success" type="button" className='bg-color5 border-color5' onClick={() => createRecipe()}>
                                 Add Recipe
                             </Button>
                         </Col>

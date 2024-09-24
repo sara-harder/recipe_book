@@ -67,7 +67,7 @@ const SearchInput = ({showDropdown, selected, search, setSearch, validated}) => 
                 style={{width: inputWidth}}
                 id='multi-select search'
                 value={search} 
-                placeholder={selected.size == 0 ? "Select Categories" : ""}
+                placeholder={selected.size == 0 ? "Select categories" : ""}
                 onChange={(e) => {
                     setSearch(e.target.value)
                     showDropdown()
@@ -119,11 +119,26 @@ const DropdownButton = ({showDropdown, hide_list, setHidden}) =>  {
     )
 }
 
-const DropdownList = ({data, showDropdown, hide_list, selected, updateSelected}) => {
+const DropdownList = ({data_lists, showDropdown, hide_list, selected, updateSelected}) => {
     const [highlightIdx, setHighlight] = useState(-1)
+    /* jump to section in dropdown, not in use yet
+    const [jump, showJump] = useState(false)
+    <Col className='w-auto fs-7 align-bottom border rounded bg-white' onClick={() => showJump(!jump)}>
+        <div>Jump to...</div>
+        {jump ?
+            <div className='position-absolute z-2 mt-1 border rounded bg-white'>
+                {data_lists.map((data, index) => 
+                    <div key={index} className='text-center border border-dark-subtle rounded px-2 py-1 m-1'>
+                        {data.label}
+                    </div>
+                )}
+            </div>
+        : null }
+    </Col>
+    */
 
     // show msg if search results yield nothing
-    if (data.length == 0) return(
+    if (data_lists.length == 0) return(
         <div className="mutli-select-dropdown-list" hidden={hide_list} onClick={() => showDropdown()}>
             <div className='ps-1 py-1 text-muted'>
                 No results found
@@ -134,36 +149,45 @@ const DropdownList = ({data, showDropdown, hide_list, selected, updateSelected})
     // display all categories that match search results
     return(
         <ul className="mutli-select-dropdown-list" hidden={hide_list} onClick={() => showDropdown()}>
-            {(data).map((item, index) =>
-                <li key={index}>
-                    <Row className='rounded' 
-                        style={highlightIdx == index ? {background: '#e0e0e0'} : {}}
-                        onMouseEnter={() => setHighlight(index)} 
-                        onMouseLeave={() => setHighlight(-1)}
-                    >
-                        <Col xs={1} className='py-1 pe-0 w-auto center-vertical'>
-                            <Form.Check
-                                type='checkbox'
-                                id={`${item.name} checkbox`}
-                                onChange={(e) => updateSelected(item, e.target.checked)}
-                                checked={selected.has(item)}
-                            />
-                        </Col>
-                        <Col className='pe-0'>
-                            <label className='py-1 w-100' htmlFor={`${item.name} checkbox`}>
-                                {item.name}
-                            </label>
+            {data_lists.map((data, index) => { return (
+                <>
+                    <Row className={`pb-1 w-100 ${index==0 ? 'pt-1' : 'mt-3 pt-3 border-top border-dark-subtle'}`}>
+                        <Col xs={10} className='fw-bold text-dark-emphasis'>
+                            {data.label}
                         </Col>
                     </Row>
-                </li>
-            )}
+                    {(data.list).map((item, index) =>
+                        <li key={index}>
+                            <Row className='rounded' 
+                                style={highlightIdx == index ? {background: '#e0e0e0'} : {}}
+                                onMouseEnter={() => setHighlight(index)} 
+                                onMouseLeave={() => setHighlight(-1)}
+                            >
+                                <Col xs={1} className='py-1 pe-0 w-auto center-vertical'>
+                                    <Form.Check
+                                        type='checkbox'
+                                        id={`${item.name} checkbox`}
+                                        onChange={(e) => updateSelected(item, e.target.checked)}
+                                        checked={selected.has(item)}
+                                    />
+                                </Col>
+                                <Col className='pe-0'>
+                                    <label className='py-1 w-100' htmlFor={`${item.name} checkbox`}>
+                                        {item.name}
+                                    </label>
+                                </Col>
+                            </Row>
+                        </li>
+                    )}
+                </>
+            )})}
         </ul>
     )
 }
 
 // takes an array of data, a set of selected items, and a function to update the selected items
 // to function properly, utilize react's useState() function to define [selected, setSelected]
-function  MultiSelectDropdown ({data, selected, setSelected, validated=false}) {
+function  MultiSelectDropdown ({data_lists, selected, setSelected, validated=false}) {
     // updates the list of selected items whenever an option is checked or unchecked
     const updateSelected = (item, checked) => {
         const copy = new Set(selected)
@@ -208,23 +232,27 @@ function  MultiSelectDropdown ({data, selected, setSelected, validated=false}) {
     const ref = useClickOutsideDropdown()
 
     const [search, setSearch] = useState("")
-    const [dropdownData, setData] = useState(data)
+    const [dropdownData, setData] = useState(data_lists)
 
 
     // update dropdown list whenever the user searches
     useEffect(() => {
-        const search_results = []
+        const all_search_results = []
 
         // iterate over each category
-        for (const item of data){
-            const name = item.name.toLowerCase()
-            const srch = search.toLowerCase()
-
-            // add category to results if any part of its name contains the search
-            if (name.includes(srch)) search_results.push(item)
+        for (const list of data_lists){
+            const search_results = []
+            for (const item of list.list){
+                const name = item.name.toLowerCase()
+                const srch = search.toLowerCase()
+    
+                // add category to results if any part of its name contains the search
+                if (name.includes(srch)) search_results.push(item)
+            }
+            if(search_results.length > 0) all_search_results.push({label: list.label, list: search_results})
         }
-        setData(search_results)
-    }, [search, data])
+        setData(all_search_results)
+    }, [search, data_lists])
 
     return(
         <>
@@ -244,7 +272,7 @@ function  MultiSelectDropdown ({data, selected, setSelected, validated=false}) {
             </Row>
 
             <DropdownList 
-                data={dropdownData} 
+                data_lists={dropdownData} 
                 showDropdown={showDropdown} 
                 hide_list={hide_list} 
                 selected={selected} 
@@ -252,7 +280,7 @@ function  MultiSelectDropdown ({data, selected, setSelected, validated=false}) {
         </div>
 
         {validated == true && selected.size == 0 ? 
-            <div className="text-danger fs-8 p-1 ps-2">
+            <div className="text-danger fs-7 p-1 ps-2">
                 Please select at least one category
             </div> 
         : null}

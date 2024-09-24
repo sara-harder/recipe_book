@@ -32,6 +32,23 @@ async function connectRecipeCat (recipe, category) {
     return recipe_cat
 }
 
+async function countRecipes (category_id) {
+    // returns the number of recipes in the specified category
+        let count = 0;
+        try {
+            const response = await fetch(url + `/recipe-in-category/recipes/count/${category_id}`)
+            const res = await response.json()
+    
+            if (res.Error) {throw (res.Error)}
+            else count = res.count
+        } catch (error) { 
+            console.error(error)
+            count = -1
+        }
+    
+        return count
+    }
+
 
 async function getRecipes (category_id) {
 // returns a list of recipes in the specified category
@@ -80,4 +97,4 @@ async function deleteRecipeCat (recipe_cat_id) {
     }
 }
 
-module.exports = {connectRecipeCat, getRecipes, getCategories, deleteRecipeCat, resetPort}
+module.exports = {connectRecipeCat, countRecipes, getRecipes, getCategories, deleteRecipeCat, resetPort}

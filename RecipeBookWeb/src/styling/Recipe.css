@@ -1,7 +1,14 @@
 .recipe_img {
     width: 100%;
-    max-height: 300px;
+    max-height: 250px;
 
+    object-fit:cover;
+    object-position: center;
+}
+
+.recipe_thumb {
+    width: 100%;
+    max-height: 70px;
     object-fit:cover;
     object-position: center;
 }

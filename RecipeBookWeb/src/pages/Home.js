@@ -26,7 +26,7 @@ const Recipe = ({name, image, nav}) => {
     if (image) {
         return(
             <Card onClick={nav}>
-                <Card.Img variant="top" src={image} />
+                <Card.Img variant="top" src={image} className='recipe_thumb'/>
                 <Card.Body className='card-body rounded-bottom'>
                         <Card.Title className="h5 text-center text-white">{name}</Card.Title>
                 </Card.Body>
@@ -37,7 +37,7 @@ const Recipe = ({name, image, nav}) => {
     return(
         <Card onClick={nav}>
             <Card.Body className='card-body rounded'>
-                    <Card.Title className="fs-4 text-center text-white">{name}</Card.Title>
+                    <Card.Title className="pt-2 fs-4 text-center text-white">{name}</Card.Title>
             </Card.Body>
         </Card>
     )
@@ -106,15 +106,19 @@ const HorizontalRecipe = ({title, nav}) => {
         navigate("view-recipe", {state:{recipe: recipe}})
     }
 
+    let msg = 'Loading...'
+    if (!loading && title == favorites) msg = 'Check out some sweet or savory recipes below!'
+    if (!loading && title == recents) msg = 'Take a look at some sweet or savory recipes below!'
+
     // Loading row
-    if (loading) {
+    if (loading || recipe_data.length == 0) {
         return(
             <Container fluid className="py-4">
                 <TitleRow title={title} nav={nav} />
 
                 <Row className="no-cards d-flex align-items-center">
                     <Col> 
-                        <h3 className="ms-5"> Loading... </h3>
+                        <h4 className="ms-5"> {msg} </h4>
                     </Col>
                 </Row>
             </Container>

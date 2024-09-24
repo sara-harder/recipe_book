@@ -17,15 +17,24 @@ function ListPage({data, navigate}) {
                 {data.map((item, index) => 
                     <Col className="d-inline-block" key={index}> 
                         <Card onClick={() => navigate(item)}>
-                            <Card.Body className='card-body rounded'>
-                                    {item.name == "New" ? 
-                                        <Card.Title className="fs-4 text-center text-white">
-                                            <PlusSign size="1.5em"/>
-                                        </Card.Title>
-                                    : 
-                                        <Card.Title className="fs-4 text-center text-white">{item.name}</Card.Title>
-                                    }
-                            </Card.Body>
+                            {item.image ? 
+                                <>
+                                <Card.Img variant="top" src={item.image} className='recipe_thumb'/>
+                                <Card.Body className='card-body rounded-bottom'>
+                                        <Card.Title className="h5 text-center text-white">{item.name}</Card.Title>
+                                </Card.Body> 
+                                </>
+                            : 
+                                <Card.Body className='card-body rounded'>
+                                        {item.name == "New" ? 
+                                            <Card.Title className="fs-4 pt-2 text-center text-white">
+                                                <PlusSign size="1.5em"/>
+                                            </Card.Title>
+                                        : 
+                                            <Card.Title className="fs-4 pt-2 text-center text-white">{item.name}</Card.Title>
+                                        }
+                                </Card.Body>
+                            }
                         </Card>
                     </Col>
                 )}

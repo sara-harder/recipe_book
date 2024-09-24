@@ -24,7 +24,7 @@ const getCategory = async(filter) => {
 
 const getAllCategories = async(filter) => {
     // retrieves all the categories marked with the specified flavor_type
-    const query = Category.find(filter)
+    const query = Category.find(filter).sort({'name': 1})
     return query.exec()
 }
 
