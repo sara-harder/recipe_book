@@ -22,7 +22,6 @@ const Hamburger = () => {
                     <Offcanvas.Body>
                         <Nav className="justify-content-end flex-grow-1 px-3 fs-4">
                             <Nav.Link href="/">My Recipes</Nav.Link>
-                            <Nav.Link href="/">Explore New Recipes</Nav.Link>
                             <Nav.Link href="/add-recipe">Add a Recipe</Nav.Link>
                         </Nav>
                     </Offcanvas.Body>

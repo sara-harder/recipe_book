@@ -57,6 +57,7 @@ const recipe_1 = {
     portions: 4,
     ingredients: [new Ingredient("Pasta", 360, "g"), new Ingredient("Tomato Sauce", 100, "g")],
     directions: ["Boil water", "Add salt", "Cook the pasta", "Heat up the tomato sauce"],
+    connections: {2: [0], 3: [1]}
 }
 const recipe_2 = {
     name: "Carbonara",
@@ -64,6 +65,7 @@ const recipe_2 = {
     portions: 4,
     ingredients: [new Ingredient("Pasta", 360, "g"), new Ingredient("Pecorino", 100, "g")],
     directions: ["Boil water", "Add salt", "Cook the pasta", "Grate the cheese"],
+    connections: {2: [0], 3: [1]},
     source: "website/carbonara"
 }
 const category = {
@@ -77,7 +79,7 @@ let recipe_in_cat_1, recipe_in_cat_2;
 // Create the test data
 describe("CREATE TEST DATA", () => {
     performSyncTest("Create recipe_1", async () => {
-        const recipe = await recipe_funcs.addRecipe(recipe_1.name, recipe_1.portions, recipe_1.ingredients, recipe_1.directions)
+        const recipe = await recipe_funcs.addRecipe(recipe_1.name, recipe_1.portions, recipe_1.ingredients, recipe_1.directions, recipe_1.connections)
         expect(
             recipe
         ).toMatchObject(
@@ -87,7 +89,7 @@ describe("CREATE TEST DATA", () => {
     })
 
     performSyncTest("Create recipe_2", async () => {
-        const recipe = await recipe_funcs.addRecipe(recipe_2.name, recipe_2.portions, recipe_2.ingredients, recipe_2.directions, recipe_2.image, recipe_2.source)
+        const recipe = await recipe_funcs.addRecipe(recipe_2.name, recipe_2.portions, recipe_2.ingredients, recipe_2.directions, recipe_2.connections, recipe_2.image, recipe_2.source)
         expect(
             recipe
         ).toMatchObject(

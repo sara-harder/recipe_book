@@ -7,6 +7,7 @@ const recipeSchema = mongoose.Schema({
     portions: { type: Number, required: true },
     ingredients: { type: Object, required: true },
     directions: { type: Object, required: true },
+    connections: { type: Object, required: false },
     source: { type: String, required: false },
 })
 
@@ -14,9 +15,9 @@ const recipeSchema = mongoose.Schema({
 const Recipe = mongoose.model("Recipe", recipeSchema)
 
 
-const createRecipe = async(name, portions, ingredients, directions, image=null,  source=null) => {
+const createRecipe = async(name, portions, ingredients, directions, connections=null, image=null,  source=null) => {
     // uses the Recipe class to create a new recipe object
-    const recipe = new Recipe({name, image, portions, ingredients, directions, source})
+    const recipe = new Recipe({name, image, portions, ingredients, directions, connections, source})
     return recipe.save()
 }
 

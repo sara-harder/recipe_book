@@ -30,9 +30,7 @@
   height: 14px;
   width: 14px;
 }
-::-webkit-scrollbar:vertical{
-  background: white;
-}
+
 ::-webkit-scrollbar-thumb {
   border: 3px solid rgba(0, 0, 0, 0);
   background-clip: padding-box;

@@ -53,6 +53,7 @@ const recipe_1 = {
     portions: 4,
     ingredients: [new Ingredient("Pasta", 360, "g"), new Ingredient("Tomato Sauce", 100, "g")],
     directions: ["Boil water", "Add salt", "Cook the pasta", "Heat up the tomato sauce"],
+    connections: {2: [0], 3: [1]}
 }
 const recipe_2 = {
     name: "Carbonara",
@@ -60,13 +61,15 @@ const recipe_2 = {
     portions: 4,
     ingredients: [new Ingredient("Pasta", 360, "g"), new Ingredient("Pecorino", 100, "g")],
     directions: ["Boil water", "Add salt", "Cook the pasta", "Grate the cheese"],
+    connections: {2: [0], 3: [1]},
     source: "website/carbonara"
 }
 const recipe_3 = {
     name: "Teriyaki",
     portions: 6,
-    ingredients: [new Ingredient("Rice", 300, "g"), new Ingredient("Chicken", 550, "g")],
-    directions: ["Boil water", "Add rice", "Cook on low", "Cook the chicken"],
+    ingredients: [new Ingredient("Rice", 300, "g"), new Ingredient("Chicken", 550, "g"), new Ingredient("Spices", 2, 'tsp')],
+    directions: ["Boil water", "Add rice", "Cook on low", "Cook the chicken with the spices"],
+    connections: {1: [0], 3: [1, 2]},
     source: "website/teriyaki-sauce"
 }
 
@@ -76,7 +79,7 @@ describe("RECIPES FUNCTIONALITY TESTS", () => {
     let id_3;
 
     performSyncTest("Create recipe (no img or src)", async () => {
-        const recipe = await recipe_funcs.addRecipe(recipe_1.name, recipe_1.portions, recipe_1.ingredients, recipe_1.directions)
+        const recipe = await recipe_funcs.addRecipe(recipe_1.name, recipe_1.portions, recipe_1.ingredients, recipe_1.directions, recipe_1.connections)
         expect(
             recipe
         ).toMatchObject(
@@ -86,7 +89,7 @@ describe("RECIPES FUNCTIONALITY TESTS", () => {
     })
 
     performSyncTest("Create recipe (w/ img and src)", async () => {
-        const recipe = await recipe_funcs.addRecipe(recipe_2.name, recipe_2.portions, recipe_2.ingredients, recipe_2.directions, recipe_2.image, recipe_2.source)
+        const recipe = await recipe_funcs.addRecipe(recipe_2.name, recipe_2.portions, recipe_2.ingredients, recipe_2.directions, recipe_2.connections, recipe_2.image, recipe_2.source)
         expect(
             recipe
         ).toMatchObject(
@@ -96,7 +99,7 @@ describe("RECIPES FUNCTIONALITY TESTS", () => {
     })
 
     performSyncTest("Create recipe (w/ src and no img)", async () => {
-        const recipe = await recipe_funcs.addRecipe(recipe_3.name, recipe_3.portions, recipe_3.ingredients, recipe_3.directions, null, recipe_3.source)
+        const recipe = await recipe_funcs.addRecipe(recipe_3.name, recipe_3.portions, recipe_3.ingredients, recipe_3.directions, recipe_3.connections, null, recipe_3.source)
         expect(
             recipe
         ).toMatchObject(
