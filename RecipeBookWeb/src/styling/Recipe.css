@@ -12,3 +12,51 @@
     object-fit:cover;
     object-position: center;
 }
+
+
+.cooking-page {
+    min-height: 75vh;
+    height: 75vh;
+    max-height: 75vh;
+    margin: 0;
+}
+
+
+.cooking-display {
+    height: 85%;
+    position: relative;
+}
+
+.cooking-buttons {
+    height: 15%;
+}
+
+.cooking-begin, .cooking-end {
+    height: 20%;
+}
+
+.cooking-focused {
+    height: 60%;
+}
+
+.cooking-begin:after {
+    content: "";
+    width: 100%;
+    height: 120px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    background: linear-gradient(var(--backgroundColor), rgba(255,255,255,0));
+}
+
+.cooking-end:after {
+    content: "";
+    width: 100%;
+    height: 120px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    background: linear-gradient(rgba(255,255,255,0), var(--backgroundColor));
+}

@@ -44,6 +44,11 @@ $spacers: (
   @extend .justify-content-center;
 }
 
+.align-bottom {
+  @extend .d-flex;
+  @extend .align-items-end
+}
+
 .card-body{
   @extend .bg-color3;
   @extend .center-content;
