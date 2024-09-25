@@ -149,9 +149,9 @@ const DropdownList = ({data_lists, showDropdown, hide_list, selected, updateSele
     // display all categories that match search results
     return(
         <ul className="mutli-select-dropdown-list" hidden={hide_list} onClick={() => showDropdown()}>
-            {data_lists.map((data, index) => { return (
+            {data_lists.map((data, idx) => { return (
                 <>
-                    <Row className={`pb-1 w-100 ${index==0 ? 'pt-1' : 'mt-3 pt-3 border-top border-dark-subtle'}`}>
+                    <Row className={`pb-1 w-100 ${idx==0 ? 'pt-1' : 'mt-3 pt-3 border-top border-dark-subtle'}`}>
                         <Col xs={10} className='fw-bold text-dark-emphasis'>
                             {data.label}
                         </Col>
@@ -159,8 +159,8 @@ const DropdownList = ({data_lists, showDropdown, hide_list, selected, updateSele
                     {(data.list).map((item, index) =>
                         <li key={index}>
                             <Row className='rounded' 
-                                style={highlightIdx == index ? {background: '#e0e0e0'} : {}}
-                                onMouseEnter={() => setHighlight(index)} 
+                                style={highlightIdx[0] == idx && highlightIdx[1] == index ? {background: '#e0e0e0'} : {}}
+                                onMouseEnter={() => setHighlight([idx, index])} 
                                 onMouseLeave={() => setHighlight(-1)}
                             >
                                 <Col xs={1} className='py-1 pe-0 w-auto center-vertical'>

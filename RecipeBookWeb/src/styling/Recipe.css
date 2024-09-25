@@ -36,7 +36,7 @@
 }
 
 .cooking-focused {
-    height: 60%;
+    min-height:60%;
 }
 
 .cooking-begin:after {
@@ -64,6 +64,6 @@
 #invisible-scroll {
     position: absolute;
     top: 0;
-    z-index: 1;
+    z-index: 3;
     height: 85%;
 }

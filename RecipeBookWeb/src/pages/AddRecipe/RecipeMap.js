@@ -122,8 +122,7 @@ function MapPage({setHeader}) {
         }
 
         // go back to the page before add recipe
-        navigate(-1)
-        navigate(-1)
+        navigate("/")
     }
 
     return(

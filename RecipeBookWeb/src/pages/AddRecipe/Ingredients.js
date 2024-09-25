@@ -97,7 +97,7 @@ const IngredientsList = ({Ingredient, ingredients, setIngredients}) => {
                                     className={`number-input bg-white`}
                                     placeholder="Quantity" 
                                     value={item.quantity}
-                                    onChange={(e) => setQuantity(e.target.value, index)}
+                                    onChange={(e) => setQuantity(Number(e.target.value), index)}
                                     disabled={item.name == ''}
                                     style={item.name == '' ? {opacity: .5} : {}}
                                 />

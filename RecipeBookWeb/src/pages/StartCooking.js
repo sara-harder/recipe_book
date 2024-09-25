@@ -93,7 +93,7 @@ function StartCooking() {
         setLastConnected(copy)
     }, [selected])
 
-    
+
     return(
         <Container fluid className='position-relative'>
             <Row className='fs-55 cooking-page'>
@@ -109,7 +109,7 @@ function StartCooking() {
                             )}
                             </Col>
                         </ul>
-                        <ul className='list-unstyled center-vertical m-0 cooking-focused'>
+                        <ul className='list-unstyled center-vertical m-0 cooking-focused z-2'>
                             <Col>
                             {connected.map((idx) => 
                                 <li className='row fs-3 fw-bold' key={idx}>
