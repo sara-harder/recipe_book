@@ -21,16 +21,54 @@ function StartCooking() {
     const [lastSelected, setLastSelected] = useState(-1)
     const [lastConnected, setLastConnected] = useState([])
 
+    // move to next instruction
     const onNext = () => {
-        setLastSelected(selected)
-        setSelected(selected + 1)
+        if (selected + 1 < recipe.directions.length){
+            setLastSelected(selected)
+            setSelected(selected + 1)
+
+            // set the scrollbar to position matching the selected instruction
+            const scroll_height = invisible_display.scrollHeight / (recipe.directions.length + 4)
+            invisible_display.scrollTop = oldScroll + scroll_height
+            setOld(oldScroll + scroll_height)
+        }
     }
 
+    // move back to previous instruction
     const onPrevious = () => {
-        setLastSelected(selected)
-        setSelected(selected - 1)
+        if(selected > 0) {
+            setLastSelected(selected)
+            setSelected(selected - 1)
+
+            // set the scrollbar to position matching the selected instruction
+            const scroll_height = invisible_display.scrollHeight / (recipe.directions.length + 4)
+            invisible_display.scrollTop = oldScroll - scroll_height
+            setOld(oldScroll - scroll_height)
+        }
     }
 
+    // move between instructions when the user scrolls
+    const invisible_display = document.getElementById('invisible-scroll')
+    const [oldScroll, setOld] = useState(10)
+
+    const checkScroll = () => {
+        const scroll_height = invisible_display.scrollHeight / (recipe.directions.length + 4)
+        if (invisible_display.scrollTop >= oldScroll + scroll_height) {
+            onNext()
+        }
+        if (invisible_display.scrollTop <= oldScroll - scroll_height) {
+            onPrevious()
+        }
+    }
+
+    // move between instructions when arrow keys are pressed
+    onkeydown = (event) => {
+        if (event.code == 'ArrowRight' || event.code == 'ArrowDown') onNext()
+        if (event.code == 'ArrowLeft' || event.code == 'ArrowUp') onPrevious()
+    }
+
+
+    // set the connected ingredients when user moves between instructions
     useEffect(() => {
         // if moved backwards while ingredients connected, pop last connected ingredient index
         const copy = lastConnected.slice()
@@ -55,8 +93,9 @@ function StartCooking() {
         setLastConnected(copy)
     }, [selected])
 
+    
     return(
-        <Container fluid>
+        <Container fluid className='position-relative'>
             <Row className='fs-55 cooking-page'>
                 <Col xs={4} className='h-100'>
                     <Row className='cooking-display overflow-hidden'>
@@ -120,6 +159,16 @@ function StartCooking() {
                             </Button>
                         </Col>
                     </Row>
+                </Col>
+            </Row>
+            <Row className='overflow-y-scroll w-100' onScroll={checkScroll} id='invisible-scroll'>
+                <Col>
+                    <ul className='list-unstyled h-100 invisible'>
+                        {recipe.directions.map((item, index) => 
+                            <li key={index} className='h-25'>{item}</li>
+                        )}
+                        <li className='h-100'></li>
+                    </ul>
                 </Col>
             </Row>
         </Container>
