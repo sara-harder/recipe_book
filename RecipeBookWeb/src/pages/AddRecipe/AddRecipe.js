@@ -93,7 +93,7 @@ function AddRecipe({setHeader}) {
     return(
         <Container fluid className='mt-4 form-container'>
             <Form noValidate validated={validated}>
-                <UploadPDF />
+                <UploadPDF setName={setName} Ingredient={Ingredient} setIngredients={setIngredients} setDirections={setDirections}/>
                 <Row className='pe-0'><Col xs={11} className='pe-0'><Row>
                     <Col xs={10} className='pe-1'>
                         <Form.Group className="mb-4" controlId="recipeName">

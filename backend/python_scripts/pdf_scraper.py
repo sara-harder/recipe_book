@@ -222,6 +222,8 @@ def get_quantity(ingredient):
         # case where number is only unicode with no preceding digits
         number = re.search(r"()([¾⅔½⅓¼⅙⅛])\s*", ingredient)
 
+    char_fraction = None
+
     if number is not None:
         # check if it has an 'or' or a '–' within quantity. First of two options is always used
         or_symbol = re.search(r"–\s*\d+\s*|-\s*\d+\s*|or\s*\d+\s*", ingredient[number.end():])
@@ -518,4 +520,4 @@ def parse_recipe(pdf_data):
     # convert each ingredient to a dictionary instead of an Ingredient instance
     ingredients = [ingredient.to_dict() for ingredient in ingredients]
 
-    return {"name": title, "ingredients": ingredients, "instructions": instructions}
+    return {"name": title, "ingredients": ingredients, "directions": instructions}

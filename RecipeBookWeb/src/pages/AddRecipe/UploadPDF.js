@@ -14,18 +14,31 @@ import './Add.css';
 // function imports
 import { uploadPDF } from 'recipe-book/backend_connection/pdf_upload'
 
-const UploadPDF = ({}) => {
+const UploadPDF = ({setName, Ingredient, setIngredients, setDirections}) => {
     const [autofill, setAutofill] = useState(false)
     const [file, setFile] = useState(null)
 
     const handleUploadPDF = async () => {
-        if (file != null){
-            const res = await uploadPDF(file)
-            if (res != undefined){
-                const recipe = res.recipe
+        const res = await uploadPDF(file)
+        if (res != undefined){
+            const recipe = res.recipe
+            const formatted_ingredients = []
+            for (const ingredient of recipe.ingredients) {
+                const formatted = new Ingredient(ingredient.name, ingredient.quantity, ingredient.unit)
+                formatted_ingredients.push(formatted)
             }
+            setName(recipe.name)
+            setIngredients(formatted_ingredients)
+            setDirections(recipe.directions)
+            setAutofill(false)
         }
     }
+
+    useEffect(() => {
+        if (autofill == false) {
+            setFile(null)
+        }
+    }, [autofill])
 
     return(
         <Row className='left'>
@@ -46,7 +59,7 @@ const UploadPDF = ({}) => {
                             </Button>
                         </Col>
                         <Col className='right'>
-                            <Button variant="success" type="button" size='sm' className='bg-color5 border-color5' onClick={handleUploadPDF}>
+                            <Button variant="success" type="button" size='sm' className='bg-color5 border-color5' disabled={file == null} onClick={handleUploadPDF}>
                                 Upload
                             </Button>
                         </Col>
