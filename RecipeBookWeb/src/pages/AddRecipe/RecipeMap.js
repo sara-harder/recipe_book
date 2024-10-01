@@ -121,8 +121,8 @@ function MapPage({setHeader}) {
         rec_cat_funcs.connectRecipeCat(new_recipe._id, cat._id)
         }
 
-        // go back to the page before add recipe
-        navigate("/")
+        // go view the new recipe
+        navigate("/view-recipe", {state:{recipe: new_recipe}})
     }
 
     return(
@@ -135,7 +135,7 @@ function MapPage({setHeader}) {
                         {recipe.ingredients.map((item, index) => 
                             <li className='row fs-55' key={index}>
                                 <Col className='col-4 right text-nowrap overflow-hidden' >{checkFraction(item.quantity)}{item.unit}</Col>
-                                <Col className='col-5 left text-nowrap' >{item.name}</Col>
+                                <Col className='col-4 left text-nowrap' >{item.name}</Col>
                                 <Col className='col-1 center-vertical w-auto' >
                                     <Form.Check
                                         type='radio'
