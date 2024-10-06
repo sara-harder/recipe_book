@@ -1,5 +1,7 @@
 import pymupdf
 import re
+import get_headers
+import get_occurrences
 
 # define the constants
 unicode_fractions = {
@@ -38,6 +40,61 @@ units = {
 }
 
 
+def eval_web_text(text):
+    """Check if the text contains a date, URL, or page number."""
+    return bool(re.search(r"\d+/\d+/\d+.*\d+:\d+", text) or
+                re.search(r"https://.*", text) or
+                re.search(r"(page\s*)?\d+\s*of\s*\d+", text, re.IGNORECASE))
+
+
+def extract_text_info(doc):
+    """Extract font sizes, text, and flags from the document."""
+    font_sizes, text_by_size, flag_sizes, text_by_flag = {}, {}, {}, {}
+    doc_text = ''
+    text_index = 0
+
+    for page in doc:
+        sorted_block_text = page.get_text("dict", sort=True)["blocks"]
+        sorted_straight_text = page.get_text(sort=True)
+        straight_text_idx = 0
+
+        for idx, block in enumerate(sorted_block_text):
+            if 'lines' not in block:
+                continue
+
+            if idx == 0 or idx == len(sorted_block_text) - 1:
+                web_text = any(eval_web_text(line["spans"][0]["text"]) for line in block["lines"][:2])
+                if web_text:
+                    for line in block["lines"][:2]:
+                        straight_text_idx += len(line["spans"][0]["text"]) + 1
+                    continue  # Skip if it's web-related text
+
+            # Process valid text
+            for line in block["lines"]:
+                for span in line["spans"]:
+                    size, text, flags = span["size"], span["text"], span["flags"]
+
+                    word_break = 0
+                    if sorted_straight_text[straight_text_idx + len(text)] == ('\n' or ' '):
+                        word_break = 1
+
+                    if not str.isspace(text):
+                        data = {'text': text, 'text_index': text_index}
+
+                        font_sizes[size] = font_sizes.get(size, 0) + 1
+                        text_by_size.setdefault(size, []).append(data)
+
+                        flag_sizes[flags] = flag_sizes.get(flags, 0) + 1
+                        text_by_flag.setdefault(flags, []).append(data)
+
+                        doc_text += sorted_straight_text[straight_text_idx: straight_text_idx + len(text) + word_break]
+                        text_index += len(text) + word_break
+
+                    straight_text_idx += len(text) + word_break
+
+    return doc_text, font_sizes, text_by_size, flag_sizes, text_by_flag
+
+
 def read_text(pdf_data):
     """Takes a pdf file and reads it page by page. Removes web-generated page headers and footers for safari, firefox,
     edge, and chrome. Adds each modified page to a long string of text. Identifies the title of the recipe as the very
@@ -45,169 +102,41 @@ def read_text(pdf_data):
 
     doc = pymupdf.open(stream=pdf_data, filetype='pdf')
 
-    text = ''
-    title = ''
-    for page in doc:
-        pg = page.get_text(sort=True)
-        if pg == '':
-            continue
+    text, font_sizes, text_by_size, flag_sizes, text_by_flag = extract_text_info(doc)
 
-        # pdfs generated from safari, edge, and chrome start with a line including date, time, and title on each page
-        # remove line for date and time and line for title
-        idx = pg.index('\n')
-        date = re.search(r"\d+/\d+/\d+.*\d+:\d+", pg[:idx])
-        if date is not None:
-            pg = pg[pg.index('\n', idx + 1) + 1:]
+    if text == '':
+        return '', '', None
 
-        # pdfs generated from firefox start with a line including title and url on each page
-        # remove line for url and title
-        else:
-            idx = pg.index('\n', idx+1) + 1
-            url = re.search(r"https://.*\n", pg[:idx])
-            if url is not None:
-                pg = pg[idx:]
+    title = text_by_size[max(font_sizes)][0]
+    headers = get_headers.get_headers(font_sizes, text_by_size, flag_sizes, text_by_flag)
 
-        # pdfs generated from safari and firefox end with a line including page x of y
-        # remove line for page number and URL/date-time
-        end_page = re.search(r"(page\s*)?\d+\s*of\s*\d+\n", pg, re.IGNORECASE)
-        if end_page is not None:
-            pg = pg[:end_page.start()]
-
-        # pdfs generated from chrome and edge end with a line including the url and page x/y
-        # remove line for page number and URL
-        else:
-            end_page = re.search(r"https://.*\n", pg)
-            if end_page is not None:
-                pg = pg[:end_page.start()]
-
-        # add the page to the overall string of text
-        text += pg
-
-        # retrieve the title (must be the first line of the page, after removing pdf headers)
-        if title == '':
-            title = pg[:pg.index('\n')]
-
-    return title, text
+    return title['text'], text, headers
 
 
-def find_text_occurrences(text, regex):
-    """Takes a string of text and a regex pattern. Finds all occurrences of that pattern within the text. For recipe
-    purposes, function is only used to identify section headers. As such, only occurrences where a new line starts
-    immediately after the occurrence are included in results. Returns a list of occurrences"""
+def get_recipe_bounds(headers, text):
+    if headers is None:
+        occurrences = get_occurrences.get_header_occurrences(text)
+        if occurrences is None:
+            return
+        ingredient_occurrences, instruction_occurrences, end_occurrences = occurrences
 
-    # retrieve the occurrences of the provided pattern in the recipe
-    matches = re.finditer(regex, text, re.IGNORECASE)
-    occurrences = []
-    for match in matches:
-        # only selects occurrences where new line starts immediately afterwards
-        end = re.search(r"\s*\n", text[match.end():])
-        if end is not None and end.start() == 0:
-            occurrences.append(match)
+        # establish variables for lists start and end
+        # if there is more than one combination of instruction, ingredient, end headers, use the last found
+        ingredients_start = ingredient_occurrences[-1].end()
+        instructions_end = end_occurrences[-1].start() if end_occurrences else -1
 
-    return occurrences
-
-
-def compare_occurrences(occurrences_1, occurrences_2):
-    """Takes two lists of regex match objects. Iterates over the two lists using two pointers to find the occurrences
-    where an occurrence from occurrence_1 occurs immediately before an occurrence in occurrence_2 in the text. Returns
-    two lists, one of the identified first occurrences, one of the identified second occurrences that match the pattern.
-    These lists should be identical in length
-
-    Example: 'ingredients' occurs 3 times in the text. The first 2 times are before the first occurrence of
-    'instructions'. The last time comes after the first and second occurrences of 'instructions', but before the
-    third. The function would return [the second occurrence of 'ingredients', the third occurrence of 'ingredients']
-    and [the first occurrence of 'instructions', the third occurrence of 'instructions']."""
-
-    matches_1 = []
-    matches_2 = []
-    pointer_1 = 0
-    pointer_2 = 0
-    previous = None
-
-    # iterate over occurrences_1 and 2 simultaneously
-    while pointer_1 < len(occurrences_1) and pointer_2 < len(occurrences_2):
-
-        # increment the pointer in occurrences_1 until the index of occurrences_1
-        #   passes the current index in occurrences_2
-        while pointer_1 < len(occurrences_1) and occurrences_1[pointer_1].end() < occurrences_2[pointer_2].end():
-            previous = occurrences_1[pointer_1]
-            pointer_1 += 1
-
-        # store the val in occurrence_1 that we just passed and the val in occurrence_2 that comes immediately after
-        if previous is not None:
-            matches_1.append(previous)
-            matches_2.append(occurrences_2[pointer_2])
-
-        # increment the pointer in occurrences_2 until the index of occurrences_2
-        #   passes the current index in occurrences_1
-        while pointer_1 < len(occurrences_1) and pointer_2 < len(occurrences_2) \
-                and occurrences_2[pointer_2].end() < occurrences_1[pointer_1].end():
-            pointer_2 += 1
-
-    return matches_1, matches_2
-
-
-def get_recipe_bounds(text):
-    """Takes the string of text and evaluates where the ingredients and instructions start and end. Returns the
-    corresponding indices
-    Calls: find_text_occurrences, compare_occurrences"""
-
-    # retrieve all occurrences of ingredient and instruction headers,
-    #   as well as potential headers signalling end of instructions
-    ingredient_occurrences = find_text_occurrences(text, r"ingredient\w*\b(\(\w*\)\b)?")
-    instruction_occurrences = find_text_occurrences(text, r"instruction\w*\b|direction\w*\b|method\w*\b")
-    end_occurrences = find_text_occurrences(text, r"notes\w*\b|serving\w*\b|end\w*\b|video\w*\b")
-
-    # if ingredient header or instruction header not successfully identified, return None
-    if len(ingredient_occurrences) < 1:
-        print("Couldn't identify ingredients in this recipe")
-        return None
-    if len(instruction_occurrences) < 1:
-        print("Couldn't identify instructions in this recipe")
-        return None
-
-    # if there are more than 1 occurrences of the ingredient or instruction headers,
-    #   run comparison to identify only occurrences where ingredient comes immediately before instruction
-    if len(ingredient_occurrences) > 1 or len(instruction_occurrences) > 1:
-        ingredient_occurrences, instruction_occurrences = \
-            compare_occurrences(ingredient_occurrences, instruction_occurrences)
-
-    # if there is a header signalling the end of instructions,
-    #   run comparison to identify only occurrences where end header comes immediately after instruction
-    if len(end_occurrences) > 0:
-        instruction_occurrences_b, end_occurrences = compare_occurrences(instruction_occurrences, end_occurrences)
-
-        # if some instruction occurrences were weeded out, weed out the ingredient occurrences in the same location
-        if len(instruction_occurrences_b) != len(instruction_occurrences):
-            # find indexes of weeded out occurrences
-            to_remove = []
-            for idx in range(len(instruction_occurrences)):
-                occurrence = instruction_occurrences[idx]
-                if occurrence not in instruction_occurrences_b:
-                    to_remove.append(idx)
-
-            # for each identified index, remove ingredient occurrence
-            r = 0
-            for idx in to_remove:
-                idx = idx - r
-                ingredient_occurrences.pop(idx)
-                r += 1
-
-            instruction_occurrences = instruction_occurrences_b
-
-    # if combo of ingredient, instruction, and optional end not successfully identified, return None
-    if len(ingredient_occurrences) < 1 or len(instruction_occurrences) < 1:
-        print("Couldn't distinguish ingredients and instructions in this recipe")
-        return None
-
-    # establish variables for lists start and end
-    # if there is more than one combination of instruction, ingredient, end headers, use the last found
-    ingredients_start = ingredient_occurrences[-1].end()
-    ingredients_end, instructions_start = instruction_occurrences[-1].span()
-    if len(end_occurrences) > 0:
-        instructions_end = end_occurrences[-1].start()
     else:
-        instructions_end = -1
+        ingredients_header = headers['ingredient_header']
+        ingredients_start = ingredients_header['text_index'] + len(ingredients_header['header']) + 1
+
+        ingredients_end_header = headers.get('ingredient_end_header')
+        ingredients_end = ingredients_end_header['text_index'] if ingredients_end_header else -1
+
+        instruction_header = headers['instruction_header']
+        instructions_start = instruction_header['text_index'] + len(instruction_header['header']) + 1
+
+        instruction_end_header = headers.get('instruction_end_header')
+        instructions_end = instruction_end_header['text_index'] if instruction_end_header else -1
 
     return ingredients_start, ingredients_end, instructions_start, instructions_end
 
@@ -490,16 +419,13 @@ def parse_recipe(pdf_data):
     ingredients, and instructions"""
 
     # retrieve the file text and recipe title
-    title, text = read_text(pdf_data)
+    title, text, headers = read_text(pdf_data)
     if text == '':
         print("Couldn't read this pdf")
         return
 
-    # determine the start and end indices of the ingredient and instruction sections
-    bounds = get_recipe_bounds(text)
-    if bounds is None:
-        return
-    ingredients_start, ingredients_end, instructions_start, instructions_end = bounds
+    ingredients_start, ingredients_end, instructions_start, instructions_end = get_recipe_bounds(headers, text)
+
 
     # get the text corresponding to the ingredient and instruction sections
     ingredients = text[ingredients_start: ingredients_end]

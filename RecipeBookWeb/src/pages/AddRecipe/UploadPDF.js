@@ -22,16 +22,18 @@ const UploadPDF = ({setName, Ingredient, setIngredients, setDirections}) => {
         const res = await uploadPDF(file)
         if (res != undefined){
             const recipe = res.recipe
-            const formatted_ingredients = []
-            for (const ingredient of recipe.ingredients) {
-                const formatted = new Ingredient(ingredient.name, ingredient.quantity, ingredient.unit)
-                formatted_ingredients.push(formatted)
-            }
-            setName(recipe.name)
-            setIngredients(formatted_ingredients)
-            setDirections(recipe.directions)
-            setAutofill(false)
-        }
+            if (recipe != null) {
+                const formatted_ingredients = []
+                if (recipe.ingredients != undefined) {
+                    for (const ingredient of recipe.ingredients) {
+                        const formatted = new Ingredient(ingredient.name, ingredient.quantity, ingredient.unit)
+                        formatted_ingredients.push(formatted)
+                }}
+                setName(recipe.name)
+                setIngredients(formatted_ingredients)
+                setDirections(recipe.directions)
+                setAutofill(false)
+        }}
     }
 
     useEffect(() => {
