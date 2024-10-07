@@ -30,10 +30,8 @@ def compare_occurrences(occurrences_1, occurrences_2):
     third. The function would return [the second occurrence of 'ingredients', the third occurrence of 'ingredients']
     and [the first occurrence of 'instructions', the third occurrence of 'instructions']."""
 
-    matches_1 = []
-    matches_2 = []
-    pointer_1 = 0
-    pointer_2 = 0
+    matches_1, matches_2 = [], []
+    pointer_1, pointer_2 = 0, 0
     previous = None
 
     # iterate over occurrences_1 and 2 simultaneously
@@ -60,15 +58,15 @@ def compare_occurrences(occurrences_1, occurrences_2):
 
 
 def get_header_occurrences(text):
-    """Takes the string of text and evaluates where the ingredients and instructions start and end. Returns the
-    corresponding indices
+    """Takes the string of text and evaluates where the ingredients and instructions start and end. Returns the regex
+    matches
     Calls: find_text_occurrences, compare_occurrences"""
 
     # retrieve all occurrences of ingredient and instruction headers,
     #   as well as potential headers signalling end of instructions
-    ingredient_occurrences = find_text_occurrences(text, r"ingredient\w*( *)?(\((\w| )*\) ?)?:?")
-    instruction_occurrences = find_text_occurrences(text, r"instruction\w*\b|direction\w*\b|method\w*\b")
-    end_occurrences = find_text_occurrences(text, r"notes\w*\b|serving\w*\b|\bend\w*\b|video\w*\b")
+    ingredient_occurrences = find_text_occurrences(text, r"ingredient\w*( *)?(\((\w| )*\) ?)?:?( *)?")
+    instruction_occurrences = find_text_occurrences(text, r"(instruction|direction|method)\w*:?( *)?")
+    end_occurrences = find_text_occurrences(text, r"(notes|video)\w*:?( *)?")
 
     # if ingredient header or instruction header not successfully identified, return None
     if len(ingredient_occurrences) < 1:
@@ -78,34 +76,34 @@ def get_header_occurrences(text):
         print("Couldn't identify instructions in this recipe")
         return None
 
-    # if there are more than 1 occurrences of the ingredient or instruction headers,
-    #   run comparison to identify only occurrences where ingredient comes immediately before instruction
-    if len(ingredient_occurrences) > 1 or len(instruction_occurrences) > 1:
-        ingredient_occurrences, instruction_occurrences = \
-            compare_occurrences(ingredient_occurrences, instruction_occurrences)
+    # run comparison to identify only occurrences where ingredient comes immediately before instruction
+    ingredient_occurrences, instruction_occurrences = \
+        compare_occurrences(ingredient_occurrences, instruction_occurrences)
 
     # if there is a header signalling the end of instructions,
     #   run comparison to identify only occurrences where end header comes immediately after instruction
     if len(end_occurrences) > 0:
         instruction_occurrences_b, end_occurrences = compare_occurrences(instruction_occurrences, end_occurrences)
 
-        # if some instruction occurrences were weeded out, weed out the ingredient occurrences in the same location
-        if len(instruction_occurrences_b) != len(instruction_occurrences):
-            # find indexes of weeded out occurrences
-            to_remove = []
-            for idx in range(len(instruction_occurrences)):
-                occurrence = instruction_occurrences[idx]
-                if occurrence not in instruction_occurrences_b:
-                    to_remove.append(idx)
+        # End header is only valid if it signals end of instructions. Otherwise, it is ignored
+        if len(end_occurrences) > 0:
+            # if some instruction occurrences were weeded out, weed out the ingredient occurrences in the same location
+            if len(instruction_occurrences_b) != len(instruction_occurrences):
+                # find indexes of weeded out occurrences
+                to_remove = []
+                for idx in range(len(instruction_occurrences)):
+                    occurrence = instruction_occurrences[idx]
+                    if occurrence not in instruction_occurrences_b:
+                        to_remove.append(idx)
 
-            # for each identified index, remove ingredient occurrence
-            r = 0
-            for idx in to_remove:
-                idx = idx - r
-                ingredient_occurrences.pop(idx)
-                r += 1
+                # for each identified index, remove ingredient occurrence
+                r = 0
+                for idx in to_remove:
+                    idx = idx - r
+                    ingredient_occurrences.pop(idx)
+                    r += 1
 
-            instruction_occurrences = instruction_occurrences_b
+                instruction_occurrences = instruction_occurrences_b
 
     # if combo of ingredient, instruction, and optional end not successfully identified, return None
     if len(ingredient_occurrences) < 1 or len(instruction_occurrences) < 1:
