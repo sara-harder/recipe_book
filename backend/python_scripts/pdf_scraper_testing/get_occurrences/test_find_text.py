@@ -312,7 +312,7 @@ class TestIngredient(unittest.TestCase):
 class TestInstruction(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.pattern_1 = r"(instruction|direction|method)\w*:?( *)?"
+        cls.pattern_1 = r"(instruction|direction|method|preparation|steps)\w*:?( *)?"
 
     def test_instruction_pass_1(self):
         """Test 'instruction' regex, with two instructions but only first has new line"""

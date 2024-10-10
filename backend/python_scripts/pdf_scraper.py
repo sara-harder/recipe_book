@@ -52,6 +52,7 @@ def extract_text_info(doc):
     font_sizes, text_by_size, flag_sizes, text_by_flag = {}, {}, {}, {}
     doc_text = ''
     text_index = 0
+    source = ''
 
     for page in doc:
         sorted_block_text = page.get_text("dict", sort=True)["blocks"]
@@ -67,6 +68,9 @@ def extract_text_info(doc):
                 if web_text:
                     for line in block["lines"][:2]:
                         straight_text_idx += len(line["spans"][0]["text"]) + 1
+                        url = re.search(r"https://.*", line["spans"][0]["text"])
+                        if url is not None:
+                            source = url.group()
                     continue  # Skip if it's web-related text
 
             # Process valid text
@@ -92,7 +96,7 @@ def extract_text_info(doc):
 
                     straight_text_idx += len(text) + word_break
 
-    return doc_text, font_sizes, text_by_size, flag_sizes, text_by_flag
+    return doc_text, source, font_sizes, text_by_size, flag_sizes, text_by_flag
 
 
 def read_text(pdf_data):
@@ -102,7 +106,7 @@ def read_text(pdf_data):
 
     doc = pymupdf.open(stream=pdf_data, filetype='pdf')
 
-    text, font_sizes, text_by_size, flag_sizes, text_by_flag = extract_text_info(doc)
+    text, source, font_sizes, text_by_size, flag_sizes, text_by_flag = extract_text_info(doc)
 
     if text == '':
         return '', '', None
@@ -110,7 +114,7 @@ def read_text(pdf_data):
     title = text_by_size[max(font_sizes)][0]
     headers = get_headers.get_headers(font_sizes, text_by_size, flag_sizes, text_by_flag)
 
-    return title['text'], text, headers
+    return title['text'], text, headers, source
 
 
 def get_recipe_bounds(headers, text):
@@ -127,13 +131,13 @@ def get_recipe_bounds(headers, text):
 
     else:
         ingredients_header = headers['ingredient_header']
-        ingredients_start = ingredients_header['text_index'] + len(ingredients_header['header']) + 1
+        ingredients_start = ingredients_header['text_index'] + len(ingredients_header['text']) + 1
 
         ingredients_end_header = headers.get('ingredient_end_header')
         ingredients_end = ingredients_end_header['text_index'] if ingredients_end_header else -1
 
         instruction_header = headers['instruction_header']
-        instructions_start = instruction_header['text_index'] + len(instruction_header['header']) + 1
+        instructions_start = instruction_header['text_index'] + len(instruction_header['text']) + 1
 
         instruction_end_header = headers.get('instruction_end_header')
         instructions_end = instruction_end_header['text_index'] if instruction_end_header else -1
@@ -270,19 +274,12 @@ def list_ingredients(ingredients):
 
     ingredients = ingredients.split('\n')
 
-    # remove any bullet points
+    # remove leading and trailing spaces and extra chars
     for idx in range(len(ingredients)):
         string = ingredients[idx]
-        if len(string) > 0 and string[0] == '•':
+        while len(string) > 0 and string[0] in ' ,.-–•':
             string = string[1:]
-            ingredients[idx] = string
-
-    # remove leading and trailing spaces
-    for idx in range(len(ingredients)):
-        string = ingredients[idx]
-        while len(string) > 0 and string[0] == ' ':
-            string = string[1:]
-        while len(string) > 0 and string[-1] == ' ':
+        while len(string) > 0 and string[-1] in ' ,.-–•':
             string = string[:-1]
         ingredients[idx] = string
 
@@ -325,6 +322,12 @@ def list_ingredients(ingredients):
             # retrieve the name
             name = get_name(ingredient, num_start, unit_end + offset)
 
+            # remove leading and trailing spaces and extra chars
+            while len(name) > 0 and name[0] in ' ,.-–•':
+                name = name[1:]
+            while len(name) > 0 and name[-1] in ' ,.-–•':
+                name = name[:-1]
+
             # create an Ingredient object instance
             ingredient = Ingredient(name, quantity, unit)
 
@@ -355,6 +358,10 @@ def list_instructions(instructions):
 
     # separate the instructions by numbered lines, bullets, and the end of sentences
 
+    # add new line to register all numbered lines
+    if instructions[0] != '\n':
+        instructions = '\n' + instructions
+
     # check for new line followed by number, followed optionally by a dot and/or a space. Also check for bullets
     instructions = re.sub(r"\n\d+\.?\s*|\n•\s*", '\n', instructions)
 
@@ -384,6 +391,14 @@ def list_instructions(instructions):
     # remove any empty instructions
     while "" in instructions:
         instructions.remove("")
+
+    to_remove = []
+    for instruction in instructions:
+        char = re.search('[a-zA-Z]', instruction)
+        if char is None:
+            to_remove.append(instruction)
+    for instruction in to_remove:
+        instructions.remove(instruction)
 
     return instructions
 
@@ -419,12 +434,16 @@ def parse_recipe(pdf_data):
     ingredients, and instructions"""
 
     # retrieve the file text and recipe title
-    title, text, headers = read_text(pdf_data)
+    title, text, headers, source = read_text(pdf_data)
     if text == '':
         print("Couldn't read this pdf")
         return
 
-    ingredients_start, ingredients_end, instructions_start, instructions_end = get_recipe_bounds(headers, text)
+    bounds = get_recipe_bounds(headers, text)
+    if bounds is not None:
+        ingredients_start, ingredients_end, instructions_start, instructions_end = bounds
+    else:
+        return
 
 
     # get the text corresponding to the ingredient and instruction sections
@@ -443,7 +462,12 @@ def parse_recipe(pdf_data):
     else:
         instructions = []
 
+    testing = True
+    if testing:
+        # print_results(title, ingredients, instructions)
+        return None
+
     # convert each ingredient to a dictionary instead of an Ingredient instance
     ingredients = [ingredient.to_dict() for ingredient in ingredients]
 
-    return {"name": title, "ingredients": ingredients, "directions": instructions}
+    return {"name": title, "ingredients": ingredients, "directions": instructions, "source": source}

@@ -65,7 +65,7 @@ def get_header_occurrences(text):
     # retrieve all occurrences of ingredient and instruction headers,
     #   as well as potential headers signalling end of instructions
     ingredient_occurrences = find_text_occurrences(text, r"ingredient\w*( *)?(\((\w| )*\) ?)?:?( *)?")
-    instruction_occurrences = find_text_occurrences(text, r"(instruction|direction|method)\w*:?( *)?")
+    instruction_occurrences = find_text_occurrences(text, r"(instruction|direction|method|preparation|steps)\w*:?( *)?")
     end_occurrences = find_text_occurrences(text, r"(notes|video)\w*:?( *)?")
 
     # if ingredient header or instruction header not successfully identified, return None
