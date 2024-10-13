@@ -70,7 +70,19 @@ def find_matches(headers, keywords):
 
 
 def find_headers(sizes, text_by_size):
-    """Find and match ingredient and instruction headers by font size or flag size."""
+    """Takes a list of the largest font sizes and a dictionary of all text, with the text's font size as the key and a
+    list of text objects as the value. The text objects have the attributes text and text_index, the index of the text
+    within the entire document's text.
+
+    Retrieves the largest text (headers) from the dictionary based on the provided list and finds occurrences of
+    'ingredient' and 'instruction'.
+
+    Returns a new headers dictionary with the headers that indicate the starts and ends of the ingredients and
+    instructions sections. The keys of the dict are the font sizes. The values are each a dictionary of headers.
+    The attributes of the dictionary are 'ingredient_header', 'ingredient_end_header', 'instruction_header', and
+    'instruction_end_header'. The values are header objects, with attributes 'idx', 'text', and 'text_index'.
+
+    Instead of font sizes, sometimes uses flag sizes. Procedure is the same: filters by largest flags."""
     headers_dict = {}
 
     for size in sizes:
@@ -80,41 +92,60 @@ def find_headers(sizes, text_by_size):
 
         result = process_matches(ingredient_matches, instruction_matches)
         if result:
+            result['half'] = False
             headers_dict[size] = result
-            # Add the end header logic
-            ingredient_end_idx = result['ingredient_header']['idx'] + 1
-            if ingredient_end_idx < len(headers):
-                result['ingredient_end_header'] = {
-                    'idx': ingredient_end_idx,
-                    'text': headers[ingredient_end_idx]['text'],
-                    'text_index': headers[ingredient_end_idx]['text_index']
-                }
+
+            if result['ingredient_header'] is not None:
+                ingredient_end_idx = result['ingredient_header']['idx'] + 1
+                if ingredient_end_idx < len(headers):
+                    result['ingredient_end_header'] = {
+                        'idx': ingredient_end_idx,
+                        'text': headers[ingredient_end_idx]['text'],
+                        'text_index': headers[ingredient_end_idx]['text_index']
+                    }
+                else:
+                    result['ingredient_end_header'] = None
             else:
                 result['ingredient_end_header'] = None
+                result['half'] = True
 
-            instruction_end_idx = result['instruction_header']['idx'] + 1
-            if instruction_end_idx < len(headers):
-                result['instruction_end_header'] = {
-                    'idx': instruction_end_idx,
-                    'text': headers[instruction_end_idx]['text'],
-                    'text_index': headers[instruction_end_idx]['text_index']
-                }
+            if result['instruction_header'] is not None:
+                instruction_end_idx = result['instruction_header']['idx'] + 1
+                if instruction_end_idx < len(headers):
+                    result['instruction_end_header'] = {
+                        'idx': instruction_end_idx,
+                        'text': headers[instruction_end_idx]['text'],
+                        'text_index': headers[instruction_end_idx]['text_index']
+                    }
+                else:
+                    result['instruction_end_header'] = None
             else:
                 result['instruction_end_header'] = None
+                result['half'] = True
 
     return headers_dict
 
 
 def get_headers(font_sizes, text_by_size, flag_sizes, text_by_flag):
-    """Main function to retrieve ingredient and instruction headers."""
+    """Main function to retrieve ingredient and instruction headers. Takes a dictionary of all font sizes in a doc,
+    a dictionary of all text by font size in the doc, and two more dictionaries of the same type for the font flags.
 
-    # Find headers by font size
-    most_common_size = max(font_sizes, key=font_sizes.get)
-    header_sizes = [size for size in font_sizes if size > most_common_size]
-    headers_dict = find_headers(header_sizes, text_by_size)
+    Identifies the headers in the doc based on the font sizes larger than the most common font size. Searches those
+    headers for occurrences of 'ingredients' and 'instructions'. If none found, re-identifies headers based on largest
+    flags, then searches again.
+
+    Returns header dict of largest found ingredients + instructions combination"""
+
+    headers_dict = {}
+
+    if font_sizes:
+        # Find headers by font size
+        most_common_size = max(font_sizes, key=font_sizes.get)
+        header_sizes = [size for size in font_sizes if size > most_common_size]
+        headers_dict = find_headers(header_sizes, text_by_size)
 
     # Fallback: if no headers found by size, try by flags (bold/italic)
-    if not headers_dict:
+    if not headers_dict and flag_sizes:
         most_common_flags = max(flag_sizes, key=flag_sizes.get)
         flag_sizes = [flag for flag in flag_sizes if flag > most_common_flags]
         headers_dict = find_headers(flag_sizes, text_by_flag)
@@ -123,7 +154,9 @@ def get_headers(font_sizes, text_by_size, flag_sizes, text_by_flag):
     if not headers_dict:
         return None
 
-    # Return the largest-sized headers (normally there will only be one group of headers)
-    largest_size = max(headers_dict.keys())
+    # Return the largest-sized headers with both ing and instr (normally there will only be one group)
+    # use the largest whole match if possible (match both ing and instr), otherwise use largest half match
+    whole = (key for key in headers_dict.keys() if not headers_dict[key]['half'])
+    largest_size = max(whole, default=max(headers_dict.keys()))
 
     return headers_dict[largest_size]

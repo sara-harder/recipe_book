@@ -223,28 +223,31 @@ def get_unit(ingredient, num_end):
     # the unit is one word that comes immediately after quantity
     chars = ingredient[num_end:]
     unit_match = re.search(r".\b", chars)
-    unit = chars[:unit_match.end()]
+    if unit_match:
+        unit = chars[:unit_match.end()]
 
-    # the end index of the unit section is the length of the unit word plus a space
-    unit_end = len(unit) + 1
+        # the end index of the unit section is the length of the unit word plus a space
+        unit_end = len(unit) + 1
 
-    # format the unit word to allow it to match with the dictionary
-    unit = unit.lower()
-    unit = unit.replace('.', '')
+        # format the unit word to allow it to match with the dictionary
+        unit = unit.lower()
+        unit = unit.replace('.', '')
 
-    # find the unit within the unit dictionary and replace it with the corresponding standardized unit key
-    found = False
-    for possible in units:
-        if unit in units[possible]:
-            unit = possible
-            found = True
-            break
+        # find the unit within the unit dictionary and replace it with the corresponding standardized unit key
+        found = False
+        for possible in units:
+            if unit in units[possible]:
+                unit = possible
+                found = True
+                break
 
-    if not found:
-        unit = None
-        unit_end = 0
+        if not found:
+            unit = None
+            unit_end = 0
 
-    return unit, unit_end
+        return unit, unit_end
+    else:
+        return None, num_end
 
 
 def get_name(ingredient, num_start, unit_end):
@@ -462,7 +465,7 @@ def parse_recipe(pdf_data):
     else:
         instructions = []
 
-    testing = True
+    testing = False
     if testing:
         # print_results(title, ingredients, instructions)
         return None
