@@ -2,7 +2,7 @@ import unittest
 import get_occurrences
 
 
-class TestCompare(unittest.TestCase):
+class TestGetHeaders(unittest.TestCase):
 
     def test_get_headers_pass_1(self):
         """Test only Ingredients, Instructions, Notes without colons or spaces"""

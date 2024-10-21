@@ -138,6 +138,12 @@ def read_text(pdf_data):
 
 
 def get_recipe_bounds(headers, text):
+    """Takes a dictionary of headers and a string of all the text in a pdf. If the dictionary is empty, call
+    secondary function to determine headers using the provided text.
+
+    Returns None if secondary function also fails. Otherwise, returns the start and end indices of the ingredients
+    section as determined by the end of the Ingredients header text and start of the header after it, and the start
+    and end indices of the instructions section, determined in the same way."""
     if headers is None:
         occurrences = get_occurrences.get_header_occurrences(text)
         if occurrences is None:
@@ -146,18 +152,22 @@ def get_recipe_bounds(headers, text):
 
         # establish variables for lists start and end
         # if there is more than one combination of instruction, ingredient, end headers, use the last found
-        ingredients_start = ingredient_occurrences[-1].end()
+        ingredients_start = ingredient_occurrences[-1].end()+1
+        ingredients_end = instruction_occurrences[-1].start()
+        instructions_start = instruction_occurrences[-1].end()+1
         instructions_end = end_occurrences[-1].start() if end_occurrences else -1
 
     else:
         ingredients_header = headers['ingredient_header']
-        ingredients_start = ingredients_header['text_index'] + len(ingredients_header['text']) + 1
+        ingredients_start = ingredients_header['text_index'] + len(ingredients_header['text']) + 1\
+            if ingredients_header else -1
 
         ingredients_end_header = headers.get('ingredient_end_header')
         ingredients_end = ingredients_end_header['text_index'] if ingredients_end_header else -1
 
         instruction_header = headers['instruction_header']
-        instructions_start = instruction_header['text_index'] + len(instruction_header['text']) + 1
+        instructions_start = instruction_header['text_index'] + len(instruction_header['text']) + 1 \
+            if instruction_header else -1
 
         instruction_end_header = headers.get('instruction_end_header')
         instructions_end = instruction_end_header['text_index'] if instruction_end_header else -1
@@ -376,20 +386,17 @@ def list_ingredients(ingredients):
 
 
 def list_instructions(instructions):
-    """Takes an instructions string and converts it into a list of instructions. Removes any bullet points or leading
-    numbers. Returns the list of instructions"""
-
-    # separate the instructions by numbered lines, bullets, and the end of sentences
-
-    # add new line to register all numbered lines
+    """Takes an instructions string and converts it into a list of instructions. Separates the string by the end of
+    sentences, any numbered lines, and bulleted lines.  Returns the list of instructions"""
+    # add new line to register all prefixed lines
     if instructions[0] != '\n':
         instructions = '\n' + instructions
 
-    # check for new line followed by number, followed optionally by a dot and/or a space. Also check for bullets
-    instructions = re.sub(r"\n\d+\.?\s*|\n•\s*", '\n', instructions)
+    # remove numbered, bullet, and dash prefixes
+    instructions = re.sub(r"\n\s*\d+\.?\s*|\n\s*(•|-|–)\s*", '\n', instructions)
 
-    # ends determined by period space or period new line. Does not catch decimals in numbers
-    instructions = re.split(r"\.\s+|\.\n|:\n", instructions)
+    # split by sentence ends, periods, or colons followed by newlines. Does not catch decimals in numbers
+    instructions = re.split(r"\.\s+|\.\n|:\s*\n", instructions)
 
     # if there are no periods, separate by new lines
     if len(instructions) == 1:
@@ -397,31 +404,13 @@ def list_instructions(instructions):
 
     # for instructions that span multiple lines, replace new line with space
     else:
-        for idx in range(len(instructions)):
-            string = instructions[idx]
-            string = string.replace('\n', ' ')
-            instructions[idx] = string
+        instructions = [string.replace('\n', ' ') for string in instructions]
 
-    # remove any leading and trailing spaces
-    for idx in range(len(instructions)):
-        string = instructions[idx]
-        while len(string) > 0 and string[0] == ' ':
-            string = string[1:]
-        while len(string) > 0 and string[-1] == ' ':
-            string = string[:-1]
-        instructions[idx] = string
+    # remove any leading, trailing, and double spaces
+    instructions = [re.sub(r'\s+', ' ', ins).strip() for ins in instructions]
 
-    # remove any empty instructions
-    while "" in instructions:
-        instructions.remove("")
-
-    to_remove = []
-    for instruction in instructions:
-        char = re.search('[a-zA-Z]', instruction)
-        if char is None:
-            to_remove.append(instruction)
-    for instruction in to_remove:
-        instructions.remove(instruction)
+    # remove any instructions that are empty or don't contain letters
+    instructions = [ins for ins in instructions if re.search('[a-zA-Z]', ins)]
 
     return instructions
 
@@ -471,7 +460,11 @@ def parse_recipe(pdf_data):
 
     # get the text corresponding to the ingredient and instruction sections
     ingredients = text[ingredients_start: ingredients_end]
+    if ingredients_end == -1:
+        ingredients += text[-1]
     instructions = text[instructions_start: instructions_end]
+    if instructions_end == -1:
+        instructions += text[-1]
 
     # create a list of ingredients based on the ingredients text. Ingredients are objects with name, quantity, and unit
     if ingredients != '':
