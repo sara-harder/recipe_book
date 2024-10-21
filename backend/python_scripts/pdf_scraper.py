@@ -24,19 +24,20 @@ units = {
     'l': ['l', 'liter', 'liters'],
     'tsp': ['tsp', 'teaspoon', 'teaspoons'],
     'tbsp': ['tbsp', 'tblsp', 'tablespoon', 'tablespoons'],
-    ' cup(s)': ['cup', 'cups'],
+    ' cup(s)': ['cup', 'cups', 'cup(s)'],
     'lb': ['lb', 'lbs', 'pound', 'pounds'],
     'oz': ['oz', 'ounce', 'ounces'],
     'fl oz': ['fl oz', 'fluid ounce', 'fluid ounces'],
-    ' pint(s)': ['pint', 'pints'],
-    ' quart(s)': ['quart', 'quarts'],
-    ' gallon(s)': ['gallon', 'gallons'],
+    ' pint(s)': ['pint', 'pints', 'pint(s)'],
+    ' quart(s)': ['quart', 'quarts', 'quart(s)'],
+    ' gallon(s)': ['gallon', 'gallons', 'gallon(s)'],
     ' small': ['small', 'sm'],
     ' medium': ['medium', 'md', 'med'],
     ' large': ['large', 'lg', 'lrg'],
-    ' clove(s)': ['clove', 'cloves'],
-    ' slice(s)': ['slice', 'slices'],
-    ' cube(s)': ['cube', 'cubes']
+    ' clove(s)': ['clove', 'cloves', 'clove(s)'],
+    ' slice(s)': ['slice', 'slices', 'slice(s)'],
+    ' cube(s)': ['cube', 'cubes', 'cube(s)'],
+    ' drop(s)' : ['drop', 'drops', 'drop(s)']
 }
 
 
@@ -44,11 +45,23 @@ def eval_web_text(text):
     """Check if the text contains a date, URL, or page number."""
     return bool(re.search(r"\d+/\d+/\d+.*\d+:\d+", text) or
                 re.search(r"https://.*", text) or
-                re.search(r"(page\s*)?\d+\s*of\s*\d+", text, re.IGNORECASE))
+                re.search(r"(?<!/)(page\s*)?\b\d+\s*(of|/)\s*\d+\b(?!/)", text, re.IGNORECASE))
 
 
 def extract_text_info(doc):
-    """Extract font sizes, text, and flags from the document."""
+    """Takes a document opened with pymupdf. Reads the document and extracts the text, font sizes, and flags. Analyzes
+    the text by blocks, but creates string of extracted text using un-sectioned pdf data. Ignores any blocks that
+    contain web-generated headers and footers.
+    Returns:
+         the string of all extracted text
+         the source website (if identified in the header/footer)
+         a dictionary of font sizes
+                key: font size
+                value: num of spans of that size
+        a dictionary of text by size
+                key: font size
+                value: text in the span
+        two similar dictionaries for flags, using flag number instead of font size"""
     font_sizes, text_by_size, flag_sizes, text_by_flag = {}, {}, {}, {}
     doc_text = ''
     text_index = 0
@@ -79,10 +92,12 @@ def extract_text_info(doc):
                     size, text, flags = span["size"], span["text"], span["flags"]
 
                     word_break = 0
-                    if sorted_straight_text[straight_text_idx + len(text)] == ('\n' or ' '):
+                    if (straight_text_idx + len(text)) < len(sorted_straight_text) and \
+                            (sorted_straight_text[straight_text_idx + len(text)] == '\n' or
+                             sorted_straight_text[straight_text_idx + len(text)] == ' '):
                         word_break = 1
 
-                    if not str.isspace(text):
+                    if not str.isspace(text) and len(text) > 0:
                         data = {'text': text, 'text_index': text_index}
 
                         font_sizes[size] = font_sizes.get(size, 0) + 1
@@ -100,16 +115,21 @@ def extract_text_info(doc):
 
 
 def read_text(pdf_data):
-    """Takes a pdf file and reads it page by page. Removes web-generated page headers and footers for safari, firefox,
-    edge, and chrome. Adds each modified page to a long string of text. Identifies the title of the recipe as the very
-    first line of the first page. Returns the title and the string of text"""
+    """Takes a pdf file and reads it page by page. Calls extract_text function that:
+        Removes web-generated page headers and footers for safari, firefox,edge, and chrome.
+        Adds each modified page to a long string of text.
+        Identifies any source URL.
+    Calls get_headers function that identifies instruction and ingredient headers.
+    Identifies the title of the recipe as the very first line of the largest size.
+
+    Returns the title, the string of text, the headers, and the source"""
 
     doc = pymupdf.open(stream=pdf_data, filetype='pdf')
 
     text, source, font_sizes, text_by_size, flag_sizes, text_by_flag = extract_text_info(doc)
 
     if text == '':
-        return '', '', None
+        return '', '', None, ''
 
     title = text_by_size[max(font_sizes)][0]
     headers = get_headers.get_headers(font_sizes, text_by_size, flag_sizes, text_by_flag)
@@ -465,7 +485,7 @@ def parse_recipe(pdf_data):
     else:
         instructions = []
 
-    testing = False
+    testing = True
     if testing:
         # print_results(title, ingredients, instructions)
         return None
