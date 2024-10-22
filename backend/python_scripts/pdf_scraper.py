@@ -175,75 +175,59 @@ def get_recipe_bounds(headers, text):
     return ingredients_start, ingredients_end, instructions_start, instructions_end
 
 
+def search_for_character_fraction(num_start, num_end, text, quantity):
+    """Updates the quantity depending on a character-based fraction found in the provided text within the given range.
+    If the fraction starts at the beginning, it replaces the quantity; otherwise, it is added to the existing quantity.
+    Returns the updated quantity and the end index of the fraction in the text."""
+    # search for a character-based fraction in the form of "x/y"
+    char_fraction = re.search(r"(\d+)/(\d+)\s*", text)
+
+    if char_fraction:
+        # calculate the fraction
+        fraction = round(int(char_fraction.group(1)) / int(char_fraction.group(2)), 3)
+
+        # update quantity and num_end depending on where the fraction appears
+        if char_fraction.start() == num_start:
+            quantity = fraction
+            num_end = char_fraction.end()
+        elif char_fraction.start() <= num_end:
+            quantity += fraction
+            num_end = char_fraction.end()
+
+    return quantity, num_end
+
+
 def get_quantity(ingredient):
-    """Given an ingredient string, identifies what part of that string indicates the quantity. Checks for fractions and
-    or symbols. Returns the quantity"""
+    """Given an ingredient string, identifies what part of that string indicates the quantity. Checks for fractions
+    and 'or' symbols. Returns the quantity, and the start and end indices of the quantity within the string"""
 
     # find the ingredient's quantity by checking for digits and optional unicode fraction
-    number = re.search(r"(\d+\s*)([¾⅔½⅓¼⅙⅛])?\s*", ingredient)
+    number = re.search(r"(\d+\s*)([¾⅔½⅓¼⅙⅛])?\s*|([¾⅔½⅓¼⅙⅛])\s*", ingredient)
+
     if number is None:
-        # case where number is only unicode with no preceding digits
-        number = re.search(r"()([¾⅔½⅓¼⅙⅛])\s*", ingredient)
+        return None, None, None
 
-    char_fraction = None
+    quantity = int(number.group(1)) if number.group(1) else 0
 
-    if number is not None:
-        # check if it has an 'or' or a '–' within quantity. First of two options is always used
-        or_symbol = re.search(r"–\s*\d+\s*|-\s*\d+\s*|or\s*\d+\s*", ingredient[number.end():])
+    # if there is a unicode fraction, convert to a float using unicode_fractions dictionary
+    unicode_fraction = number.group(2) or number.group(3)
+    if unicode_fraction:
+        quantity += unicode_fractions[unicode_fraction]
 
-        # if there is a unicode fraction, convert to a float using unicode_fractions dictionary
-        if number.group(2) is not None:
-            fraction = unicode_fractions[number.group(2)]
+    # check for character-based fractions to replace or add to the quantity
+    quantity, num_end = search_for_character_fraction(number.start(), number.end(), ingredient, quantity)
 
-            # resulting quantity is digit + fraction or just fraction if no digit
-            if number.group(1) != '':
-                quantity = int(number.group(1)) + fraction
-            else:
-                quantity = fraction
+    # retrieve the text after the quantity
+    after_quantity = ingredient[num_end:]
 
-        # if no unicode fraction, check if fraction is written out with chars
-        else:
-            char_fraction = re.search(r"(\d+)(/)(\d+)\s*", ingredient)
+    # search for 'or' symbols followed by more quantity text
+    or_match = re.search(r"([-–—]|or)\s*((\d+\s*[¾⅔½⅓¼⅙⅛]?)|[¾⅔½⅓¼⅙⅛])\s*", after_quantity)
+    if or_match and or_match.start() == 0:
+        # push the end index of the quantity text to after the alternate option, without updating quantity itself
+        _, new_end = search_for_character_fraction(or_match.start(), or_match.end(), after_quantity, 0)
+        num_end += new_end
 
-            # if there is a character fraction, convert to a float by dividing top and bottom ints
-            if char_fraction is not None:
-                fraction = int(char_fraction.group(1)) / int(char_fraction.group(3))
-
-                # determine how to compose quantity based on where char_fraction starts
-
-                # if start is same as start of digits, then there is only fraction, no preceding digits
-                if char_fraction.start() == number.start():
-                    quantity = fraction
-
-                # if fraction starts immediately after digits end (space between), they need combining
-                elif char_fraction.start() == number.end():
-                    quantity = int(number.group(1)) + fraction
-
-                # if there is an or symbol and the fraction comes after, only use the digits before symbol
-                #   but don't set fraction to None to maintain end of quantity section as end of fraction
-                elif or_symbol is not None and char_fraction.start() == or_symbol.end():
-                    quantity = int(number.group(1))
-
-                # fraction does not appear next to digits, so it is discounted
-                else:
-                    quantity = int(number.group(1))
-                    char_fraction = None
-
-            # no types of fraction found, so resulting quantity is just first digit
-            else:
-                quantity = int(number.group(1))
-
-        # setup for getting unit / name after quantity
-        # determine last index of quantity section
-        if char_fraction is not None:
-            num_end = char_fraction.end()
-        elif or_symbol is not None:
-            num_end = or_symbol.end() + number.end()
-        else:
-            num_end = number.end()
-
-        return quantity, number.start(), num_end
-    return None, None, None
+    return quantity, number.start(), num_end
 
 
 def get_unit(ingredient, num_end):
@@ -310,9 +294,9 @@ def list_ingredients(ingredients):
     # remove leading and trailing spaces and extra chars
     for idx in range(len(ingredients)):
         string = ingredients[idx]
-        while len(string) > 0 and string[0] in ' ,.-–•':
+        while len(string) > 0 and string[0] in ' ,.-–—•':
             string = string[1:]
-        while len(string) > 0 and string[-1] in ' ,.-–•':
+        while len(string) > 0 and string[-1] in ' ,.-–—•':
             string = string[:-1]
         ingredients[idx] = string
 
@@ -356,9 +340,9 @@ def list_ingredients(ingredients):
             name = get_name(ingredient, num_start, unit_end + offset)
 
             # remove leading and trailing spaces and extra chars
-            while len(name) > 0 and name[0] in ' ,.-–•':
+            while len(name) > 0 and name[0] in ' ,.-–—•':
                 name = name[1:]
-            while len(name) > 0 and name[-1] in ' ,.-–•':
+            while len(name) > 0 and name[-1] in ' ,.-–—•':
                 name = name[:-1]
 
             # create an Ingredient object instance
@@ -393,7 +377,7 @@ def list_instructions(instructions):
         instructions = '\n' + instructions
 
     # remove numbered, bullet, and dash prefixes
-    instructions = re.sub(r"\n\s*\d+\.?\s*|\n\s*(•|-|–)\s*", '\n', instructions)
+    instructions = re.sub(r"\n\s*\d+\.?\s*|\n\s*[•\-–—]\s*", '\n', instructions)
 
     # split by sentence ends, periods, or colons followed by newlines. Does not catch decimals in numbers
     instructions = re.split(r"\.\s+|\.\n|:\s*\n", instructions)
