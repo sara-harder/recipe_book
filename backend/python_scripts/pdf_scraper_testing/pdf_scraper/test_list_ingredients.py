@@ -363,6 +363,46 @@ class TestGetQuantity(unittest.TestCase):
 
         self.assertEqual((0.333, 7, 17), res, msg='quantity_string={}'.format('1/3 — 1/2'))
 
+    def test_decimals_1(self):
+        """Test a basic ingredient string with multiple digits and no space before unit"""
+        ingredient = "2.5 cups butter"
+
+        res = pdf_scraper.get_quantity(ingredient)
+
+        self.assertEqual((2.5, 0, 4), res, msg='quantity_string={}'.format('2.5'))
+
+    def test_decimals_2(self):
+        """Test a basic ingredient string with multiple digits and no space before unit"""
+        ingredient = "2.5cups butter"
+
+        res = pdf_scraper.get_quantity(ingredient)
+
+        self.assertEqual((2.5, 0, 3), res, msg='quantity_string={}'.format('2.5'))
+
+    def test_decimals_3(self):
+        """Test a basic ingredient string with multiple digits and no space before unit"""
+        ingredient = "Butter, 2.5 cups"
+
+        res = pdf_scraper.get_quantity(ingredient)
+
+        self.assertEqual((2.5, 8, 12), res, msg='quantity_string={}'.format('2.5'))
+
+    def test_decimals_4(self):
+        """Test a basic ingredient string with multiple digits and no space before unit"""
+        ingredient = "Butter, 2.5cups"
+
+        res = pdf_scraper.get_quantity(ingredient)
+
+        self.assertEqual((2.5, 8, 11), res, msg='quantity_string={}'.format('2.5'))
+
+    def test_decimals_5(self):
+        """Test a basic ingredient string with multiple digits and no space before unit"""
+        ingredient = ".5 cups butter"
+
+        res = pdf_scraper.get_quantity(ingredient)
+
+        self.assertEqual((0.5, 0, 3), res, msg='quantity_string={}'.format('.5'))
+
 
 class TestListIngredients(unittest.TestCase):
     @classmethod

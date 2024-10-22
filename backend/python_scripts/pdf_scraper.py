@@ -201,16 +201,19 @@ def get_quantity(ingredient):
     """Given an ingredient string, identifies what part of that string indicates the quantity. Checks for fractions
     and 'or' symbols. Returns the quantity, and the start and end indices of the quantity within the string"""
 
-    # find the ingredient's quantity by checking for digits and optional unicode fraction
-    number = re.search(r"(\d+\s*)([¾⅔½⅓¼⅙⅛])?\s*|([¾⅔½⅓¼⅙⅛])\s*", ingredient)
-
+    # find the ingredient's quantity by checking for digits, optional unicode fraction, and decimal point
+    number = re.search(r"(\d*\.)?(\d+\s*)([¾⅔½⅓¼⅙⅛])?\s*|([¾⅔½⅓¼⅙⅛])\s*", ingredient)
     if number is None:
         return None, None, None
 
-    quantity = int(number.group(1)) if number.group(1) else 0
+    quantity = int(number.group(2)) if number.group(2) else 0
+
+    # if there is a decimal point, combine the parts around it
+    if number.group(1):
+        quantity = float(number.group(1) + number.group(2))
 
     # if there is a unicode fraction, convert to a float using unicode_fractions dictionary
-    unicode_fraction = number.group(2) or number.group(3)
+    unicode_fraction = number.group(3) or number.group(4)
     if unicode_fraction:
         quantity += unicode_fractions[unicode_fraction]
 
@@ -221,10 +224,10 @@ def get_quantity(ingredient):
     after_quantity = ingredient[num_end:]
 
     # search for 'or' symbols followed by more quantity text
-    or_match = re.search(r"([-–—]|or)\s*((\d+\s*[¾⅔½⅓¼⅙⅛]?)|[¾⅔½⅓¼⅙⅛])\s*", after_quantity)
-    if or_match and or_match.start() == 0:
+    or_symbol = re.search(r"([-–—]|or)\s*((\d+\s*[¾⅔½⅓¼⅙⅛]?)|[¾⅔½⅓¼⅙⅛])\s*", after_quantity)
+    if or_symbol and or_symbol.start() == 0:
         # push the end index of the quantity text to after the alternate option, without updating quantity itself
-        _, new_end = search_for_character_fraction(or_match.start(), or_match.end(), after_quantity, 0)
+        _, new_end = search_for_character_fraction(or_symbol.start(), or_symbol.end(), after_quantity, 0)
         num_end += new_end
 
     return quantity, number.start(), num_end
