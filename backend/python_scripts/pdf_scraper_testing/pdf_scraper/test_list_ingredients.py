@@ -284,7 +284,7 @@ class TestGetQuantity(unittest.TestCase):
         self.assertEqual((1, 0, 2), res, msg='quantity_string={}'.format('1'))
 
     def test_name_first_1(self):
-        """Test a basic ingredient string with multiple digits and no space before unit"""
+        """"""
         ingredient = "Butter, 50g"
 
         res = pdf_scraper.get_quantity(ingredient)
@@ -292,7 +292,7 @@ class TestGetQuantity(unittest.TestCase):
         self.assertEqual((50, 8, 10), res, msg='quantity_string={}'.format('50'))
 
     def test_name_first_2(self):
-        """Test a basic ingredient string with multiple digits and space before unit"""
+        """"""
         ingredient = "Flour, 50 tsp"
 
         res = pdf_scraper.get_quantity(ingredient)
@@ -300,7 +300,7 @@ class TestGetQuantity(unittest.TestCase):
         self.assertEqual((50, 7, 10), res, msg='quantity_string={}'.format('50'))
 
     def test_name_first_3(self):
-        """Test an ingredient string with digits, space, then unicode and space before unit"""
+        """"""
         ingredient = "Butter 1½ tbsp"
 
         res = pdf_scraper.get_quantity(ingredient)
@@ -308,7 +308,7 @@ class TestGetQuantity(unittest.TestCase):
         self.assertEqual((1.5, 7, 10), res, msg='quantity_string={}'.format('1½'))
 
     def test_name_first_4(self):
-        """Test an ingredient string just unicode, no digits, and no space before unit"""
+        """"""
         ingredient = "Butter ½tbsp"
 
         res = pdf_scraper.get_quantity(ingredient)
@@ -316,7 +316,7 @@ class TestGetQuantity(unittest.TestCase):
         self.assertEqual((0.5, 7, 8), res, msg='quantity_string={}'.format('½'))
 
     def test_name_first_5(self):
-        """Test an ingredient string with digits then a written out fraction and space before unit"""
+        """"""
         ingredient = "Butter, 1 1/12 tbsp"
 
         res = pdf_scraper.get_quantity(ingredient)
@@ -324,7 +324,7 @@ class TestGetQuantity(unittest.TestCase):
         self.assertEqual((1.083, 8, 15), res, msg='quantity_string={}'.format('1 1/12'))
 
     def test_name_first_6(self):
-        """Test an ingredient string just a written out fraction, no digits, and no space before unit"""
+        """"""
         ingredient = "Butter 1/2tbsp"
 
         res = pdf_scraper.get_quantity(ingredient)
@@ -364,7 +364,7 @@ class TestGetQuantity(unittest.TestCase):
         self.assertEqual((0.333, 7, 17), res, msg='quantity_string={}'.format('1/3 — 1/2'))
 
     def test_decimals_1(self):
-        """Test a basic ingredient string with multiple digits and no space before unit"""
+        """"""
         ingredient = "2.5 cups butter"
 
         res = pdf_scraper.get_quantity(ingredient)
@@ -372,7 +372,7 @@ class TestGetQuantity(unittest.TestCase):
         self.assertEqual((2.5, 0, 4), res, msg='quantity_string={}'.format('2.5'))
 
     def test_decimals_2(self):
-        """Test a basic ingredient string with multiple digits and no space before unit"""
+        """"""
         ingredient = "2.5cups butter"
 
         res = pdf_scraper.get_quantity(ingredient)
@@ -380,7 +380,7 @@ class TestGetQuantity(unittest.TestCase):
         self.assertEqual((2.5, 0, 3), res, msg='quantity_string={}'.format('2.5'))
 
     def test_decimals_3(self):
-        """Test a basic ingredient string with multiple digits and no space before unit"""
+        """"""
         ingredient = "Butter, 2.5 cups"
 
         res = pdf_scraper.get_quantity(ingredient)
@@ -388,7 +388,7 @@ class TestGetQuantity(unittest.TestCase):
         self.assertEqual((2.5, 8, 12), res, msg='quantity_string={}'.format('2.5'))
 
     def test_decimals_4(self):
-        """Test a basic ingredient string with multiple digits and no space before unit"""
+        """"""
         ingredient = "Butter, 2.5cups"
 
         res = pdf_scraper.get_quantity(ingredient)
@@ -396,12 +396,150 @@ class TestGetQuantity(unittest.TestCase):
         self.assertEqual((2.5, 8, 11), res, msg='quantity_string={}'.format('2.5'))
 
     def test_decimals_5(self):
-        """Test a basic ingredient string with multiple digits and no space before unit"""
+        """"""
         ingredient = ".5 cups butter"
 
         res = pdf_scraper.get_quantity(ingredient)
 
         self.assertEqual((0.5, 0, 3), res, msg='quantity_string={}'.format('.5'))
+
+    def test_decimals_6(self):
+        """"""
+        ingredient = "1-1.5 cups butter"
+
+        res = pdf_scraper.get_quantity(ingredient)
+
+        self.assertEqual((1, 0, 6), res, msg='quantity_string={}'.format('1-1.5'))
+
+    def test_decimals_7(self):
+        """"""
+        ingredient = "1.5-2.5 cups butter"
+
+        res = pdf_scraper.get_quantity(ingredient)
+
+        self.assertEqual((1.5, 0, 8), res, msg='quantity_string={}'.format('1.5-2.5'))
+
+    def test_decimals_8(self):
+        """"""
+        ingredient = "1 cups butter or 1.5 cups margarine"
+
+        res = pdf_scraper.get_quantity(ingredient)
+
+        self.assertEqual((1, 0, 2), res, msg='quantity_string={}'.format('1'))
+
+
+class TestGetUnit(unittest.TestCase):
+    def test_ingredient_1(self):
+        """"""
+        ingredient = "50g butter"
+
+        res = pdf_scraper.get_unit(ingredient, 2)
+
+        self.assertEqual(('g', 4), res, msg='unit_string={}'.format('g'))
+
+    def test_ingredient_2(self):
+        """"""
+        ingredient = "Butter, 50g"
+
+        res = pdf_scraper.get_unit(ingredient, 10)
+
+        self.assertEqual(('g', 12), res, msg='unit_string={}'.format('g'))
+
+    def test_fail_1(self):
+        """"""
+        ingredient = "50 peanuts"
+
+        res = pdf_scraper.get_unit(ingredient, 2)
+
+        self.assertEqual((None, 2), res, msg='unit_string={}'.format('none'))
+
+    def test_fail_2(self):
+        """"""
+        ingredient = "Peanuts, 50"
+
+        res = pdf_scraper.get_unit(ingredient, 11)
+
+        self.assertEqual((None, 11), res, msg='unit_string={}'.format('none'))
+
+    def test_ingredient_3(self):
+        """"""
+        ingredient = "1 tbsp sugar"
+
+        res = pdf_scraper.get_unit(ingredient, 2)
+
+        self.assertEqual(('tbsp', 7), res, msg='unit_string={}'.format('tbsp'))
+
+    def test_ingredient_4(self):
+        """"""
+        ingredient = "1 tblsp sugar"
+
+        res = pdf_scraper.get_unit(ingredient, 2)
+
+        self.assertEqual(('tbsp', 8), res, msg='unit_string={}'.format('tblsp'))
+
+    def test_ingredient_5(self):
+        """"""
+        ingredient = "1 tablespoon sugar"
+
+        res = pdf_scraper.get_unit(ingredient, 2)
+
+        self.assertEqual(('tbsp', 13), res, msg='unit_string={}'.format('tablespoon'))
+
+    def test_ingredient_6(self):
+        """"""
+        ingredient = "2 tablespoons sugar"
+
+        res = pdf_scraper.get_unit(ingredient, 2)
+
+        self.assertEqual(('tbsp', 14), res, msg='unit_string={}'.format('tablespoons'))
+
+    def test_ingredient_7(self):
+        """"""
+        ingredient = "1-2 tablespoon(s) sugar"
+
+        res = pdf_scraper.get_unit(ingredient, 4)
+
+        self.assertEqual(('tbsp', 18), res, msg='unit_string={}'.format('tablespoon(s)'))
+
+    def test_ingredient_8(self):
+        """"""
+        ingredient = "1 TBSP sugar"
+
+        res = pdf_scraper.get_unit(ingredient, 2)
+
+        self.assertEqual(('tbsp', 7), res, msg='unit_string={}'.format('TBSP'))
+
+    def test_ingredient_9(self):
+        """"""
+        ingredient = "1 Tbsp. sugar"
+
+        res = pdf_scraper.get_unit(ingredient, 2)
+
+        self.assertEqual(('tbsp', 8), res, msg='unit_string={}'.format('Tbsp.'))
+
+    def test_ingredient_12(self):
+        """"""
+        ingredient = "5fl oz milk"
+
+        res = pdf_scraper.get_unit(ingredient, 1)
+
+        self.assertEqual(('fl oz', 7), res, msg='unit_string={}'.format('fl oz'))
+
+    def test_ingredient_13(self):
+        """"""
+        ingredient = "5 fluid ounces milk"
+
+        res = pdf_scraper.get_unit(ingredient, 2)
+
+        self.assertEqual(('fl oz', 15), res, msg='unit_string={}'.format('fluid ounces'))
+
+    def test_ingredient_14(self):
+        """"""
+        ingredient = "5 fluid pounds milk"
+
+        res = pdf_scraper.get_unit(ingredient, 2)
+
+        self.assertEqual((None, 2), res, msg='unit_string={}'.format('fluid pounds'))
 
 
 class TestListIngredients(unittest.TestCase):

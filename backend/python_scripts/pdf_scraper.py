@@ -15,19 +15,19 @@ unicode_fractions = {
 }
 
 units = {
-    'mg': ['mg', 'milligram', 'milligrams'],
-    'g': ['g', 'gram', 'grams'],
-    'kg': ['kg', 'kilogram', 'kilograms'],
-    'ml': ['ml', 'milliliter', 'milliliters'],
-    'cl': ['cl', 'centiliter', 'centiliters'],
-    'dl': ['dl', 'deciliter', 'deciliters'],
-    'l': ['l', 'liter', 'liters'],
-    'tsp': ['tsp', 'teaspoon', 'teaspoons'],
-    'tbsp': ['tbsp', 'tblsp', 'tablespoon', 'tablespoons'],
+    'mg': ['mg', 'milligram', 'milligrams', 'milligram(s)'],
+    'g': ['g', 'gram', 'grams', 'gram(s)'],
+    'kg': ['kg', 'kilogram', 'kilograms', 'kilogram(s)'],
+    'ml': ['ml', 'milliliter', 'milliliters', 'milliliter(s)'],
+    'cl': ['cl', 'centiliter', 'centiliters', 'centiliter(s)'],
+    'dl': ['dl', 'deciliter', 'deciliters', 'deciliter(s)'],
+    'l': ['l', 'liter', 'liters', 'liter(s)'],
+    'tsp': ['tsp', 'teaspoon', 'teaspoons', 'teaspoon(s)'],
+    'tbsp': ['tbsp', 'tblsp', 'tablespoon', 'tablespoons', 'tablespoon(s)'],
     ' cup(s)': ['cup', 'cups', 'cup(s)'],
-    'lb': ['lb', 'lbs', 'pound', 'pounds'],
+    'lb': ['lb', 'lbs', 'pound', 'pounds', 'pound(s)'],
     'oz': ['oz', 'ounce', 'ounces'],
-    'fl oz': ['fl oz', 'fluid ounce', 'fluid ounces'],
+    'fl oz': ['fl oz', 'floz' 'fluid ounce', 'fluid ounces', 'fluid ounce(s)'],
     ' pint(s)': ['pint', 'pints', 'pint(s)'],
     ' quart(s)': ['quart', 'quarts', 'quart(s)'],
     ' gallon(s)': ['gallon', 'gallons', 'gallon(s)'],
@@ -37,7 +37,7 @@ units = {
     ' clove(s)': ['clove', 'cloves', 'clove(s)'],
     ' slice(s)': ['slice', 'slices', 'slice(s)'],
     ' cube(s)': ['cube', 'cubes', 'cube(s)'],
-    ' drop(s)' : ['drop', 'drops', 'drop(s)']
+    ' drop(s)': ['drop', 'drops', 'drop(s)']
 }
 
 
@@ -224,7 +224,7 @@ def get_quantity(ingredient):
     after_quantity = ingredient[num_end:]
 
     # search for 'or' symbols followed by more quantity text
-    or_symbol = re.search(r"([-–—]|or)\s*((\d+\s*[¾⅔½⅓¼⅙⅛]?)|[¾⅔½⅓¼⅙⅛])\s*", after_quantity)
+    or_symbol = re.search(r"([-–—]|or)\s*(((\d*\.)?\d+\s*[¾⅔½⅓¼⅙⅛]?)|[¾⅔½⅓¼⅙⅛])\s*", after_quantity)
     if or_symbol and or_symbol.start() == 0:
         # push the end index of the quantity text to after the alternate option, without updating quantity itself
         _, new_end = search_for_character_fraction(or_symbol.start(), or_symbol.end(), after_quantity, 0)
@@ -233,38 +233,39 @@ def get_quantity(ingredient):
     return quantity, number.start(), num_end
 
 
+def identify_unit(ingredient, unit_start, search_start):
+    """Identifies and formats the unit in the ingredient string starting at the given index. Unit start and search
+    start differ only when there are multiple words in the unit"""
+    unit_end = ingredient.find(' ', search_start)
+    if unit_end == -1:
+        unit_end = len(ingredient)
+
+    unit = ingredient[unit_start:unit_end]
+
+    # format the unit word to allow it to match with the dictionary
+    unit = unit.lower().replace('.', '').replace(',', '')
+
+    return unit, unit_end+1
+
+
 def get_unit(ingredient, num_end):
-    """Given an ingredient string and the index of the end of the quantity section, identifies what part of that string
-    indicates the unit. Replaces the provided unit with a standardized unit from the unit dictionary. Returns the unit"""
+    """Given an ingredient string and the end index of the quantity section, identifies what part of that string
+    indicates the unit. Returns the unit in a standardized form using the unit dictionary, and the end index of
+    the unit within the string"""
 
     # the unit is one word that comes immediately after quantity
-    chars = ingredient[num_end:]
-    unit_match = re.search(r".\b", chars)
-    if unit_match:
-        unit = chars[:unit_match.end()]
+    unit, unit_end = identify_unit(ingredient, num_end, num_end)
 
-        # the end index of the unit section is the length of the unit word plus a space
-        unit_end = len(unit) + 1
+    if unit == 'fl' or unit == 'fluid':
+        unit, unit_end = identify_unit(ingredient, num_end, unit_end)
 
-        # format the unit word to allow it to match with the dictionary
-        unit = unit.lower()
-        unit = unit.replace('.', '')
+    # find the unit within the unit dictionary and replace it with the corresponding standardized unit key
+    unit = next((key for key, values in units.items() if unit in values), None)
 
-        # find the unit within the unit dictionary and replace it with the corresponding standardized unit key
-        found = False
-        for possible in units:
-            if unit in units[possible]:
-                unit = possible
-                found = True
-                break
+    if unit is None:
+        unit_end = num_end
 
-        if not found:
-            unit = None
-            unit_end = 0
-
-        return unit, unit_end
-    else:
-        return None, num_end
+    return unit, unit_end
 
 
 def get_name(ingredient, num_start, unit_end):
@@ -338,9 +339,8 @@ def list_ingredients(ingredients):
             # retrieve the unit and the end of the unit section (index starting after number section)
             unit, unit_end = get_unit(ingredient, num_end)
 
-            offset = num_end - num_start
             # retrieve the name
-            name = get_name(ingredient, num_start, unit_end + offset)
+            name = get_name(ingredient, num_start, unit_end)
 
             # remove leading and trailing spaces and extra chars
             while len(name) > 0 and name[0] in ' ,.-–—•':
@@ -467,7 +467,7 @@ def parse_recipe(pdf_data):
 
     testing = True
     if testing:
-        # print_results(title, ingredients, instructions)
+        print_results(title, ingredients, instructions)
         return None
 
     # convert each ingredient to a dictionary instead of an Ingredient instance
