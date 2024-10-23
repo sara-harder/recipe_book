@@ -542,6 +542,56 @@ class TestGetUnit(unittest.TestCase):
         self.assertEqual((None, 2), res, msg='unit_string={}'.format('fluid pounds'))
 
 
+class TestGetName(unittest.TestCase):
+    def test_ingredient_1(self):
+        """"""
+        ingredient = "50g butter"
+
+        res = pdf_scraper.get_name(ingredient, 0, 4)
+
+        self.assertEqual('Butter', res, msg='name={}, position={}'.format('butter', 'end'))
+
+    def test_ingredient_2(self):
+        """"""
+        ingredient = "Butter, 50g"
+
+        res = pdf_scraper.get_name(ingredient, 8, 11)
+
+        self.assertEqual('Butter', res, msg='name={}, position={}'.format('Butter, ', 'beginning'))
+
+    def test_ingredient_3(self):
+        """"""
+        ingredient = "10g (per person) sugar"
+
+        res = pdf_scraper.get_name(ingredient, 0, 4)
+
+        self.assertEqual('Sugar', res, msg='name={}, position={}'.format('sugar', 'end'))
+
+    def test_ingredient_4(self):
+        """"""
+        ingredient = "SUGAR (per person), 10g"
+
+        res = pdf_scraper.get_name(ingredient, 20, 40)
+
+        self.assertEqual('Sugar (per person)', res, msg='name={}, position={}'.format('sugar', 'beginning'))
+
+    def test_ingredient_5(self):
+        """"""
+        ingredient = "50g -butter, "
+
+        res = pdf_scraper.get_name(ingredient, 0, 4)
+
+        self.assertEqual('Butter', res, msg='name={}, position={}'.format('-butter, ', 'end'))
+
+    def test_ingredient_6(self):
+        """"""
+        ingredient = "50g peanut-butter"
+
+        res = pdf_scraper.get_name(ingredient, 0, 4)
+
+        self.assertEqual('Peanut-butter', res, msg='name={}, position={}'.format('peanut-butter', 'end'))
+
+
 class TestListIngredients(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

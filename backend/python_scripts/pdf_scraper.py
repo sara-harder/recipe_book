@@ -273,19 +273,20 @@ def get_name(ingredient, num_start, unit_end):
     section, identifies what part of that string indicates the name. Converts the name to all lowercase with capitalized
     first word. Returns the name"""
 
-    # if the quantity doesn't start at beginning of string, the beginning must be the name
-    if num_start != 0:
-        name = ingredient[:num_start]
-    # otherwise the name is after the unit til the end of the string
-    else:
-        name = ingredient[unit_end:]
+    # name comes before quantity if quantity is not at the beginning, otherwise after the unit
+    name = ingredient[:num_start] if num_start != 0 else ingredient[unit_end:]
 
-        # some strings have more parts of the unit/quantity in parentheses. Eliminate these and start name after
-        if name[0] == '(':
-            name = re.sub(r'\(.*\)\s*', '', name, 1)
+    # some strings have more parts of the unit/quantity in parentheses. Eliminate these and start name after
+    if name.startswith('('):
+        name = re.sub(r'\(.*\)\s*', '', name, 1)
+
+    # remove leading and trailing spaces and extra chars
+    name = name.strip(' ,.-–—•')
 
     # convert name to all lowercase except first word
-    return name[0].upper() + name[1:].lower()
+    name = name.capitalize()
+
+    return name
 
 
 def list_ingredients(ingredients):
@@ -341,12 +342,6 @@ def list_ingredients(ingredients):
 
             # retrieve the name
             name = get_name(ingredient, num_start, unit_end)
-
-            # remove leading and trailing spaces and extra chars
-            while len(name) > 0 and name[0] in ' ,.-–—•':
-                name = name[1:]
-            while len(name) > 0 and name[-1] in ' ,.-–—•':
-                name = name[:-1]
 
             # create an Ingredient object instance
             ingredient = Ingredient(name, quantity, unit)
