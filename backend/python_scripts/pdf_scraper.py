@@ -281,7 +281,7 @@ def get_name(ingredient, num_start, unit_end):
         name = re.sub(r'\(.*\)\s*', '', name, 1)
 
     # remove leading and trailing spaces and extra chars
-    name = name.strip(' ,.-–—•')
+    name = name.strip(' ,.-–—·•')
 
     # convert name to all lowercase except first word
     name = name.capitalize()
@@ -289,25 +289,22 @@ def get_name(ingredient, num_start, unit_end):
     return name
 
 
-def list_ingredients(ingredients):
+def list_ingredients(ingredients_string):
     """Takes an ingredients string and converts it into a list of ingredient objects. The objects each have a name,
     optional quantity, and optional unit. Returns the list of ingredients objects
     Calls: get_quantity, get_unit, get_name"""
+    # add new line to register all prefixed lines
+    if ingredients_string[0] != '\n':
+        ingredients_string = '\n' + ingredients_string
+    # remove any numbered prefixes (format 4.  or 10. , etc.)
+    ingredients_string = re.sub(r"\n\s*\d+\.\s+", '\n', ingredients_string)
 
-    ingredients = ingredients.split('\n')
-
-    # remove leading and trailing spaces and extra chars
-    for idx in range(len(ingredients)):
-        string = ingredients[idx]
-        while len(string) > 0 and string[0] in ' ,.-–—•':
-            string = string[1:]
-        while len(string) > 0 and string[-1] in ' ,.-–—•':
-            string = string[:-1]
-        ingredients[idx] = string
-
-    # remove any empty ingredients
-    while "" in ingredients:
-        ingredients.remove("")
+    # separate ingredients by new lines, and remove redundant spaces and characters
+    ingredients = []
+    for ingredient in ingredients_string.split('\n'):
+        ingredient = ingredient.strip(' ,.-–—·•')
+        if ingredient:
+            ingredients.append(ingredient)
 
     # define the Ingredient object class
     class Ingredient:
@@ -330,11 +327,12 @@ def list_ingredients(ingredients):
     for ingredient in ingredients:
 
         # remove any parentheses around the ingredient
-        if ingredient[0] == '(' and ingredient[len(ingredient)-1] == ')':
-            ingredient = ingredient[1:len(ingredient)-1]
+        if ingredient[0] == '(' and ingredient[-1] == ')':
+            ingredient = ingredient[1:-1]
 
         # retrieve the quantity, and the start/end of the quantity section
         quantity, num_start, num_end = get_quantity(ingredient)
+        unit = None
 
         if quantity is not None:
             # retrieve the unit and the end of the unit section (index starting after number section)
@@ -343,26 +341,15 @@ def list_ingredients(ingredients):
             # retrieve the name
             name = get_name(ingredient, num_start, unit_end)
 
-            # create an Ingredient object instance
-            ingredient = Ingredient(name, quantity, unit)
-
         else:
-            # if no quantity (and therefore no unit), set name = ingredient (without any special chars)
-            name_match = re.search(r'[A-Za-z\d]', ingredient)
-            if name_match is not None:
-                name = ingredient[name_match.start():]
-
-                # convert name to all lowercase except first word
-                name = name[0].upper() + name[1:].lower()
-
-                # create ingredient with just the name
-                ingredient = Ingredient(name)
-            else:
-                ingredient = None
+            # if no quantity (and therefore no unit), set name = ingredient if it is a valid string
+            name = re.search(r'\w+', ingredient)
+            if name is not None:
+                name = ingredient.capitalize()
 
         # add created Ingredient object into list of results
-        if ingredient is not None:
-            final_ingredients.append(ingredient)
+        if name:
+            final_ingredients.append(Ingredient(name, quantity, unit))
 
     return final_ingredients
 
@@ -375,7 +362,7 @@ def list_instructions(instructions):
         instructions = '\n' + instructions
 
     # remove numbered, bullet, and dash prefixes
-    instructions = re.sub(r"\n\s*\d+\.?\s*|\n\s*[•\-–—]\s*", '\n', instructions)
+    instructions = re.sub(r"\n\s*\d+\.?\s*|\n\s*[·•\-–—]\s*", '\n', instructions)
 
     # split by sentence ends, periods, or colons followed by newlines. Does not catch decimals in numbers
     instructions = re.split(r"\.\s+|\.\n|:\s*\n", instructions)

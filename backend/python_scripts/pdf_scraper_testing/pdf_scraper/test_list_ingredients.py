@@ -427,6 +427,14 @@ class TestGetQuantity(unittest.TestCase):
 
         self.assertEqual((1, 0, 2), res, msg='quantity_string={}'.format('1'))
 
+    def test_no_quantity(self):
+        """"""
+        ingredient = "Pepper"
+
+        res = pdf_scraper.get_quantity(ingredient)
+
+        self.assertEqual((None, None, None), res, msg='quantity_string={}'.format('none'))
+
 
 class TestGetUnit(unittest.TestCase):
     def test_ingredient_1(self):
@@ -593,145 +601,106 @@ class TestGetName(unittest.TestCase):
 
 
 class TestListIngredients(unittest.TestCase):
+    @staticmethod
+    def ingredientDict(name, quantity, unit):
+        return {
+            'name': name,
+            'quantity': quantity,
+            'unit': unit
+        }
+
     @classmethod
     def setUpClass(cls):
         cls.expected = [
-                        "Here are some instructions",
-                        "Follow the instructions carefully",
-                        "Not following the instructions could lead to undesired consequences",
-                        "Always read the instructions before you start cooking",
-                        "Now boil 50.0ml of water"
+                        cls.ingredientDict('Butter', 100, 'g'),
+                        cls.ingredientDict('Sugar', 3, 'tbsp'),
+                        cls.ingredientDict('Flour', 5.5, ' cup(s)'),
+                        cls.ingredientDict('Vanilla', 2.5, 'tsp'),
+                        cls.ingredientDict('Eggs', 0.5, None),
+                        cls.ingredientDict('Water', 4, 'fl oz'),
                        ]
 
-    def test_instructions_1(self):
-        """Test a basic string of instructions"""
-        instructions = "Here are some instructions. Follow the instructions carefully.\n Not following the " \
-                       "instructions could lead to \nundesired consequences. \nAlways read the instructions before" \
-                       " you start cooking.\nNow boil 50.0ml of water"
+    def test_ingredients_1(self):
+        """Test a basic string of ingredients"""
+        ingredients = "100g butter\n Sugar, 3-4 tbsp \n5 1/2 cups FLOUR " \
+                      "\n 2.5tsp vanilla\nEggs, ½\n4 fl oz water"
 
-        res = pdf_scraper.list_instructions(instructions)
+        res = pdf_scraper.list_ingredients(ingredients)
 
-        self.assertListEqual(self.expected, res)
+        for idx, ing in enumerate(res):
+            self.assertDictEqual(self.expected[idx], ing.to_dict())
 
-    def test_instructions_prefix_1(self):
-        """Test a string of instructions prefixed by numbers with periods"""
-        instructions = "1. Here are some instructions. Follow the instructions carefully.\n 2. Not following the " \
-                       "instructions could lead to \nundesired consequences. \n3. Always read the instructions before" \
-                       " you start cooking.\n4.Now boil 50.0ml of water"
+    def test_ingredients_2(self):
+        """"""
+        ingredients = "-100g butter\n- Sugar, 3-4 tbsp \n-5 1/2 cups FLOUR " \
+                      "\n -2.5tsp vanilla\n-Eggs, ½\n---4 fl oz water"
 
-        res = pdf_scraper.list_instructions(instructions)
+        res = pdf_scraper.list_ingredients(ingredients)
 
-        self.assertListEqual(self.expected, res)
+        for idx, ing in enumerate(res):
+            self.assertDictEqual(self.expected[idx], ing.to_dict())
 
-    def test_instructions_prefix_2(self):
-        """Test a string of instructions prefixed by numbers without periods"""
-        instructions = "1 Here are some instructions. Follow the instructions carefully.\n 2 Not following the " \
-                       "instructions could lead to \nundesired consequences. \n3 Always read the instructions before" \
-                       " you start cooking.\n4Now boil 50.0ml of water"
+    def test_ingredients_3(self):
+        """"""
+        ingredients = "·100g butter\n· Sugar, 3-4 tbsp \n·5 1/2 cups FLOUR " \
+                      "\n ·2.5tsp vanilla\n·Eggs, ½\n··4 fl oz water"
 
-        res = pdf_scraper.list_instructions(instructions)
+        res = pdf_scraper.list_ingredients(ingredients)
 
-        self.assertListEqual(self.expected, res)
+        for idx, ing in enumerate(res):
+            self.assertDictEqual(self.expected[idx], ing.to_dict())
 
-    def test_instructions_prefix_3(self):
-        """Test a string of instructions prefixed by bullets"""
-        instructions = "• Here are some instructions. Follow the instructions carefully.\n • Not following the " \
-                       "instructions could lead to \nundesired consequences. \n• Always read the instructions before" \
-                       " you start cooking.\n•Now boil 50.0ml of water"
+    def test_ingredients_4(self):
+        """"""
+        ingredients = "1. 100g butter\n2. Sugar, 3-4 tbsp \n3. 5 1/2 cups FLOUR " \
+                      "\n 4. 2.5tsp vanilla\n5. Eggs, ½\n6. 4 fl oz water"
 
-        res = pdf_scraper.list_instructions(instructions)
+        res = pdf_scraper.list_ingredients(ingredients)
 
-        self.assertListEqual(self.expected, res)
+        for idx, ing in enumerate(res):
+            self.assertDictEqual(self.expected[idx], ing.to_dict())
 
-    def test_instructions_prefix_4(self):
-        """Test a string of instructions prefixed by hyphens"""
-        instructions = "- Here are some instructions. Follow the instructions carefully.\n - Not following the " \
-                       "instructions could lead to \nundesired consequences. \n- Always read the instructions before" \
-                       " you start cooking.\n-Now boil 50.0ml of water"
+    def test_ingredients_5(self):
+        """"""
+        ingredients = "100g butter\n Sugar, 3-4 tbsp \n5 1/2 cups FLOUR " \
+                      "\n 2.5tsp vanilla\nEggs, ½\n(4 fl oz water)"
 
-        res = pdf_scraper.list_instructions(instructions)
+        res = pdf_scraper.list_ingredients(ingredients)
 
-        self.assertListEqual(self.expected, res)
+        for idx, ing in enumerate(res):
+            self.assertDictEqual(self.expected[idx], ing.to_dict())
 
-    def test_instructions_prefix_5(self):
-        """Test a string of instructions prefixed by en dashes"""
-        instructions = "\n– Here are some instructions. Follow the instructions carefully.\n – Not following the " \
-                       "instructions could lead to \nundesired consequences. \n– Always read the instructions before" \
-                       " you start cooking.\n–Now boil 50.0ml of water"
+    def test_ingredients_6(self):
+        """"""
+        ingredients = "100g butter\n Sugar, 3-4 tbsp \n5 1/2 cups FLOUR " \
+                      "\n 2.5tsp vanilla\nEggs, ½\n4 fl oz water\nPepper (to taste)"
 
-        res = pdf_scraper.list_instructions(instructions)
+        res = pdf_scraper.list_ingredients(ingredients)
 
-        self.assertListEqual(self.expected, res)
+        expected = self.expected + [self.ingredientDict("Pepper (to taste)", None, None)]
 
-    def test_instructions_prefix_6(self):
-        """Test a string of instructions prefixed by em dashes"""
-        instructions = "\n— Here are some instructions. Follow the instructions carefully.\n — Not following the " \
-                       "instructions could lead to \nundesired consequences. \n— Always read the instructions before" \
-                       " you start cooking.\n—Now boil 50.0ml of water"
+        for idx, ing in enumerate(res):
+            self.assertDictEqual(expected[idx], ing.to_dict())
 
-        res = pdf_scraper.list_instructions(instructions)
+    def test_ingredients_7(self):
+        """"""
+        ingredients = "100g butter\n Sugar, 3-4 tbsp \n5 1/2 cups FLOUR " \
+                      "\n 2.5tsp vanilla\nEggs, ½\n4 fl oz water\n###@#@"
 
-        self.assertListEqual(self.expected, res)
+        res = pdf_scraper.list_ingredients(ingredients)
 
-    def test_instructions_separation_1(self):
-        """Test a string of instructions separated by colons"""
-        instructions = "Here are some instructions. Follow the instructions carefully:\n Not following the " \
-                       "instructions could lead to \nundesired consequences: \nAlways read the instructions before" \
-                       " you start cooking.\nNow boil 50.0ml of water"
+        for idx, ing in enumerate(res):
+            self.assertDictEqual(self.expected[idx], ing.to_dict())
 
-        res = pdf_scraper.list_instructions(instructions)
+    def test_ingredients_8(self):
+        """"""
+        ingredients = "100g butter\n Sugar, 3-4 tbsp \n5 1/2 cups FLOUR " \
+                      "\n 2.5tsp vanilla\nEggs, ½\n4 fl oz water\n1/2"
 
-        self.assertListEqual(self.expected, res)
+        res = pdf_scraper.list_ingredients(ingredients)
 
-    def test_instructions_separation_2(self):
-        """Test a string of instructions without periods, separated by new lines"""
-        instructions = "Here are some instructions\nFollow the instructions carefully\n Not following the " \
-                       "instructions could lead to undesired consequences \nAlways read the instructions before" \
-                       " you start cooking\nNow boil 50.0ml of water"
-
-        res = pdf_scraper.list_instructions(instructions)
-
-        self.assertListEqual(self.expected, res)
-
-    def test_empty_instructions_1(self):
-        """Test a string of instructions with empty spaces between new lines, with period separators"""
-        instructions = "Here are some instructions. Follow the instructions carefully.\n Not following the " \
-                       "instructions could lead to \n \nundesired consequences. \nAlways read the instructions before" \
-                       " you start cooking.\n \nNow boil 50.0ml of water"
-
-        res = pdf_scraper.list_instructions(instructions)
-
-        self.assertListEqual(self.expected, res)
-
-    def test_empty_instructions_2(self):
-        """Test a string of instructions with empty spaces between new lines, without periods"""
-        instructions = "Here are some instructions\nFollow the instructions carefully\n Not following the " \
-                       "instructions could lead to undesired consequences \nAlways read the instructions before" \
-                       " you start cooking\n \nNow boil 50.0ml of water"
-
-        res = pdf_scraper.list_instructions(instructions)
-
-        self.assertListEqual(self.expected, res)
-
-    def test_empty_instructions_3(self):
-        """Test a string of instructions with a line containing no letters, with period separators"""
-        instructions = "Here are some instructions. Follow the instructions carefully.\n Not following the " \
-                       "instructions could lead to \nundesired consequences. \nAlways read the instructions before" \
-                       " you start cooking.\n1/2.\nNow boil 50.0ml of water"
-
-        res = pdf_scraper.list_instructions(instructions)
-
-        self.assertListEqual(self.expected, res)
-
-    def test_empty_instructions_4(self):
-        """Test a string of instructions with a line containing no letters, without periods"""
-        instructions = "Here are some instructions\nFollow the instructions carefully\n Not following the " \
-                       "instructions could lead to undesired consequences \nAlways read the instructions before" \
-                       " you start cooking\n1/2\nNow boil 50.0ml of water"
-
-        res = pdf_scraper.list_instructions(instructions)
-
-        self.assertListEqual(self.expected, res)
+        for idx, ing in enumerate(res):
+            self.assertDictEqual(self.expected[idx], ing.to_dict())
 
 
 
