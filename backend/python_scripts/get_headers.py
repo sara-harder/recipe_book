@@ -86,7 +86,8 @@ def find_headers(sizes, text_by_size):
     headers_dict = {}
 
     for size in sizes:
-        headers = text_by_size[size]
+        headers = [header for header in text_by_size[size] if header['text'].strip()]
+
         ingredient_matches = find_matches(headers, r"ingredient")
         instruction_matches = find_matches(headers, r"instruction|direction|method|preparation|steps")
 
@@ -133,6 +134,8 @@ def get_headers(font_sizes, text_by_size, flag_sizes, text_by_flag):
     Identifies the headers in the doc based on the font sizes larger than the most common font size. Searches those
     headers for occurrences of 'ingredients' and 'instructions'. If none found, re-identifies headers based on largest
     flags, then searches again.
+
+    Calls: find_headers
 
     Returns header dict of largest found ingredients + instructions combination"""
 

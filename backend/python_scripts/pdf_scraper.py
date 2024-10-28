@@ -64,52 +64,68 @@ def extract_text_info(doc):
         two similar dictionaries for flags, using flag number instead of font size"""
     font_sizes, text_by_size, flag_sizes, text_by_flag = {}, {}, {}, {}
     doc_text = ''
-    text_index = 0
+    doc_text_idx = 0
     source = ''
 
     for page in doc:
-        sorted_block_text = page.get_text("dict", sort=True)["blocks"]
-        sorted_straight_text = page.get_text(sort=True)
-        straight_text_idx = 0
+        blocks = page.get_text("dict", sort=True)["blocks"]
+        plain_text = page.get_text(sort=True)
+        plain_text_idx = 0
 
-        for idx, block in enumerate(sorted_block_text):
+        for idx, block in enumerate(blocks):
             if 'lines' not in block:
                 continue
 
-            if idx == 0 or idx == len(sorted_block_text) - 1:
+            # skip web-related text in first and last blocks
+            if idx == 0 or idx == len(blocks) - 1:
                 web_text = any(eval_web_text(line["spans"][0]["text"]) for line in block["lines"][:2])
                 if web_text:
                     for line in block["lines"][:2]:
-                        straight_text_idx += len(line["spans"][0]["text"]) + 1
+                        plain_text_idx += len(line["spans"][0]["text"]) + 1
                         url = re.search(r"https://.*", line["spans"][0]["text"])
                         if url is not None:
                             source = url.group()
-                    continue  # Skip if it's web-related text
+                    continue
 
-            # Process valid text
+            # process valid text
             for line in block["lines"]:
                 for span in line["spans"]:
                     size, text, flags = span["size"], span["text"], span["flags"]
+                    text_len = len(text)
 
+                    # adjust text length if initial character mismatch caused by word_break
+                    if len(text) > 1 and text[0] != plain_text[plain_text_idx]:
+                        text_len -= 1
+
+                    # if there is a new line or space after the text that is NOT included in the text, add it
                     word_break = 0
-                    if (straight_text_idx + len(text)) < len(sorted_straight_text) and \
-                            (sorted_straight_text[straight_text_idx + len(text)] == '\n' or
-                             sorted_straight_text[straight_text_idx + len(text)] == ' '):
+                    text_end_idx = plain_text_idx + text_len
+                    if text_end_idx < len(plain_text) and plain_text[text_end_idx] in ' \n':
                         word_break = 1
 
-                    if not str.isspace(text) and len(text) > 0:
-                        data = {'text': text, 'text_index': text_index}
+                    text_len += word_break
 
-                        font_sizes[size] = font_sizes.get(size, 0) + 1
-                        text_by_size.setdefault(size, []).append(data)
+                    # skip text if it was already included as a word_break for previous text
+                    if text in ' \n' and word_break == 0:
+                        text_len = 0
 
-                        flag_sizes[flags] = flag_sizes.get(flags, 0) + 1
-                        text_by_flag.setdefault(flags, []).append(data)
+                    # if valid text, add it to doc string and dictionaries
+                    if text_len > 0:
+                        extracted_text = plain_text[plain_text_idx: plain_text_idx + text_len]
 
-                        doc_text += sorted_straight_text[straight_text_idx: straight_text_idx + len(text) + word_break]
-                        text_index += len(text) + word_break
+                        if text_len - word_break > 0:
+                            data = {'text': extracted_text[:text_len - word_break], 'text_index': doc_text_idx}
 
-                    straight_text_idx += len(text) + word_break
+                            font_sizes[size] = font_sizes.get(size, 0) + 1
+                            text_by_size.setdefault(size, []).append(data)
+
+                            flag_sizes[flags] = flag_sizes.get(flags, 0) + 1
+                            text_by_flag.setdefault(flags, []).append(data)
+
+                        doc_text += extracted_text
+                        doc_text_idx += text_len
+
+                    plain_text_idx += text_len
 
     return doc_text, source, font_sizes, text_by_size, flag_sizes, text_by_flag
 
@@ -128,13 +144,13 @@ def read_text(pdf_data):
 
     text, source, font_sizes, text_by_size, flag_sizes, text_by_flag = extract_text_info(doc)
 
-    if text == '':
+    if text.strip() == '':
         return '', '', None, ''
 
     title = text_by_size[max(font_sizes)][0]
     headers = get_headers.get_headers(font_sizes, text_by_size, flag_sizes, text_by_flag)
 
-    return title['text'], text, headers, source
+    return title['text'].strip(), text, headers, source
 
 
 def get_recipe_bounds(headers, text):
@@ -282,6 +298,8 @@ def get_name(ingredient, num_start, unit_end):
 
     # remove leading and trailing spaces and extra chars
     name = name.strip(' ,.-–—·•')
+    if len(name) < 2:
+        return None
 
     # convert name to all lowercase except first word
     name = name.capitalize()
@@ -343,15 +361,54 @@ def list_ingredients(ingredients_string):
 
         else:
             # if no quantity (and therefore no unit), set name = ingredient if it is a valid string
-            name = re.search(r'\w+', ingredient)
+            name = re.search(r'\w\w+', ingredient)
             if name is not None:
                 name = ingredient.capitalize()
+
+        if name and name[-1] == ':':
+            name = None
 
         # add created Ingredient object into list of results
         if name:
             final_ingredients.append(Ingredient(name, quantity, unit))
 
     return final_ingredients
+
+
+def remove_num_prefixes(instructions):
+    number_prefix = re.search(r"\n\s*(1)\.?\s*", instructions)
+    if number_prefix is None:
+        return instructions
+
+    # check if there aren't really prefixes, just a 1 at the beginning of some line
+    number_prefix = re.search(r"\n\s*(2)\.?\s*", instructions[number_prefix.end():])
+    if not number_prefix:
+        return instructions
+
+    # remove numbered prefixes, only the ones that are in order
+    large_list = iter(range(1, 1000))
+    next_prefix = next(large_list)
+    offset = 0
+
+    while True:
+        # search for the next numbered prefix starting from the current offset
+        number_prefix = re.search(r"\n\s*(\d+)\.?\s*", instructions[offset:])
+        if number_prefix is None:
+            break
+
+        # calculate the actual positions within the full instructions string
+        start = offset + number_prefix.start()
+        end = offset + number_prefix.end()
+
+        # check if the prefix matches the expected number
+        if int(number_prefix.group(1)) == next_prefix:
+            instructions = instructions[:start] + '\n' + instructions[end:]
+            offset = start + 1
+            next_prefix = next(large_list)
+        else:
+            offset = end
+
+    return instructions
 
 
 def list_instructions(instructions):
@@ -361,8 +418,11 @@ def list_instructions(instructions):
     if instructions[0] != '\n':
         instructions = '\n' + instructions
 
-    # remove numbered, bullet, and dash prefixes
-    instructions = re.sub(r"\n\s*\d+\.?\s*|\n\s*[·•\-–—]\s*", '\n', instructions)
+    # remove numbered prefixes, only if they are in order
+    instructions = remove_num_prefixes(instructions)
+
+    # remove bullet and dash prefixes
+    instructions = re.sub(r"\n\s*[·•\-–—]\s*", '\n', instructions)
 
     # split by sentence ends, periods, or colons followed by newlines. Does not catch decimals in numbers
     instructions = re.split(r"\.\s+|\.\n|:\s*\n", instructions)
@@ -421,36 +481,24 @@ def parse_recipe(pdf_data):
         return
 
     bounds = get_recipe_bounds(headers, text)
-    if bounds is not None:
-        ingredients_start, ingredients_end, instructions_start, instructions_end = bounds
-    else:
+    if not bounds:
         return
 
+    ingredients_start, ingredients_end, instructions_start, instructions_end = bounds
 
     # get the text corresponding to the ingredient and instruction sections
-    ingredients = text[ingredients_start: ingredients_end]
-    if ingredients_end == -1:
-        ingredients += text[-1]
-    instructions = text[instructions_start: instructions_end]
-    if instructions_end == -1:
-        instructions += text[-1]
+    ingredients = text[ingredients_start: (ingredients_end if ingredients_end != -1 else None)]
+    instructions = text[instructions_start: (instructions_end if instructions_end != -1 else None)]
 
     # create a list of ingredients based on the ingredients text. Ingredients are objects with name, quantity, and unit
-    if ingredients != '':
-        ingredients = list_ingredients(ingredients)
-    else:
-        ingredients = []
+    ingredients = list_ingredients(ingredients) if ingredients else []
 
     # create a list of instructions based on the instructions text. Instructions are strings
-    if instructions != '':
-        instructions = list_instructions(instructions)
-    else:
-        instructions = []
+    instructions = list_instructions(instructions) if instructions else []
 
     testing = True
     if testing:
         print_results(title, ingredients, instructions)
-        return None
 
     # convert each ingredient to a dictionary instead of an Ingredient instance
     ingredients = [ingredient.to_dict() for ingredient in ingredients]
