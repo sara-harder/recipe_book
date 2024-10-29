@@ -160,7 +160,7 @@ class TestExtractText(unittest.TestCase):
 
 
     def test_extract_text_1(self):
-        """"""
+        """Tests a basic input that includes two spans on the same line"""
         line_1 = [{'spans': [self.span_1]}, {'spans': [self.span_2]}]
         mock_doc = [create_mock_page([line_1])]
 
@@ -180,7 +180,7 @@ class TestExtractText(unittest.TestCase):
         self.assertListEqual(expected_12, text_by_flag[0])
 
     def test_extract_text_2(self):
-        """"""
+        """Tests input with multiple lines and varying larger font sizes between lines"""
         line_1 = [{'spans': [self.span_header_1]}]
         line_2 = [{'spans': [self.span_header_2]}, {'spans': [self.span_header_3]}]
         mock_doc = [create_mock_page([line_1, line_2])]
@@ -206,7 +206,7 @@ class TestExtractText(unittest.TestCase):
         self.assertListEqual(expected_20, text_by_flag[4])
 
     def test_extract_text_3(self):
-        """"""
+        """Tests input with multiple lines and varying larger font sizes within the same line"""
         line_1 = [{'spans': [self.span_header_1]}, {'spans': [self.span_header_2]}]
         line_2 = [{'spans': [self.span_header_3]}]
         mock_doc = [create_mock_page([line_1, line_2])]
@@ -233,7 +233,7 @@ class TestExtractText(unittest.TestCase):
         self.assertListEqual(expected_20, text_by_flag[4])
 
     def test_fail_extract_text_1(self):
-        """"""
+        """Test a document with an empty page"""
         mock_doc = [create_mock_page([])]
 
         res = pdf_scraper.extract_text_info(mock_doc)
@@ -247,7 +247,7 @@ class TestExtractText(unittest.TestCase):
         self.assertDictEqual({}, text_by_flag)
 
     def test_fail_extract_text_2(self):
-        """"""
+        """Tests a document with just an empty span"""
         line_1 = [{'spans': [self.span_empty_1]}]
         mock_doc = [create_mock_page([line_1])]
 
@@ -262,7 +262,7 @@ class TestExtractText(unittest.TestCase):
         self.assertDictEqual({}, text_by_flag)
 
     def test_fail_extract_text_3(self):
-        """"""
+        """Tests a document with just a span with a space"""
         line_1 = [{'spans': [self.span_empty_2]}]
         mock_doc = [create_mock_page([line_1])]
 
@@ -277,7 +277,7 @@ class TestExtractText(unittest.TestCase):
         self.assertDictEqual({}, text_by_flag)
 
     def test_extract_text_4(self):
-        """"""
+        """Tests a mix of empty and non-empty spans across lines, with space span first"""
         line_1 = [{'spans': [self.span_empty_2]}]
         line_2 = [{'spans': [self.span_empty_1]}, {'spans': [self.span_2]}]
         mock_doc = [create_mock_page([line_1, line_2])]
@@ -298,7 +298,7 @@ class TestExtractText(unittest.TestCase):
         self.assertListEqual(expected_12, text_by_flag[0])
 
     def test_extract_text_5(self):
-        """"""
+        """Tests a mix of empty and non-empty spans across lines, with empty span first"""
         line_1 = [{'spans': [self.span_empty_1]}]
         line_2 = [{'spans': [self.span_empty_2]}, {'spans': [self.span_2]}]
         mock_doc = [create_mock_page([line_1, line_2])]
@@ -319,7 +319,7 @@ class TestExtractText(unittest.TestCase):
         self.assertListEqual(expected_12, text_by_flag[0])
 
     def test_extract_text_6(self):
-        """"""
+        """Tests a line with non-empty spans separated by a space span, all in the same spans list"""
         line_1 = [{'spans': [self.span_1, self.span_empty_2, self.span_2]}]
         mock_doc = [create_mock_page([line_1])]
 
@@ -339,7 +339,7 @@ class TestExtractText(unittest.TestCase):
         self.assertListEqual(expected_12, text_by_flag[0])
 
     def test_spacing_1(self):
-        """"""
+        """Tests a line with a stripped span followed by a span with a leading space, all in the same spans list"""
         line_1 = [{'spans': [self.span_no_space_digits, self.span_leading_space]}]
         mock_doc = [create_mock_page([line_1])]
 
@@ -360,7 +360,7 @@ class TestExtractText(unittest.TestCase):
         self.assertListEqual(expected_12, text_by_flag[0])
 
     def test_spacing_2(self):
-        """"""
+        """Tests a line with a span with a trailing space followed by a stripped span, all in the same spans list"""
         line_1 = [{'spans': [self.span_trailing_space, self.span_no_space_chars]}]
         mock_doc = [create_mock_page([line_1])]
 
@@ -381,7 +381,8 @@ class TestExtractText(unittest.TestCase):
         self.assertListEqual(expected_12, text_by_flag[0])
 
     def test_spacing_3(self):
-        """"""
+        """Tests a line with a stripped span followed by a span with a leading space in the same spans list, followed
+        by another spans list in the same line with a span with a trailing space followed by a stripped span"""
         line_1 = [{'spans': [self.span_no_space_digits, self.span_leading_space]},
                   {'spans': [self.span_trailing_space, self.span_no_space_chars]}]
         mock_doc = [create_mock_page([line_1])]
@@ -406,7 +407,7 @@ class TestExtractText(unittest.TestCase):
         self.assertListEqual(expected_12, text_by_flag[0])
 
     def test_spacing_4(self):
-        """"""
+        """Tests a line with a stripped span followed by a span with a leading and trailing space"""
         line_1 = [{'spans': [self.span_no_space_digits, self.span_surrounding_space]}]
         mock_doc = [create_mock_page([line_1])]
 
@@ -427,7 +428,8 @@ class TestExtractText(unittest.TestCase):
         self.assertListEqual(expected_12, text_by_flag[0])
 
     def test_spacing_5(self):
-        """"""
+        """Tests a line with a stripped span followed by a span with surrounding spaces in the same spans list, followed
+        by another spans list in the same line with a span with a trailing space followed by a stripped span"""
         line_1 = [{'spans': [self.span_no_space_digits, self.span_surrounding_space]},
                   {'spans': [self.span_trailing_space, self.span_no_space_chars]}]
         mock_doc = [create_mock_page([line_1])]
@@ -452,7 +454,7 @@ class TestExtractText(unittest.TestCase):
         self.assertListEqual(expected_12, text_by_flag[0])
 
     def test_spacing_6(self):
-        """"""
+        """Tests a line with two stripped spans (no spaces), all in the same spans list"""
         line_1 = [{'spans': [self.span_no_space_digits, self.span_no_space_chars]}]
         mock_doc = [create_mock_page([line_1])]
 
@@ -473,7 +475,8 @@ class TestExtractText(unittest.TestCase):
         self.assertListEqual(expected_12, text_by_flag[0])
 
     def test_spacing_7(self):
-        """"""
+        """Tests a line with two stripped spans separated by a span with leading and trailing spaces,
+        all in the same spans list"""
         line_1 = [{'spans': [self.span_no_space_digits, self.span_surrounding_space, self.span_no_space_digits]}]
         mock_doc = [create_mock_page([line_1])]
 
@@ -497,7 +500,7 @@ class TestExtractText(unittest.TestCase):
         self.assertListEqual(expected_12, text_by_flag[0])
 
     def test_web_page_1(self):
-        """safari"""
+        """Test lines corresponding to safari headers and footers, with some text between them and varied sizing"""
         line_1 = [{'spans': [self.span_header_1]}, {'spans': [self.span_date_time]}]
         line_2 = [{'spans': [self.span_header_2]}, {'spans': [self.span_header_3]}]
         line_3 = [{'spans': [self.span_url]}, {'spans': [self.span_safari_page]}]
@@ -521,7 +524,7 @@ class TestExtractText(unittest.TestCase):
         self.assertListEqual(expected_20, text_by_flag[4])
 
     def test_web_page_2(self):
-        """chrome / edge"""
+        """Test lines corresponding to chrome/edge headers and footers, with some text between them and varied sizing"""
         line_1 = [{'spans': [self.span_date_time]}, {'spans': [self.span_header_1]}]
         line_2 = [{'spans': [self.span_header_2]}, {'spans': [self.span_header_3]}]
         line_3 = [{'spans': [self.span_url]}, {'spans': [self.span_chrome_edge_page]}]
@@ -545,7 +548,7 @@ class TestExtractText(unittest.TestCase):
         self.assertListEqual(expected_20, text_by_flag[4])
 
     def test_web_page_3(self):
-        """firefox"""
+        """Test lines corresponding to firefox headers and footers, with some text between them and varied sizing"""
         line_1 = [{'spans': [self.span_header_1]}, {'spans': [self.span_url]}]
         line_2 = [{'spans': [self.span_header_2]}, {'spans': [self.span_header_3]}]
         line_3 = [{'spans': [self.span_firefox_page]}, {'spans': [self.span_date_time]}]
@@ -604,7 +607,7 @@ class TestReadText(unittest.TestCase):
 
 
     def test_read_text_1(self):
-        """"""
+        """Test basic line with two text spans, that don't include headers and all the same font size"""
         line_1 = [{'spans': [self.span_1]}, {'spans': [self.span_2]}]
         mock_doc = [create_mock_page([line_1])]
 
@@ -618,7 +621,7 @@ class TestReadText(unittest.TestCase):
 
 
     def test_read_text_2(self):
-        """"""
+        """Test multiple lines of different sizes with headers and different forms of spacing"""
         line_1 = [{'spans': [self.span_header_1]}]
         line_2 = [{'spans': [self.span_header_2]}, {'spans': [self.span_header_3]}]
         line_3 = [{'spans': [self.span_no_space_digits, self.span_leading_space]},
@@ -644,7 +647,7 @@ class TestReadText(unittest.TestCase):
 
 
     def test_read_text_3(self):
-        """"""
+        """Test multiple lines with headers and different forms of spacing, and varying sizes within lines"""
         line_1 = [{'spans': [self.span_header_1]}, {'spans': [self.span_header_2]}]
         line_2 = [{'spans': [self.span_no_space_digits, self.span_leading_space]},
                   {'spans': [self.span_trailing_space, self.span_no_space_chars]}]
@@ -668,7 +671,7 @@ class TestReadText(unittest.TestCase):
 
 
     def test_read_text_fail_1(self):
-        """"""
+        """Test a document with an empty page"""
         mock_doc = [create_mock_page([])]
 
         with patch('pymupdf.open', return_value=mock_doc):
@@ -681,7 +684,7 @@ class TestReadText(unittest.TestCase):
 
 
     def test_read_text_fail_2(self):
-        """"""
+        """Tests a document with just empty spans"""
         line_1 = [{'spans': [self.span_empty_1]}]
         line_2 = [{'spans': [self.span_empty_2]}]
         mock_doc = [create_mock_page([line_1, line_2])]
@@ -696,7 +699,8 @@ class TestReadText(unittest.TestCase):
 
 
     def test_read_text_4(self):
-        """"""
+        """Test a complex doc with chrome/edge headers and footers, recipe headers, filler text,
+        different forms of spacing, and varying sizes within lines"""
         line_1 = [{'spans': [self.span_date_time]}, {'spans': [self.span_header_1]}]
         line_2 = [{'spans': [self.span_header_1]}]
         line_3 = [{'spans': [self.span_header_2]}]

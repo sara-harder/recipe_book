@@ -20,7 +20,8 @@ class TestRecipeBounds(unittest.TestCase):
 
 
     def test_large_header_1(self):
-        """"""
+        """Test headers from a headers dict (identified because they are larger in font size). Verify the indices
+        returned match the indices of the start and end of the ingredients and instructions section"""
         headers = {
                     'ingredient_header': self.ingredient_header,
                     'instruction_header': self.instruction_header,
@@ -43,7 +44,8 @@ class TestRecipeBounds(unittest.TestCase):
         self.assertEqual("Here is a list of instructions in the recipe\n", text[res[2]:res[3]])
 
     def test_large_header_2(self):
-        """"""
+        """Test headers from a headers dict, where no instruction header was found. Verify the indices
+        returned match the indices of the start and end of the ingredients section, and -1 for instructions"""
         headers = {
                     'ingredient_header': self.ingredient_header,
                     'instruction_header': None,
@@ -60,7 +62,8 @@ class TestRecipeBounds(unittest.TestCase):
         self.assertEqual(expected, res)
 
     def test_large_header_3(self):
-        """"""
+        """Test headers from a headers dict, where no ingredients header was found. Verify the indices
+        returned match the indices of the start and end of the instructions section, and -1 for ingredients"""
         headers = {
                     'ingredient_header': None,
                     'instruction_header': self.instruction_header,
@@ -77,7 +80,8 @@ class TestRecipeBounds(unittest.TestCase):
         self.assertEqual(expected, res)
 
     def test_text_header_1(self):
-        """"""
+        """Test headers retrieved from text when there are no headers identified from size. Verify the indices
+        returned match the indices of the start and end of the ingredients and instructions section"""
         headers = None
         text = "\nIngredients\nInstructions\nNotes\n"
 
@@ -88,7 +92,9 @@ class TestRecipeBounds(unittest.TestCase):
         self.assertEqual(expected, res)
 
     def test_text_header_2(self):
-        """"""
+        """Test headers retrieved from text when there are no headers identified from size. Verify the indices
+        returned match the indices of the start and end of the ingredients and instructions section. Instructions is
+        last, so should end at -1"""
         headers = None
         text = "Here is a description of the recipe. \n" \
                "Ingredients\nHere is a list of ingredients in the recipe\n" \
@@ -103,7 +109,7 @@ class TestRecipeBounds(unittest.TestCase):
         self.assertEqual("Here is a list of instructions in the recipe", text[res[2]:res[3]])
 
     def test_fail_get_header_1(self):
-        """"""
+        """Test a recipe where the headers in the text are insufficient to locate bounds"""
         headers = None
         text = "\nIngredients\nNotes \n"
 
@@ -112,7 +118,7 @@ class TestRecipeBounds(unittest.TestCase):
         self.assertIsNone(res)
 
     def test_fail_get_header_2(self):
-        """"""
+        """Test an empty recipe text with no headers"""
         headers = None
         text = ""
 

@@ -37,6 +37,24 @@ class TestMockRecipes(unittest.TestCase):
     def setUpClass(cls):
         cls.mock_object = MagicMock()
 
+        cls.expected_instructions = [
+            "Here are some instructions",
+            "Follow the instructions carefully",
+            "Not following the instructions could lead to undesired consequences",
+            "Always read the instructions before you start cooking",
+            "Now boil 50.0ml of water"
+        ]
+        cls.expected_ingredients = [
+            cls.ingredientDict('Butter', 100, 'g'),
+            cls.ingredientDict('Sugar', 3, 'tbsp'),
+            cls.ingredientDict('Flour', 5.5, ' cup(s)'),
+            cls.ingredientDict('Vanilla', 2.5, 'tsp'),
+            cls.ingredientDict('Eggs', 0.5, None),
+            cls.ingredientDict('Water', 4, 'fl oz'),
+            cls.ingredientDict('Cinnamon', None, None),
+            cls.ingredientDict('Extra flour for rolling', None, None)
+        ]
+
         cls.span_title = create_mock_span("Recipe title", size=32.0, flags=20)
         cls.span_ingredients_header = create_mock_span("Ingredients:", size=20.0, flags=4)
         cls.span_instructions_header = create_mock_span("Instructions: ", size=20.0, flags=4)
@@ -132,7 +150,7 @@ class TestMockRecipes(unittest.TestCase):
         }
 
     def test_parse_recipe_1(self):
-        """"""
+        """Test a full recipe document containing web_text, title, ingredients, notes, directions, and a video link"""
         mock_doc = [create_mock_page([self.chrome_edge_header,
                                       self.title,
                                       self.description,
@@ -148,24 +166,6 @@ class TestMockRecipes(unittest.TestCase):
                                       self.video,
                                       self.chrome_edge_footer
                                       ])]
-        ingredients = [
-            self.ingredientDict('Butter', 100, 'g'),
-            self.ingredientDict('Sugar', 3, 'tbsp'),
-            self.ingredientDict('Flour', 5.5, ' cup(s)'),
-            self.ingredientDict('Vanilla', 2.5, 'tsp'),
-            self.ingredientDict('Eggs', 0.5, None),
-            self.ingredientDict('Water', 4, 'fl oz'),
-            self.ingredientDict('Cinnamon', None, None),
-            self.ingredientDict('Extra flour for rolling', None, None)
-        ]
-
-        instructions = [
-            "Here are some instructions",
-            "Follow the instructions carefully",
-            "Not following the instructions could lead to undesired consequences",
-            "Always read the instructions before you start cooking",
-            "Now boil 50.0ml of water"
-        ]
 
         with patch('pymupdf.open', return_value=mock_doc):
             recipe = pdf_scraper.parse_recipe(self.mock_object)
@@ -173,12 +173,12 @@ class TestMockRecipes(unittest.TestCase):
             self.assertEqual(self.span_title['text'], recipe['name'])
             self.assertEqual(self.span_url['text'], recipe['source'])
 
-            self.assertListEqual(instructions, recipe['directions'])
+            self.assertListEqual(self.expected_instructions, recipe['directions'])
             for idx, ing in enumerate(recipe['ingredients']):
-                self.assertDictEqual(ingredients[idx], ing)
+                self.assertDictEqual(self.expected_ingredients[idx], ing)
 
     def test_parse_recipe_2(self):
-        """"""
+        """Test a full recipe document containing web_text, title, ingredients, directions, notes, and a video link"""
         mock_doc = [create_mock_page([self.chrome_edge_header,
                                       self.title,
                                       self.description,
@@ -194,24 +194,6 @@ class TestMockRecipes(unittest.TestCase):
                                       self.video,
                                       self.chrome_edge_footer
                                       ])]
-        ingredients = [
-            self.ingredientDict('Butter', 100, 'g'),
-            self.ingredientDict('Sugar', 3, 'tbsp'),
-            self.ingredientDict('Flour', 5.5, ' cup(s)'),
-            self.ingredientDict('Vanilla', 2.5, 'tsp'),
-            self.ingredientDict('Eggs', 0.5, None),
-            self.ingredientDict('Water', 4, 'fl oz'),
-            self.ingredientDict('Cinnamon', None, None),
-            self.ingredientDict('Extra flour for rolling', None, None)
-        ]
-
-        instructions = [
-            "Here are some instructions",
-            "Follow the instructions carefully",
-            "Not following the instructions could lead to undesired consequences",
-            "Always read the instructions before you start cooking",
-            "Now boil 50.0ml of water"
-        ]
 
         with patch('pymupdf.open', return_value=mock_doc):
             recipe = pdf_scraper.parse_recipe(self.mock_object)
@@ -219,12 +201,12 @@ class TestMockRecipes(unittest.TestCase):
             self.assertEqual(self.span_title['text'], recipe['name'])
             self.assertEqual(self.span_url['text'], recipe['source'])
 
-            self.assertListEqual(instructions, recipe['directions'])
+            self.assertListEqual(self.expected_instructions, recipe['directions'])
             for idx, ing in enumerate(recipe['ingredients']):
-                self.assertDictEqual(ingredients[idx], ing)
+                self.assertDictEqual(self.expected_ingredients[idx], ing)
 
     def test_parse_recipe_3(self):
-        """"""
+        """Test a full recipe document spread across multiple pages, separating instruction header from instructions"""
         mock_doc = [create_mock_page([self.chrome_edge_header,
                                       self.title,
                                       self.description,
@@ -243,24 +225,6 @@ class TestMockRecipes(unittest.TestCase):
                                       self.video,
                                       self.chrome_edge_footer
                                       ])]
-        ingredients = [
-            self.ingredientDict('Butter', 100, 'g'),
-            self.ingredientDict('Sugar', 3, 'tbsp'),
-            self.ingredientDict('Flour', 5.5, ' cup(s)'),
-            self.ingredientDict('Vanilla', 2.5, 'tsp'),
-            self.ingredientDict('Eggs', 0.5, None),
-            self.ingredientDict('Water', 4, 'fl oz'),
-            self.ingredientDict('Cinnamon', None, None),
-            self.ingredientDict('Extra flour for rolling', None, None)
-        ]
-
-        instructions = [
-            "Here are some instructions",
-            "Follow the instructions carefully",
-            "Not following the instructions could lead to undesired consequences",
-            "Always read the instructions before you start cooking",
-            "Now boil 50.0ml of water"
-        ]
 
         with patch('pymupdf.open', return_value=mock_doc):
             recipe = pdf_scraper.parse_recipe(self.mock_object)
@@ -268,12 +232,13 @@ class TestMockRecipes(unittest.TestCase):
             self.assertEqual(self.span_title['text'], recipe['name'])
             self.assertEqual(self.span_url['text'], recipe['source'])
 
-            self.assertListEqual(instructions, recipe['directions'])
+            self.assertListEqual(self.expected_instructions, recipe['directions'])
             for idx, ing in enumerate(recipe['ingredients']):
-                self.assertDictEqual(ingredients[idx], ing)
+                self.assertDictEqual(self.expected_ingredients[idx], ing)
 
     def test_parse_recipe_4(self):
-        """"""
+        """Test a full recipe document spread across multiple pages, separating ingredient header from ingredients and
+        splitting the instructions in half (second half starts with empty instruction)"""
         mock_doc = [create_mock_page([self.chrome_edge_header,
                                       self.title,
                                       self.description,
@@ -295,24 +260,6 @@ class TestMockRecipes(unittest.TestCase):
                                       self.chrome_edge_footer
                                       ])
                     ]
-        ingredients = [
-            self.ingredientDict('Butter', 100, 'g'),
-            self.ingredientDict('Sugar', 3, 'tbsp'),
-            self.ingredientDict('Flour', 5.5, ' cup(s)'),
-            self.ingredientDict('Vanilla', 2.5, 'tsp'),
-            self.ingredientDict('Eggs', 0.5, None),
-            self.ingredientDict('Water', 4, 'fl oz'),
-            self.ingredientDict('Cinnamon', None, None),
-            self.ingredientDict('Extra flour for rolling', None, None)
-        ]
-
-        instructions = [
-            "Here are some instructions",
-            "Follow the instructions carefully",
-            "Not following the instructions could lead to undesired consequences",
-            "Always read the instructions before you start cooking",
-            "Now boil 50.0ml of water"
-        ]
 
         with patch('pymupdf.open', return_value=mock_doc):
             recipe = pdf_scraper.parse_recipe(self.mock_object)
@@ -320,12 +267,13 @@ class TestMockRecipes(unittest.TestCase):
             self.assertEqual(self.span_title['text'], recipe['name'])
             self.assertEqual(self.span_url['text'], recipe['source'])
 
-            self.assertListEqual(instructions, recipe['directions'])
+            self.assertListEqual(self.expected_instructions, recipe['directions'])
             for idx, ing in enumerate(recipe['ingredients']):
-                self.assertDictEqual(ingredients[idx], ing)
+                self.assertDictEqual(self.expected_ingredients[idx], ing)
 
     def test_parse_recipe_5(self):
-        """"""
+        """Test a full recipe document spread across multiple pages, separating ingredient header from ingredients and
+        splitting the instructions in half (first half ends with empty instruction)"""
         mock_doc = [create_mock_page([self.chrome_edge_header,
                                       self.title,
                                       self.description,
@@ -347,24 +295,6 @@ class TestMockRecipes(unittest.TestCase):
                                       self.chrome_edge_footer
                                       ])
                     ]
-        ingredients = [
-            self.ingredientDict('Butter', 100, 'g'),
-            self.ingredientDict('Sugar', 3, 'tbsp'),
-            self.ingredientDict('Flour', 5.5, ' cup(s)'),
-            self.ingredientDict('Vanilla', 2.5, 'tsp'),
-            self.ingredientDict('Eggs', 0.5, None),
-            self.ingredientDict('Water', 4, 'fl oz'),
-            self.ingredientDict('Cinnamon', None, None),
-            self.ingredientDict('Extra flour for rolling', None, None)
-        ]
-
-        instructions = [
-            "Here are some instructions",
-            "Follow the instructions carefully",
-            "Not following the instructions could lead to undesired consequences",
-            "Always read the instructions before you start cooking",
-            "Now boil 50.0ml of water"
-        ]
 
         with patch('pymupdf.open', return_value=mock_doc):
             recipe = pdf_scraper.parse_recipe(self.mock_object)
@@ -372,12 +302,13 @@ class TestMockRecipes(unittest.TestCase):
             self.assertEqual(self.span_title['text'], recipe['name'])
             self.assertEqual(self.span_url['text'], recipe['source'])
 
-            self.assertListEqual(instructions, recipe['directions'])
+            self.assertListEqual(self.expected_instructions, recipe['directions'])
             for idx, ing in enumerate(recipe['ingredients']):
-                self.assertDictEqual(ingredients[idx], ing)
+                self.assertDictEqual(self.expected_ingredients[idx], ing)
 
     def test_parse_recipe_6(self):
-        """"""
+        """Test a full recipe document spread across multiple pages, splitting ingredients and instructions in half
+        (first half ends with empty instruction)"""
         mock_doc = [create_mock_page([self.chrome_edge_header,
                                       self.title,
                                       self.description,
@@ -400,24 +331,6 @@ class TestMockRecipes(unittest.TestCase):
                                       self.chrome_edge_footer
                                       ])
                     ]
-        ingredients = [
-            self.ingredientDict('Butter', 100, 'g'),
-            self.ingredientDict('Sugar', 3, 'tbsp'),
-            self.ingredientDict('Flour', 5.5, ' cup(s)'),
-            self.ingredientDict('Vanilla', 2.5, 'tsp'),
-            self.ingredientDict('Eggs', 0.5, None),
-            self.ingredientDict('Water', 4, 'fl oz'),
-            self.ingredientDict('Cinnamon', None, None),
-            self.ingredientDict('Extra flour for rolling', None, None)
-        ]
-
-        instructions = [
-            "Here are some instructions",
-            "Follow the instructions carefully",
-            "Not following the instructions could lead to undesired consequences",
-            "Always read the instructions before you start cooking",
-            "Now boil 50.0ml of water"
-        ]
 
         with patch('pymupdf.open', return_value=mock_doc):
             recipe = pdf_scraper.parse_recipe(self.mock_object)
@@ -425,12 +338,12 @@ class TestMockRecipes(unittest.TestCase):
             self.assertEqual(self.span_title['text'], recipe['name'])
             self.assertEqual(self.span_url['text'], recipe['source'])
 
-            self.assertListEqual(instructions, recipe['directions'])
+            self.assertListEqual(self.expected_instructions, recipe['directions'])
             for idx, ing in enumerate(recipe['ingredients']):
-                self.assertDictEqual(ingredients[idx], ing)
+                self.assertDictEqual(self.expected_ingredients[idx], ing)
 
     def test_parse_recipe_7(self):
-        """"""
+        """Test an empty document"""
         mock_doc = []
 
         with patch('pymupdf.open', return_value=mock_doc):
@@ -439,7 +352,7 @@ class TestMockRecipes(unittest.TestCase):
             self.assertIsNone(recipe)
 
     def test_parse_recipe_8(self):
-        """"""
+        """Test a document with empty pages"""
         mock_doc = [create_mock_page([]), create_mock_page([])]
 
         with patch('pymupdf.open', return_value=mock_doc):
@@ -448,7 +361,7 @@ class TestMockRecipes(unittest.TestCase):
             self.assertIsNone(recipe)
 
     def test_parse_recipe_9(self):
-        """"""
+        """Test a document lacking required headers"""
         mock_doc = [create_mock_page([self.chrome_edge_header,
                                       self.title,
                                       self.description,
@@ -465,24 +378,7 @@ class TestMockRecipes(unittest.TestCase):
             self.assertIsNone(recipe)
 
     def test_parse_recipe_10(self):
-        """"""
-        mock_doc = [create_mock_page([self.chrome_edge_header,
-                                      self.title,
-                                      self.description,
-                                      self.ingredients,
-                                      self.notes,
-                                      self.instructions,
-                                      self.video,
-                                      self.chrome_edge_footer
-                                      ])]
-
-        with patch('pymupdf.open', return_value=mock_doc):
-            recipe = pdf_scraper.parse_recipe(self.mock_object)
-
-            self.assertIsNone(recipe)
-
-    def test_parse_recipe_11(self):
-        """"""
+        """Test a document without directions"""
         mock_doc = [create_mock_page([self.chrome_edge_header,
                                       self.title,
                                       self.description,
@@ -496,16 +392,6 @@ class TestMockRecipes(unittest.TestCase):
                                       self.video,
                                       self.chrome_edge_footer
                                       ])]
-        ingredients = [
-            self.ingredientDict('Butter', 100, 'g'),
-            self.ingredientDict('Sugar', 3, 'tbsp'),
-            self.ingredientDict('Flour', 5.5, ' cup(s)'),
-            self.ingredientDict('Vanilla', 2.5, 'tsp'),
-            self.ingredientDict('Eggs', 0.5, None),
-            self.ingredientDict('Water', 4, 'fl oz'),
-            self.ingredientDict('Cinnamon', None, None),
-            self.ingredientDict('Extra flour for rolling', None, None)
-        ]
 
         with patch('pymupdf.open', return_value=mock_doc):
             recipe = pdf_scraper.parse_recipe(self.mock_object)
@@ -515,10 +401,10 @@ class TestMockRecipes(unittest.TestCase):
 
             self.assertListEqual([], recipe['directions'])
             for idx, ing in enumerate(recipe['ingredients']):
-                self.assertDictEqual(ingredients[idx], ing)
+                self.assertDictEqual(self.expected_ingredients[idx], ing)
 
-    def test_parse_recipe_12(self):
-        """"""
+    def test_parse_recipe_11(self):
+        """Test a document without ingredients"""
         mock_doc = [create_mock_page([self.chrome_edge_header,
                                       self.title,
                                       self.description,
@@ -533,49 +419,23 @@ class TestMockRecipes(unittest.TestCase):
                                       self.chrome_edge_footer
                                       ])]
 
-        instructions = [
-            "Here are some instructions",
-            "Follow the instructions carefully",
-            "Not following the instructions could lead to undesired consequences",
-            "Always read the instructions before you start cooking",
-            "Now boil 50.0ml of water"
-        ]
-
         with patch('pymupdf.open', return_value=mock_doc):
             recipe = pdf_scraper.parse_recipe(self.mock_object)
 
             self.assertEqual(self.span_title['text'], recipe['name'])
             self.assertEqual(self.span_url['text'], recipe['source'])
 
-            self.assertListEqual(instructions, recipe['directions'])
+            self.assertListEqual(self.expected_instructions, recipe['directions'])
             self.assertListEqual([], recipe['ingredients'])
 
-    def test_parse_recipe_13(self):
-        """"""
+    def test_parse_recipe_12(self):
+        """Test a basic document with only required elements"""
         mock_doc = [create_mock_page([self.title,
                                       self.ingredient_header,
                                       self.ingredients,
                                       self.instruction_header,
                                       self.instructions
                                       ])]
-        ingredients = [
-            self.ingredientDict('Butter', 100, 'g'),
-            self.ingredientDict('Sugar', 3, 'tbsp'),
-            self.ingredientDict('Flour', 5.5, ' cup(s)'),
-            self.ingredientDict('Vanilla', 2.5, 'tsp'),
-            self.ingredientDict('Eggs', 0.5, None),
-            self.ingredientDict('Water', 4, 'fl oz'),
-            self.ingredientDict('Cinnamon', None, None),
-            self.ingredientDict('Extra flour for rolling', None, None)
-        ]
-
-        instructions = [
-            "Here are some instructions",
-            "Follow the instructions carefully",
-            "Not following the instructions could lead to undesired consequences",
-            "Always read the instructions before you start cooking",
-            "Now boil 50.0ml of water"
-        ]
 
         with patch('pymupdf.open', return_value=mock_doc):
             recipe = pdf_scraper.parse_recipe(self.mock_object)
@@ -583,9 +443,9 @@ class TestMockRecipes(unittest.TestCase):
             self.assertEqual(self.span_title['text'], recipe['name'])
             self.assertEqual("", recipe['source'])
 
-            self.assertListEqual(instructions, recipe['directions'])
+            self.assertListEqual(self.expected_instructions, recipe['directions'])
             for idx, ing in enumerate(recipe['ingredients']):
-                self.assertDictEqual(ingredients[idx], ing)
+                self.assertDictEqual(self.expected_ingredients[idx], ing)
 
 
 class TestRealRecipePDFs(unittest.TestCase):
@@ -631,7 +491,7 @@ class TestRealRecipePDFs(unittest.TestCase):
             "Brush lightly each dough ball with oil",
             "Then cover with a tea towel and rest for 10 minutes",
             "Shape into flatbread",
-            "Take a dough ball and open it up with your hands into a round 20- cm (8-inch) disk",
+            "Take a dough ball and open it up with your hands into a round 20-cm (8-inch) disk",
             "Heat a non-stick frying pan (or a cast-iron skillet) over high heat",
             "Brush pan with oil",
             "Cook the flatbread for 1 minute then flip and cook for another minute",
@@ -673,7 +533,11 @@ class TestRealRecipePDFs(unittest.TestCase):
             self.assertListEqual([], recipe['ingredients'])
 
     def test_good_korma(self):
-        """"""
+        """This pdf was well constructed, using a proper print button to create a formatted pdf. This recipe has a lot
+        of parentheses around different sections of the ingredients, and ingredients that span multiple lines. Any
+        ingredient that spans multiple lines is split into two, due to the nature of the algorithms. This recipe also
+        has some spacing abnormalities, with stripped spans followed by a span with leading and trailing space, followed
+        by another stripped span. Ex. 'basmati rice', ' and ', 'naan.' at the start of third page"""
         ingredients = [
             self.ingredientDict('Chicken breasts (or chicken thighs- *see notes)', 1, 'lb'),
             self.ingredientDict('Coconut oil (or avocado oil, or other neutral oil)', 1, 'tbsp'),
@@ -734,9 +598,12 @@ class TestRealRecipePDFs(unittest.TestCase):
                 self.assertDictEqual(ingredients[idx], ing)
 
     def test_safari_pita(self):
-        """"""
+        """This pita bread recipe was downloaded from safari. Because of new lines, there is an awkward space in
+        instruction 23 (16 in the original recipe), between '20-cm'. The recipe contains 2 ingredients with parentheses
+        as part of the quantity, which is ignored"""
         ingredients = self.pita_ingredients
-        instructions = self.pita_instructions
+        instructions = list(self.pita_instructions)
+        instructions[23] = "Take a dough ball and open it up with your hands into a round 20- cm (8-inch) disk"
 
         with open('test_pdfs/Safari Pita.pdf', 'rb') as file:
             pdf_data = file.read()
@@ -751,9 +618,12 @@ class TestRealRecipePDFs(unittest.TestCase):
                 self.assertDictEqual(ingredients[idx], ing)
 
     def test_chrome_pita(self):
-        """"""
+        """This pita bread recipe was downloaded from chrome. Because of new lines, there is an awkward space in
+        instruction 23 (16 in the original recipe), between '20-cm'. The recipe contains 2 ingredients with parentheses
+        as part of the quantity, which is ignored"""
         ingredients = self.pita_ingredients
-        instructions = self.pita_instructions
+        instructions = list(self.pita_instructions)
+        instructions[23] = "Take a dough ball and open it up with your hands into a round 20- cm (8-inch) disk"
 
         with open('test_pdfs/Chrome Pita.pdf', 'rb') as file:
             pdf_data = file.read()
@@ -768,10 +638,10 @@ class TestRealRecipePDFs(unittest.TestCase):
                 self.assertDictEqual(ingredients[idx], ing)
 
     def test_edge_pita(self):
-        """"""
+        """This pita bread recipe was downloaded from edge. It maintains '20-cm' on one line. The recipe contains 2
+        ingredients with parentheses as part of the quantity, which is ignored"""
         ingredients = self.pita_ingredients
-        instructions = list(self.pita_instructions)
-        instructions[23] = "Take a dough ball and open it up with your hands into a round 20-cm (8-inch) disk"
+        instructions = self.pita_instructions
 
         with open('test_pdfs/Edge Pita.pdf', 'rb') as file:
             pdf_data = file.read()
@@ -786,10 +656,10 @@ class TestRealRecipePDFs(unittest.TestCase):
                 self.assertDictEqual(ingredients[idx], ing)
 
     def test_firefox_pita(self):
-        """"""
+        """This pita bread recipe was downloaded from firefox. It maintains '20-cm' on one line. The recipe contains 2
+        ingredients with parentheses as part of the quantity, which is ignored"""
         ingredients = self.pita_ingredients
-        instructions = list(self.pita_instructions)
-        instructions[23] = "Take a dough ball and open it up with your hands into a round 20-cm (8-inch) disk"
+        instructions = self.pita_instructions
 
         with open('test_pdfs/Firefox Pita.pdf', 'rb') as file:
             pdf_data = file.read()
@@ -804,11 +674,17 @@ class TestRealRecipePDFs(unittest.TestCase):
                 self.assertDictEqual(ingredients[idx], ing)
 
     def test_direct_web_pita(self):
-        """"""
+        """This pita bread recipe was downloaded from safari, but it was printed directly instead of using the print
+        button. It includes a lot of unnecessary content at the beginning as a result, but mostly maintains its shape.
+        It still functions with this algorithm, although there are some extra ingredients included. Some of those
+        'ingredients' are successfully ignored because they only have one letter (1X, 2X, and 3X). It includes a couple
+        of 'ingredients' that are not ignorable: 'Cook mode' and 'Prevent your screen from going dark'. In addition,
+        this version has a new line in the middle of the very last instruction, which isolates '6 months' at the
+        beginning of a new line. The 6 could register as a prefix, but the algorithm should evade this. Other than the
+        additional ingredients, the algorithm should produce the same recipe result as the other versions"""
         ingredients = self.pita_ingredients + [self.ingredientDict('Prevent your screen from going dark', None, None),
                                                self.ingredientDict('Cook mode', None, None)]
-        instructions = list(self.pita_instructions)
-        instructions[23] = "Take a dough ball and open it up with your hands into a round 20-cm (8-inch) disk"
+        instructions = self.pita_instructions
 
         with open('test_pdfs/Direct From Web Pita.pdf', 'rb') as file:
             pdf_data = file.read()
@@ -823,7 +699,8 @@ class TestRealRecipePDFs(unittest.TestCase):
                 self.assertDictEqual(ingredients[idx], ing)
 
     def test_alternate_pita(self):
-        """"""
+        """This is a different pita bread recipe. It includes a lot of instructions grouped together, and some extra
+        prefixes in the ingredients"""
         ingredients = [
             self.ingredientDict('Lukewarm water', 1.5, ' cup(s)'),
             self.ingredientDict('Active dry yeast', 1.5, 'tsp'),
@@ -867,7 +744,9 @@ class TestRealRecipePDFs(unittest.TestCase):
                 self.assertDictEqual(ingredients[idx], ing)
 
     def test_greek_salad(self):
-        """"""
+        """This is a very basic greek salad recipe. This pdf was not downloaded from the web, and only contains the
+        basics necessary for the recipe, although it does contain a page number. None of the ingredients have
+        quantities or units"""
         ingredients = [
             self.ingredientDict('Cherry tomatoes', None, None),
             self.ingredientDict('Feta', None, None),
@@ -904,7 +783,9 @@ class TestRealRecipePDFs(unittest.TestCase):
                 self.assertDictEqual(ingredients[idx], ing)
 
     def test_mac_and_cheese(self):
-        """"""
+        """This is a very basic mac and cheese recipe. This pdf was not downloaded from the web, and only contains the
+        basics necessary for the recipe, although it does contain page numbers, and was split onto two pages. The names
+        of the ingredients are listed before the quantities and units"""
         ingredients = [
             self.ingredientDict('Macaroni', 320, 'g'),
             self.ingredientDict('Butter', 4, 'tbsp'),
@@ -947,7 +828,10 @@ class TestRealRecipePDFs(unittest.TestCase):
                 self.assertDictEqual(ingredients[idx], ing)
 
     def test_honey_sesame_chicken(self):
-        """"""
+        """This honey sesame chicken recipe has been divided into multiple elements. However, the ingredients and the
+        instructions are still grouped correctly, so the algorithm should read the recipe well. In the ingredients,
+        any sectioning is ignored, because it ends with a colon. In the instructions, the sectioning is not ignored
+        because the colon could be ambiguous"""
         ingredients = [
             self.ingredientDict('Chicken breasts dice to 1-inch cubes', 1, 'lb'),
             self.ingredientDict('Coconut aminos', 1, 'tbsp'),
@@ -1019,7 +903,9 @@ class TestRealRecipePDFs(unittest.TestCase):
                 self.assertDictEqual(ingredients[idx], ing)
 
     def test_banana_muffins(self):
-        """"""
+        """This banana and chocolate chip muffin recipe is pretty basic, but it uses an unusual header for the
+        instructions (Preparation Steps), and includes a section between the ingredients and the instructions. Neither
+        of these anomalies should deter the algorithm"""
         ingredients = [
             self.ingredientDict('Sugar', 160, 'g'),
             self.ingredientDict('All-purpose flour', 360, 'g'),
