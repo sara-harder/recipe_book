@@ -2,7 +2,6 @@ import unittest
 from python_scripts import pdf_scraper
 from unittest.mock import patch, MagicMock
 from pathlib import Path
-import pymupdf
 
 
 def create_mock_page(lines):
@@ -529,13 +528,9 @@ class TestRealRecipePDFs(unittest.TestCase):
 
         with open(pdf_path, 'rb') as file:
             pdf_data = file.read()
-            doc = pymupdf.open(stream=pdf_data, filetype='pdf')
-            print("HERE is the bad chicken korma doc:")
-            for page in doc:
-                plain_text = page.get_text(sort=True)
-                print(plain_text)
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
+            print(recipe)
 
             self.assertEqual("Chicken korma", recipe['name'])
             self.assertEqual("https://www.bbcgoodfood.com/recipes/chicken-korma", recipe['source'])
@@ -644,11 +639,6 @@ class TestRealRecipePDFs(unittest.TestCase):
 
         with open(pdf_path, 'rb') as file:
             pdf_data = file.read()
-            doc = pymupdf.open(stream=pdf_data, filetype='pdf')
-            print("HERE is the chrome pita recipe doc:")
-            for page in doc:
-                plain_text = page.get_text(sort=True)
-                print(plain_text)
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
 
