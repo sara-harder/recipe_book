@@ -1,7 +1,7 @@
 import pymupdf
 import re
-import get_headers
-import get_occurrences
+from python_scripts import get_headers
+from python_scripts import get_occurrences
 
 # define the constants
 unicode_fractions = {
