@@ -1,6 +1,7 @@
 import unittest
 from python_scripts import pdf_scraper
 from unittest.mock import patch, MagicMock
+from pathlib import Path
 
 
 def create_mock_page(lines):
@@ -505,6 +506,8 @@ class TestRealRecipePDFs(unittest.TestCase):
             "To store in the freezer place in a freezer plastic bag and freeze for up to 6 months"
         ]
 
+        cls.test_pdfs_dir = Path(__file__).parent / "test_pdfs"
+
     def test_bad_korma(self):
         """This pdf was badly constructed. Even though the website had a print button, it wasn't a formatted pdf,
         just a plain pdf of the website. The columns of ingredients then instructions cause the reader to not parse
@@ -521,7 +524,9 @@ class TestRealRecipePDFs(unittest.TestCase):
             "Serve with brown or white basmati rice"
         ]
 
-        with open('test_pdfs/Bad Chicken Korma.pdf', 'rb') as file:
+        pdf_path = self.test_pdfs_dir / "Bad Chicken Korma.pdf"
+
+        with open(pdf_path, 'rb') as file:
             pdf_data = file.read()
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
@@ -585,7 +590,9 @@ class TestRealRecipePDFs(unittest.TestCase):
             "Garnish with fresh cilantro and serve over fresh spinach leaves with steamed basmati rice and naan"
         ]
 
-        with open('test_pdfs/Good Chicken Korma.pdf', 'rb') as file:
+        pdf_path = self.test_pdfs_dir / "Good Chicken Korma.pdf"
+
+        with open(pdf_path, 'rb') as file:
             pdf_data = file.read()
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
@@ -605,7 +612,9 @@ class TestRealRecipePDFs(unittest.TestCase):
         instructions = list(self.pita_instructions)
         instructions[23] = "Take a dough ball and open it up with your hands into a round 20- cm (8-inch) disk"
 
-        with open('test_pdfs/Safari Pita.pdf', 'rb') as file:
+        pdf_path = self.test_pdfs_dir / "Safari Pita.pdf"
+
+        with open(pdf_path, 'rb') as file:
             pdf_data = file.read()
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
@@ -625,7 +634,9 @@ class TestRealRecipePDFs(unittest.TestCase):
         instructions = list(self.pita_instructions)
         instructions[23] = "Take a dough ball and open it up with your hands into a round 20- cm (8-inch) disk"
 
-        with open('test_pdfs/Chrome Pita.pdf', 'rb') as file:
+        pdf_path = self.test_pdfs_dir / "Chrome Pita.pdf"
+
+        with open(pdf_path, 'rb') as file:
             pdf_data = file.read()
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
@@ -643,7 +654,9 @@ class TestRealRecipePDFs(unittest.TestCase):
         ingredients = self.pita_ingredients
         instructions = self.pita_instructions
 
-        with open('test_pdfs/Edge Pita.pdf', 'rb') as file:
+        pdf_path = self.test_pdfs_dir / "Edge Pita.pdf"
+
+        with open(pdf_path, 'rb') as file:
             pdf_data = file.read()
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
@@ -661,7 +674,9 @@ class TestRealRecipePDFs(unittest.TestCase):
         ingredients = self.pita_ingredients
         instructions = self.pita_instructions
 
-        with open('test_pdfs/Firefox Pita.pdf', 'rb') as file:
+        pdf_path = self.test_pdfs_dir / "Firefox Pita.pdf"
+
+        with open(pdf_path, 'rb') as file:
             pdf_data = file.read()
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
@@ -686,7 +701,9 @@ class TestRealRecipePDFs(unittest.TestCase):
                                                self.ingredientDict('Cook mode', None, None)]
         instructions = self.pita_instructions
 
-        with open('test_pdfs/Direct From Web Pita.pdf', 'rb') as file:
+        pdf_path = self.test_pdfs_dir / "Direct From Web Pita.pdf"
+
+        with open(pdf_path, 'rb') as file:
             pdf_data = file.read()
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
@@ -731,7 +748,9 @@ class TestRealRecipePDFs(unittest.TestCase):
             "Serve warm or allow to cool inside the kitchen towel"
         ]
 
-        with open("test_pdfs/Marilena's Pita.pdf", 'rb') as file:
+        pdf_path = self.test_pdfs_dir / "Marilena's Pita.pdf"
+
+        with open(pdf_path, 'rb') as file:
             pdf_data = file.read()
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
@@ -770,7 +789,9 @@ class TestRealRecipePDFs(unittest.TestCase):
             "Add the lettuce on individual plates, and serve"
         ]
 
-        with open("test_pdfs/Greek Salad.pdf", 'rb') as file:
+        pdf_path = self.test_pdfs_dir / "Greek Salad.pdf"
+
+        with open(pdf_path, 'rb') as file:
             pdf_data = file.read()
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
@@ -815,7 +836,9 @@ class TestRealRecipePDFs(unittest.TestCase):
             "Let cool for a few minutes before serving"
         ]
 
-        with open("test_pdfs/Mac and Cheese.pdf", 'rb') as file:
+        pdf_path = self.test_pdfs_dir / "Mac and Cheese.pdf"
+
+        with open(pdf_path, 'rb') as file:
             pdf_data = file.read()
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
@@ -889,7 +912,9 @@ class TestRealRecipePDFs(unittest.TestCase):
             "Serve hot with steamed rice"
         ]
 
-        with open("test_pdfs/Honey Sesame Chicken.pdf", 'rb') as file:
+        pdf_path = self.test_pdfs_dir / "Honey Sesame Chicken.pdf"
+
+        with open(pdf_path, 'rb') as file:
             pdf_data = file.read()
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
@@ -935,7 +960,9 @@ class TestRealRecipePDFs(unittest.TestCase):
             "Once baked, remove from the oven and let them cool slightly before enjoying"
         ]
 
-        with open("test_pdfs/Banana_and_Chocolate_Chip_Muffins_Recipe.pdf", 'rb') as file:
+        pdf_path = self.test_pdfs_dir / "Banana_and_Chocolate_Chip_Muffins_Recipe.pdf"
+
+        with open(pdf_path, 'rb') as file:
             pdf_data = file.read()
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
