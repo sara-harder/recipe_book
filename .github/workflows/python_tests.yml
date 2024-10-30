@@ -20,5 +20,18 @@ jobs:
 
       - name: Run Python tests
         working-directory: backend
+        env:
+          PYTHONPATH: backend/python_scripts  # Explicitly add python_scripts to PYTHONPATH
         run: |
+          # Confirm current directory and paths
+          echo "Current directory: $(pwd)"
+          echo "PYTHONPATH: $PYTHONPATH"
+          
+          # List files to confirm visibility
+          ls -R python_scripts
+          
+          # Try an isolated import to confirm visibility
+          python -c "from python_scripts import get_headers; print(get_headers.find_headers)"
+          
+          # Run all tests
           python -m unittest discover -s python_scripts/pdf_scraper_testing/test
