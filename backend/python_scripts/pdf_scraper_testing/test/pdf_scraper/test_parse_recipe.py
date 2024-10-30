@@ -531,7 +531,9 @@ class TestRealRecipePDFs(unittest.TestCase):
             pdf_data = file.read()
             doc = pymupdf.open(stream=pdf_data, filetype='pdf')
             print("HERE is the bad chicken korma doc:")
-            print(page for page in doc)
+            for page in doc:
+                plain_text = page.get_text(sort=True)
+                print(plain_text)
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
 
@@ -644,7 +646,9 @@ class TestRealRecipePDFs(unittest.TestCase):
             pdf_data = file.read()
             doc = pymupdf.open(stream=pdf_data, filetype='pdf')
             print("HERE is the chrome pita recipe doc:")
-            print(page for page in doc)
+            for page in doc:
+                plain_text = page.get_text(sort=True)
+                print(plain_text)
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
 
