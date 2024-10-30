@@ -82,7 +82,10 @@ function AddRecipe({setHeader}) {
 
     // send the new recipe to the map page to map ingredients to directions
     const sendRecipe = () => {
-        if (validateRecipe() == false) return
+        if (validateRecipe() == false) {
+            window.scrollTo(0, 0);
+            return
+        }
 
         navigate("map-recipe", {state:{recipe: {
             name, portions, ingredients: ingredients.slice(0, ingredients.length-1), 
@@ -93,7 +96,7 @@ function AddRecipe({setHeader}) {
     return(
         <Container fluid className='mt-4 form-container'>
             <Form noValidate validated={validated}>
-                <UploadPDF setName={setName} Ingredient={Ingredient} setIngredients={setIngredients} setDirections={setDirections}/>
+                <UploadPDF setName={setName} Ingredient={Ingredient} setIngredients={setIngredients} setDirections={setDirections} setSource={setSource}/>
                 <Row className='pe-0'><Col xs={11} className='pe-0'><Row>
                     <Col xs={10} className='pe-1'>
                         <Form.Group className="mb-4" controlId="recipeName">
@@ -141,11 +144,7 @@ function AddRecipe({setHeader}) {
                                     setImage(e.target.value)
                                     // readImageFile(e.target)
                                 }}
-                                required
                             />
-                            <Form.Control.Feedback type="invalid" className='ps-2'>
-                                Please provide an image
-                            </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
 
@@ -157,11 +156,7 @@ function AddRecipe({setHeader}) {
                                 placeholder="URL, (last name) family recipe, recipe book..." 
                                 value={source}
                                 onChange={(e) => setSource(e.target.value)}
-                                required
                             />
-                            <Form.Control.Feedback type="invalid" className='ps-2'>
-                                Please add a source
-                            </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
                 </Row></Col></Row>

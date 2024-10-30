@@ -14,7 +14,7 @@ import './Add.css';
 // function imports
 import { uploadPDF } from 'recipe-book/backend_connection/pdf_upload'
 
-const UploadPDF = ({setName, Ingredient, setIngredients, setDirections}) => {
+const UploadPDF = ({setName, Ingredient, setIngredients, setDirections, setSource}) => {
     const [autofill, setAutofill] = useState(false)
     const [file, setFile] = useState(null)
 
@@ -32,6 +32,7 @@ const UploadPDF = ({setName, Ingredient, setIngredients, setDirections}) => {
                 setName(recipe.name)
                 setIngredients(formatted_ingredients)
                 setDirections(recipe.directions)
+                setSource(recipe.source)
                 setAutofill(false)
         }}
     }
