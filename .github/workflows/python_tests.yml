@@ -19,8 +19,6 @@ jobs:
           python-version: '3.x'
 
       - name: Run Python tests
-        working-directory: backend/python_scripts/pdf_scraper_testing
-        env:
-          PYTHONPATH: ../../
+        working-directory: backend
         run: |
-          python -m unittest discover -s test
+          python -m unittest discover -s python_scripts/pdf_scraper_testing/test
