@@ -69,6 +69,7 @@ def extract_text_info(doc):
 
     for page in doc:
         blocks = page.get_text("dict", sort=True)["blocks"]
+        print(blocks)
         plain_text = page.get_text(sort=True)
         plain_text_idx = 0
 
@@ -495,10 +496,6 @@ def parse_recipe(pdf_data):
 
     # create a list of instructions based on the instructions text. Instructions are strings
     instructions = list_instructions(instructions) if instructions else []
-
-    testing = True
-    if testing:
-        print_results(title, ingredients, instructions)
 
     # convert each ingredient to a dictionary instead of an Ingredient instance
     ingredients = [ingredient.to_dict() for ingredient in ingredients]
