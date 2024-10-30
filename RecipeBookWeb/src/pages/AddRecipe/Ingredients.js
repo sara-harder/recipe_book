@@ -40,7 +40,7 @@ const IngredientsList = ({Ingredient, ingredients, setIngredients}) => {
     // possible units
     const metric = ['mg', 'g', 'kg', 'ml', 'cl', 'dl', 'l']
     const imperial = ['tsp', 'tbsp', ' cup(s)', 'lb', 'oz', 'fl oz', ' pint(s)', ' quart(s)', ' gallon(s)']
-    const other = [' small', ' medium', ' large', ' clove(s)', ' slice(s)', ' cube(s)']
+    const other = [' small', ' medium', ' large', ' clove(s)', ' slice(s)', ' cube(s)', ' drop(s)']
     
     // update the ingredient unit when user selects. find ingredient to update using index
     const setUnit = (value, index) => {

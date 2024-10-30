@@ -11,66 +11,13 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
 // component imports
-import MultiSelectDropdown from '../../components/MultiSelectDropdown/MultiSelectDropdown';
+import CategorySelector from './CategoryDropdown';
 import IngredientsList from './Ingredients';
 import DirectionsList from './Directions';
 
 // style imports
 import './Add.css';
-
-// function imports
-import { category_funcs } from 'recipe-book';
-
-
-const CategorySelector = ({selected, setSelected, validated}) => {
-    const location = useLocation();
-
-    // Get the categories for the dropdown
-    const [savory, setSavory] = useState([])
-    const [sweet, setSweet] = useState([])
-    useEffect(() =>{
-        const getCategories = async ()=> {
-            const sav = await category_funcs.getFlavorType("Savory")
-            setSavory(sav)
-            const sw = await category_funcs.getFlavorType("Sweet")
-            setSweet(sw)
-        }
-        getCategories()
-    }, []);
-
-    // add any preselected categories to the selected list
-    const getPrefilled = () => {
-        if (location.state){
-            if (location.state.precategory){
-                for (const item of savory.concat(sweet)){
-                    if (item.name == location.state.precategory.name) {
-                        setSelected(new Set([item]))
-            }}}
-            if (location.state.recipe) {
-                const prefilled = []
-                for (const cat of location.state.recipe.categories){
-                    for (const item of savory.concat(sweet)){
-                        if (item.name == cat.name) {
-                            prefilled.push(item)
-                        }}
-                }
-                setSelected(new Set(prefilled))
-            }
-        }
-    }
-
-    useEffect(() => {
-        getPrefilled()
-    }, [savory])
-
-    return(
-        <Form.Group className="mb-4 position-relative m-0" controlId="recipeCategory">
-            <Form.Label>Category</Form.Label>
-            <MultiSelectDropdown data_lists={[{label: "Savory", list: savory}, {label: "Sweet", list: sweet}]} selected={selected} setSelected={setSelected} validated={validated}/>
-        </Form.Group>
-            
-    )
-}
+import UploadPDF from './UploadPDF';
 
 
 function AddRecipe({setHeader}) {
@@ -135,7 +82,10 @@ function AddRecipe({setHeader}) {
 
     // send the new recipe to the map page to map ingredients to directions
     const sendRecipe = () => {
-        if (validateRecipe() == false) return
+        if (validateRecipe() == false) {
+            window.scrollTo(0, 0);
+            return
+        }
 
         navigate("map-recipe", {state:{recipe: {
             name, portions, ingredients: ingredients.slice(0, ingredients.length-1), 
@@ -146,6 +96,7 @@ function AddRecipe({setHeader}) {
     return(
         <Container fluid className='mt-4 form-container'>
             <Form noValidate validated={validated}>
+                <UploadPDF setName={setName} Ingredient={Ingredient} setIngredients={setIngredients} setDirections={setDirections} setSource={setSource}/>
                 <Row className='pe-0'><Col xs={11} className='pe-0'><Row>
                     <Col xs={10} className='pe-1'>
                         <Form.Group className="mb-4" controlId="recipeName">
@@ -193,11 +144,7 @@ function AddRecipe({setHeader}) {
                                     setImage(e.target.value)
                                     // readImageFile(e.target)
                                 }}
-                                required
                             />
-                            <Form.Control.Feedback type="invalid" className='ps-2'>
-                                Please provide an image
-                            </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
 
@@ -209,11 +156,7 @@ function AddRecipe({setHeader}) {
                                 placeholder="URL, (last name) family recipe, recipe book..." 
                                 value={source}
                                 onChange={(e) => setSource(e.target.value)}
-                                required
                             />
-                            <Form.Control.Feedback type="invalid" className='ps-2'>
-                                Please add a source
-                            </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
                 </Row></Col></Row>

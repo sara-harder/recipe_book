@@ -18,7 +18,7 @@ import { recipe_funcs, rec_cat_funcs } from 'recipe-book';
 import { checkFraction } from 'recipe-book/helpers';
 
 
-const Lines = ({ingr, dir}) => {
+const Lines = ({ingr, dir, viewport_w}) => {
     // draw the lines between the radio buttons
     const ingredient = document.getElementById(`ingredient-${ingr}`)
     const direction = document.getElementById(`direction-${dir}`)
@@ -26,8 +26,10 @@ const Lines = ({ingr, dir}) => {
     const ingr_coords = ingredient.getBoundingClientRect()
     const dir_coords = direction.getBoundingClientRect()
 
-    const ingr_center = ingr_coords.height / 2 + ingr_coords.top - 240
-    const dir_center = dir_coords.height / 2 + dir_coords.top - 240
+    const scrollTop = window.scrollY
+
+    const ingr_center = ingr_coords.height / 2 + ingr_coords.top - 240 + scrollTop
+    const dir_center = dir_coords.height / 2 + dir_coords.top - 240 + scrollTop
 
     return (
         <line x1={0} y1={ingr_center} x2="100%" y2={dir_center} stroke="black"/>
@@ -98,6 +100,12 @@ function MapPage({setHeader}) {
     };
     const ref = useClickOutsideDropdown()
 
+
+    const [viewport_w, setViewport] = useState(0)
+    window.addEventListener('resize', () => {
+        setViewport(window.innerWidth)
+    });
+
     
     // add the new recipe to the database
     const createRecipe = async () => {
@@ -121,45 +129,45 @@ function MapPage({setHeader}) {
         rec_cat_funcs.connectRecipeCat(new_recipe._id, cat._id)
         }
 
-        // go back to the page before add recipe
-        navigate("/")
+        // go view the new recipe
+        navigate("/view-recipe", {state:{recipe: new_recipe}})
     }
 
     return(
-        <Container fluid className='pe-5'>
+        <Container fluid className='p-0'>
             <h5 className='fw-bold pt-4 pe-5 pb-3 ps-0 text-center text-nowrap'>Connect each ingredient to the instruction where it is first used</h5>
-            <Row ref={ref} className='justify-content-center flex-nowrap w-100 ps-1'>
-                <Col xs={1} className='w-auto pe-1 rounded-start bg-color3 p-4'>
+            <Row ref={ref} className='flex-nowrap p-0 m-0'>
+                <Col xs={4} className='pe-1 rounded-start bg-color3 p-4' style={{'minWidth': '250px'}}>
                     <h5 className='fw-bold'>Ingredients:</h5>
                     <ul className='list-unstyled'>
                         {recipe.ingredients.map((item, index) => 
-                            <li className='row fs-55' key={index}>
+                            <li className='row fs-55 mx-0' key={index}>
                                 <Col className='col-4 right text-nowrap overflow-hidden' >{checkFraction(item.quantity)}{item.unit}</Col>
-                                <Col className='col-5 left text-nowrap' >{item.name}</Col>
-                                <Col className='col-1 center-vertical w-auto' >
+                                <Col className='col-7 left overflow-hidden' >{item.name}</Col>
+                                <Col className='col-1 right center-vertical p-0' >
                                     <Form.Check
                                         type='radio'
                                         id={`ingredient-${index}`}
                                         onChange={()=>{}}
                                         onClick={() => updateIngredients(index)}
                                         checked={selectedIngredients.has(index)}
-                                        className='ps-3'
+                                        className='ps-3 pe-2'
                                     />
                                 </Col>
                             </li>
                         )}
                     </ul>
                 </Col>
-                <Col xs={1} className='pt-3 p-0 bg-color3' width='15%'>
+                <Col xs={2} className='pt-3 p-0 bg-color3' width='15%'>
                     <svg width="100%" height="100%" className='pt-4'>
                         {recipe.ingredients.map((ingr, idx) => {
                             if (connections[idx] != undefined){ return(
-                                <Lines key={idx} ingr={idx} dir={connections[idx]} />
+                                <Lines key={idx} ingr={idx} dir={connections[idx]} viewport_w={viewport_w} />
                             )}
                         })}
                     </svg>
                 </Col>
-                <Col xs={1} className='w-auto rounded-end bg-color3 p-4 ps-2'>
+                <Col xs={6} className='rounded-end bg-color3 p-4 ps-2' style={{'minWidth': '300px'}}>
                     <h5 className='fw-bold'>Directions:</h5>
                     <ul className='list-unstyled'>
                         {recipe.directions.map((item, index) => 
