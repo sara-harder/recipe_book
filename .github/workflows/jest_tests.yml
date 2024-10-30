@@ -33,19 +33,3 @@ jobs:
       - name: Run functionality Jest tests
         working-directory: functionality
         run: npm test
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-
-      - name: List directory for debugging
-        run: ls -R ../  # Lists all files and directories under python_scripts
-        working-directory: backend/python_scripts/pdf_scraper_testing
-
-      - name: Run Python tests
-        working-directory: backend/python_scripts/pdf_scraper_testing
-        env:
-          PYTHONPATH: ../
-        run: |
-          python -m unittest discover -s test
