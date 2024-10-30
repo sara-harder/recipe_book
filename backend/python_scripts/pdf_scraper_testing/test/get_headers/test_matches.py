@@ -1,5 +1,5 @@
 import unittest
-import get_headers
+from python_scripts import get_headers
 
 
 class TestFindMatches(unittest.TestCase):

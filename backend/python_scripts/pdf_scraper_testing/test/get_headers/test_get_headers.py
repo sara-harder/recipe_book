@@ -1,5 +1,5 @@
 import unittest
-import get_headers
+from python_scripts import get_headers
 
 
 def create_header_obj(idx, text_list):
