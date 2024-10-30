@@ -530,7 +530,6 @@ class TestRealRecipePDFs(unittest.TestCase):
             pdf_data = file.read()
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
-            print(recipe)
 
             self.assertEqual("Chicken korma", recipe['name'])
             self.assertEqual("https://www.bbcgoodfood.com/recipes/chicken-korma", recipe['source'])
