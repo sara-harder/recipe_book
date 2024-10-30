@@ -2,6 +2,7 @@ import unittest
 from python_scripts import pdf_scraper
 from unittest.mock import patch, MagicMock
 from pathlib import Path
+import pymupdf
 
 
 def create_mock_page(lines):
@@ -528,6 +529,8 @@ class TestRealRecipePDFs(unittest.TestCase):
 
         with open(pdf_path, 'rb') as file:
             pdf_data = file.read()
+            doc = pymupdf.open(stream=pdf_data, filetype='pdf')
+            print(doc)
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
 
@@ -638,6 +641,8 @@ class TestRealRecipePDFs(unittest.TestCase):
 
         with open(pdf_path, 'rb') as file:
             pdf_data = file.read()
+            doc = pymupdf.open(stream=pdf_data, filetype='pdf')
+            print(doc)
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
 

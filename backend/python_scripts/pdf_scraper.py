@@ -69,7 +69,6 @@ def extract_text_info(doc):
 
     for page in doc:
         blocks = page.get_text("dict", sort=True)["blocks"]
-        print(blocks)
         plain_text = page.get_text(sort=True)
         plain_text_idx = 0
 
