@@ -1,5 +1,5 @@
 import unittest
-import get_occurrences
+from python_scripts import get_occurrences
 
 
 class TestRegex(unittest.TestCase):

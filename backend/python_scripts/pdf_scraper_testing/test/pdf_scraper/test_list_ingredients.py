@@ -1,5 +1,5 @@
 import unittest
-import pdf_scraper
+from python_scripts import pdf_scraper
 
 
 class TestGetQuantity(unittest.TestCase):

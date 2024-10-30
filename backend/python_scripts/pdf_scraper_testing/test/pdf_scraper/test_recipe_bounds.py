@@ -1,5 +1,5 @@
 import unittest
-import pdf_scraper
+from python_scripts import pdf_scraper
 
 
 def create_header_obj(idx, text, text_index):

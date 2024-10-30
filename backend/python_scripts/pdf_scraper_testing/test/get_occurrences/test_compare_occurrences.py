@@ -1,6 +1,6 @@
 import unittest
 import re
-import get_occurrences
+from python_scripts import get_occurrences
 
 
 class TestCompare(unittest.TestCase):
