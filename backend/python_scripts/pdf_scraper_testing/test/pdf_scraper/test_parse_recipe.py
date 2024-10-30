@@ -530,7 +530,8 @@ class TestRealRecipePDFs(unittest.TestCase):
         with open(pdf_path, 'rb') as file:
             pdf_data = file.read()
             doc = pymupdf.open(stream=pdf_data, filetype='pdf')
-            print(doc)
+            print("HERE is the bad chicken korma doc:")
+            print(page for page in doc)
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
 
@@ -642,7 +643,8 @@ class TestRealRecipePDFs(unittest.TestCase):
         with open(pdf_path, 'rb') as file:
             pdf_data = file.read()
             doc = pymupdf.open(stream=pdf_data, filetype='pdf')
-            print(doc)
+            print("HERE is the chrome pita recipe doc:")
+            print(page for page in doc)
 
             recipe = pdf_scraper.parse_recipe(pdf_data)
 
