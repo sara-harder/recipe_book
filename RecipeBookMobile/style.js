@@ -5,7 +5,7 @@ const colors = StyleSheet.create({
         color: 'white'
     },
     color2: {
-        color: '#C75B5B'
+        color: '#de4a4a'
     },
     color3: {
         color: '#6A9A77'
@@ -107,6 +107,14 @@ const styles = StyleSheet.create({
 const text_styles = StyleSheet.create({
     itemText: {
         fontSize: 15,
+        color: styles.textColor.color,
+        fontFamily: styles.fontMedium.fontFamily,
+
+        paddingTop: 4,
+        paddingBottom: 4,
+    },
+    itemSmallText: {
+        fontSize: 14,
         color: styles.textColor.color,
         fontFamily: styles.fontMedium.fontFamily,
 

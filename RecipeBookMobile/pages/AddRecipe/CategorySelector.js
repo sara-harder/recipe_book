@@ -34,7 +34,6 @@ function CategorySelector ({route, selected, setSelected, validated}) {
 
     return(
         <>
-
             <View style={dropdown_style.filler_view}></View>
             <MultipleSelectList
                 data={categories}

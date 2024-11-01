@@ -11,6 +11,7 @@ import { useState } from 'react';
 
 // component imports
 import CategorySelector from './CategorySelector.js';
+import IngredientsList from './Ingredients.js';
 
 // style imports
 import styles, {text_styles} from '../../style.js';
@@ -75,6 +76,7 @@ function AddRecipe({navigation, route}) {
                     placeholder="Enter name"
                     placeholderTextColor='grey'
                 />
+
                 <Text style={text_styles.itemText}>Portions</Text>
                 <TextInput
                     style={form_style.input}
@@ -84,9 +86,15 @@ function AddRecipe({navigation, route}) {
                     max={100}
                     min={1}
                 />
+
                 <Text style={text_styles.itemText}>Category</Text>
                 <View style={{width: '90%'}}>
                     <CategorySelector route={route} selected={categories} setSelected={setCategories} validated={validated}/>
+                </View>
+
+                <Text style={text_styles.itemText}>Ingredients</Text>
+                <View style={{width: '90%'}}>
+                    <IngredientsList Ingredient={Ingredient} ingredients={ingredients} setIngredients={setIngredients} />
                 </View>
             </View>
         </SafeAreaView>

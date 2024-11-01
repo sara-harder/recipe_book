@@ -19,7 +19,7 @@ import Loading from '../components/LoadingScreen.js'
 import styles from '../style.js';
 
 // function imports
-import { category_funcs } from 'recipe-book';
+import { category_funcs, rec_cat_funcs } from 'recipe-book';
 import { selectC } from 'recipe-book/redux/selectionSlice';
 
 function Categories({route}) {
@@ -35,7 +35,12 @@ function Categories({route}) {
     useEffect(() =>{
         const getCategories = async ()=> {
             const categories = await category_funcs.getFlavorType(flavor_type)
-            setData(categories)
+            const cats = []
+            for (const category of categories) {
+                const len = await rec_cat_funcs.countRecipes(category._id)
+                if (len != 0) cats.push(category)
+            }
+            setData(cats)
 
             setLoading(false)
         }

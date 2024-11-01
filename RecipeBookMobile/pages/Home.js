@@ -3,6 +3,7 @@ import React from 'react';
 import {
   SafeAreaView,
   FlatList,
+  Image,
   Pressable,
   StyleSheet,
   Text,
@@ -11,6 +12,7 @@ import {
 import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
+import { AssetRegistry } from 'react-native/Libraries/Image/AssetRegistry';
 
 // style imports
 import styles, {text_styles} from '../style.js';
@@ -26,14 +28,52 @@ const savory = "Savory"
 const sweet = "Sweet"
 
 
+// TEMPORARY function that hard codes recipe names to image path
+// react native refuses to access image path from variable
+// once images are stored in cloud, will be able to access them through URL
+const getImageSource = (name) => {
+    switch (name) {
+        case 'Carbonara':
+            return require('../assets/images/carbonara.webp');
+        case 'Chocolate Chip Cookies':
+            return require('../assets/images/chocolate_chip_cookies.jpg');
+        case 'Crepes':
+            return require('../assets/images/crepes.jpg');
+        case 'Htipiti Feta Dip':
+            return require('../assets/images/feta_dip.jpg');
+        case 'Focaccia':
+            return require('../assets/images/focaccia.jpg');
+        case 'Baked Mac & Cheese':
+            return require('../assets/images/mac_and_cheese.jpg');
+        case 'Oven Roasted Potatoes':
+            return require('../assets/images/oven_roasted_potatoes.jpg');
+        case 'Pasta e Piselli con Pancetta':
+            return require('../assets/images/pasta_piselli.jpg');
+        case 'Spinach and Feta Pasta':
+            return require('../assets/images/spinach_feta.jpg');
+        case 'Teriyaki Rice':
+            return require('../assets/images/teriyaki.jpg');
+        case 'Vegetable Curry':
+            return require('../assets/images/vegetable_curry.jpg');
+        case 'Waffles':
+            return require('../assets/images/waffles.webp');
+        default:
+            return null;
+    }
+};
+
+
 const Recipe = ({name, image, nav}) => {
     // recipe card with image
-    if (image) {
+    img_path = getImageSource(name)
+    if (img_path) {
         return (
             <Pressable onPress={nav} >
-                <View style={home_style.image} ></View>
-                <View style={home_style.text_cont}>
-                    <Text style={[text_styles.itemText, home_style.name]}>{name}</Text>
+                <View style={[home_style.card, {padding: 0}]} >
+                    <Image source={img_path} style={home_style.image} />
+                    <View style={home_style.text_cont}>
+                        <Text style={[text_styles.itemSmallText, {textAlign: 'center'}]}>{name}</Text>
+                    </View>
                 </View>
             </Pressable>
         )
@@ -41,7 +81,7 @@ const Recipe = ({name, image, nav}) => {
     // recipe card without image
     return(
         <Pressable onPress={nav} >
-            <View style={[home_style.no_image]}>
+            <View style={[home_style.card]}>
                 <Text style={[text_styles.itemText, {textAlign: 'center'}]}>{name}</Text>
             </View>
         </Pressable>
@@ -170,44 +210,32 @@ export default HomeScreen;
 
 
 const home_style = StyleSheet.create({
-    name: {
-        textAlign: "center",
-        flex: 1,
-        flexGrow: 1,
-    },
     text_cont: {
-        width: 100,
-        flexDirection: 'row',
-        marginLeft: 12,
-        marginRight: 12,
+        justifyContent: "center",
+        flex: 1,
+
+        padding: 4,
+        paddingTop: 1,
     },
     image: {
-        alignContent: "center",
-        flex: 1,
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
 
-        borderWidth: 2,
-        borderRadius: 5,
-        borderColor: styles.borderColor.color,
-
-        minHeight: 64,
-        minWidth: 100,
-        maxHeight: 64,
-        maxWidth: 100,
-
-        marginLeft: 12,
-        marginRight: 12
-
+        minHeight: '40%',
+        maxHeight: '40%',
+        minWidth: '100%',
+        maxWidth: '100%',
     },
-    no_image: {
+    card: {
         justifyContent: "center",
         alignItems: "center",
         flex: 1,
 
         borderRadius: 5,
 
-        minHeight: 80,
+        minHeight: 96,
+        maxHeight: 96,
         minWidth: 120,
-        maxHeight: 80,
         maxWidth: 120,
 
         marginLeft: 8,
