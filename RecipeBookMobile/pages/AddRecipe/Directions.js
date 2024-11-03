@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // style imports
 import styles, {text_styles} from '../../style.js';
@@ -20,11 +20,13 @@ const DirectionsList = ({ directions, setDirections }) => {
     const end_idx = directions.length-1
 
     // when user starts typing, add a new empty input line
-    if (directions[end_idx] != "") {
-        const copy = directions.slice()
-        copy.push("")
-        setDirections(copy)
-    }
+    useEffect(() => {
+        if (directions[end_idx] !== "") {
+            const copy = directions.slice()
+            copy.push("")
+            setDirections(copy)
+        }
+    }, [directions, setDirections]);
 
     // update the direction while user is typing. find direction to update using index
     const addDirection = (direction, index) => {
@@ -52,13 +54,12 @@ const DirectionsList = ({ directions, setDirections }) => {
                 data={directions}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, index }) => (
-                    <View style={[styles.row,
-                        (index != end_idx || visible || rowOpacity == index) ? {} : {opacity: .5}]}>
+                    <View style={styles.row}>
                         <View style={{justifyContent: 'center', marginBottom: 15}}>
                             <Text style={text_styles.itemText}>{index + 1}.</Text>
                         </View>
                         <TextInput
-                            style={directions_style.input}
+                            style={(index != end_idx || visible || rowOpacity == index) ? directions_style.input : reduced_opacity}
                             onChangeText={(text) => addDirection(text, index)}
                             value={item}
                             placeholder="Write directions"
@@ -85,3 +86,5 @@ const directions_style = StyleSheet.create({
         paddingRight: 12
     },
 });
+
+const reduced_opacity = [directions_style.input, {opacity: .5}]

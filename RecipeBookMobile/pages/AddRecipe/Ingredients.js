@@ -103,11 +103,13 @@ function IngredientsList ({Ingredient, ingredients, setIngredients}) {
      const end_idx = ingredients.length-1
 
      // when user starts typing, add a new empty input line
-     if (ingredients.length == 0 || ingredients[end_idx].name != "") {
-         const copy = ingredients.slice()
-         copy.push(new Ingredient(""))
-         setIngredients(copy)
-     }
+     useEffect(() => {
+         if (ingredients.length == 0 || ingredients[end_idx].name != "") {
+             const copy = ingredients.slice()
+             copy.push(new Ingredient(""))
+             setIngredients(copy)
+         }
+     }, [ingredients, setIngredients]);
 
      // update the ingredient name while user is typing. find ingredient to update using index
      const setName = (value, index) => {
