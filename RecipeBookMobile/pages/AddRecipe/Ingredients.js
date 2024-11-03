@@ -219,7 +219,7 @@ const ingredients_style = StyleSheet.create({
         zIndex: 3,
     },
     modal_content: {
-        backgroundColor: 'white',
+        backgroundColor: styles.dilutedBackgroundColor.color,
         margin: 20,
         marginBottom: 0,
         padding: 10,

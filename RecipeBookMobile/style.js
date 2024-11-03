@@ -20,6 +20,9 @@ const colors = StyleSheet.create({
         color: '#3E3E3E'
     },
     color7: {
+        color: '#4D4D4D'
+    },
+    color8: {
         color: '#2F5233'
     },
 })
@@ -29,7 +32,7 @@ const styles = StyleSheet.create({
         color: colors.color1.color
     },
     highlightText: {
-        color: colors.color7.color
+        color: colors.color8.color
     },
     itemBackground: {
         color: colors.color5.color
@@ -51,6 +54,9 @@ const styles = StyleSheet.create({
     },
     backgroundColor: {
         color: colors.color6.color
+    },
+    dilutedBackgroundColor: {
+        color: colors.color7.color
     },
     accentColor: {
         color: colors.color2.color

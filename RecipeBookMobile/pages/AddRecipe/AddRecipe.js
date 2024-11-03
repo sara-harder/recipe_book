@@ -2,6 +2,7 @@
 import React from 'react';
 import {
   SafeAreaView,
+  FlatList,
   KeyboardAvoidingView,
   ScrollView,
   StyleSheet,
@@ -14,6 +15,7 @@ import { useState } from 'react';
 // component imports
 import CategorySelector from './CategorySelector.js';
 import IngredientsList from './Ingredients.js';
+import DirectionsList from './Directions.js';
 
 // style imports
 import styles, {text_styles} from '../../style.js';
@@ -70,36 +72,44 @@ function AddRecipe({navigation, route}) {
     return(
         <SafeAreaView style={styles.app}>
             <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-                <ScrollView contentContainerStyle={form_style.scroll_container}>
-                    <Text style={text_styles.itemText}>Recipe Name</Text>
-                    <TextInput
-                        style={form_style.input}
-                        onChangeText={(text) => setName(text)}
-                        value={name}
-                        placeholder="Enter name"
-                        placeholderTextColor='grey'
-                    />
+                <FlatList
+                    data={[0]}
+                    renderItem={({item}) => { return(<>
+                        <Text style={text_styles.itemText}>Recipe Name</Text>
+                        <TextInput
+                            style={form_style.input}
+                            onChangeText={(text) => setName(text)}
+                            value={name}
+                            placeholder="Enter name"
+                            placeholderTextColor='grey'
+                        />
 
-                    <Text style={text_styles.itemText}>Portions</Text>
-                    <TextInput
-                        style={form_style.input}
-                        onChangeText={(text) => setPortions(text)}
-                        value={portions.toString()}
-                        keyboardType="numeric"
-                        max={100}
-                        min={1}
-                    />
+                        <Text style={text_styles.itemText}>Portions</Text>
+                        <TextInput
+                            style={form_style.input}
+                            onChangeText={(text) => setPortions(text)}
+                            value={portions.toString()}
+                            keyboardType="numeric"
+                            max={100}
+                            min={1}
+                        />
 
-                    <Text style={text_styles.itemText}>Category</Text>
-                    <View style={{width: '90%', marginBottom: 13}}>
-                        <CategorySelector route={route} selected={categories} setSelected={setCategories} validated={validated}/>
-                    </View>
+                        <Text style={text_styles.itemText}>Category</Text>
+                        <View style={{width: '90%', marginBottom: 13}}>
+                            <CategorySelector route={route} selected={categories} setSelected={setCategories} validated={validated}/>
+                        </View>
 
-                    <Text style={text_styles.itemText}>Ingredients</Text>
-                    <View style={{width: '90%'}}>
-                        <IngredientsList Ingredient={Ingredient} ingredients={ingredients} setIngredients={setIngredients} />
-                    </View>
-                </ScrollView>
+                        <Text style={text_styles.itemText}>Ingredients</Text>
+                        <View style={{width: '90%'}}>
+                            <IngredientsList Ingredient={Ingredient} ingredients={ingredients} setIngredients={setIngredients} />
+                        </View>
+
+                        <Text style={text_styles.itemText}>Directions</Text>
+                        <View style={{width: '90%'}}>
+                            <DirectionsList directions={directions} setDirections={setDirections} />
+                        </View>
+                    </>)}}
+                />
             </KeyboardAvoidingView>
         </SafeAreaView>
     )
