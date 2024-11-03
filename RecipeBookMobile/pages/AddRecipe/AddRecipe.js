@@ -16,6 +16,7 @@ import { useState } from 'react';
 import CategorySelector from './CategorySelector.js';
 import IngredientsList from './Ingredients.js';
 import DirectionsList from './Directions.js';
+import UploadPDF from './UploadPDF.js'
 
 // style imports
 import styles, {text_styles} from '../../style.js';
@@ -71,10 +72,12 @@ function AddRecipe({navigation, route}) {
 
     return(
         <SafeAreaView style={styles.app}>
-            <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <KeyboardAvoidingView style={[styles.container, form_style.form]} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                 <FlatList
                     data={[0]}
                     renderItem={({item}) => { return(<>
+                        <UploadPDF setName={setName} Ingredient={Ingredient} setIngredients={setIngredients} setDirections={setDirections} setSource={setSource}/>
+
                         <Text style={text_styles.itemText}>Recipe Name</Text>
                         <TextInput
                             style={form_style.input}
@@ -94,20 +97,25 @@ function AddRecipe({navigation, route}) {
                             min={1}
                         />
 
+                        <Text style={text_styles.itemText}>Source</Text>
+                        <TextInput
+                            style={form_style.input}
+                            onChangeText={(text) => setSource(text)}
+                            value={source}
+                            placeholder="URL, (last name) family recipe, recipe book..."
+                            placeholderTextColor='grey'
+                        />
+
                         <Text style={text_styles.itemText}>Category</Text>
-                        <View style={{width: '90%', marginBottom: 13}}>
+                        <View style={{marginBottom: 13}}>
                             <CategorySelector route={route} selected={categories} setSelected={setCategories} validated={validated}/>
                         </View>
 
                         <Text style={text_styles.itemText}>Ingredients</Text>
-                        <View style={{width: '90%'}}>
-                            <IngredientsList Ingredient={Ingredient} ingredients={ingredients} setIngredients={setIngredients} />
-                        </View>
+                        <IngredientsList Ingredient={Ingredient} ingredients={ingredients} setIngredients={setIngredients} />
 
                         <Text style={text_styles.itemText}>Directions</Text>
-                        <View style={{width: '90%'}}>
-                            <DirectionsList directions={directions} setDirections={setDirections} />
-                        </View>
+                        <DirectionsList directions={directions} setDirections={setDirections} />
                     </>)}}
                 />
             </KeyboardAvoidingView>
@@ -119,11 +127,14 @@ export default AddRecipe;
 
 
 const form_style = StyleSheet.create({
+    form: {
+        width: '90%',
+        alignItems: 'center'
+    },
     input: {
         color: 'black',
         backgroundColor: 'white',
         borderRadius: 5,
-        width: '90%',
         marginBottom: 15,
         paddingLeft: 12,
         paddingRight: 12
