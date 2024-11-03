@@ -1,5 +1,6 @@
 backend/.env
 backend/node_modules
+backend/.idea
 backend/python_scripts/__pycache__
 backend/python_scripts/.idea
 functionality/.env

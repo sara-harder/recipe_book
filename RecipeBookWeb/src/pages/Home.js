@@ -28,7 +28,7 @@ const Recipe = ({name, image, nav}) => {
             <Card onClick={nav}>
                 <Card.Img variant="top" src={image} className='recipe_thumb'/>
                 <Card.Body className='card-body rounded-bottom'>
-                        <Card.Title className="h5 text-center text-white">{name}</Card.Title>
+                        <Card.Title className="fs-5 text-center text-white">{name}</Card.Title>
                 </Card.Body>
             </Card>
         )

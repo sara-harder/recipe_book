@@ -22,4 +22,4 @@ def upload_file():
 
 if __name__ == '__main__':
     # run this script in pycharm, where python packages can be installed more easily
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5002, debug=True)
