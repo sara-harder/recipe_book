@@ -69,3 +69,6 @@ yarn-error.log
 .yalc/recipe-book/.env
 .yalc/recipe-book/tests/
 
+# images
+/assets/images
+

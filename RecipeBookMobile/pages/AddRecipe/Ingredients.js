@@ -2,6 +2,9 @@
 import React from 'react';
 import {
   FlatList,
+  Modal,
+  Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -9,14 +12,89 @@ import {
 } from 'react-native';
 import { useState, useEffect } from 'react';
 
-// component imports
-import { SelectList } from 'react-native-dropdown-select-list'
-
 // style imports
 import styles, {text_styles} from '../../style.js';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // function imports
-import { category_funcs } from 'recipe-book';
+import { twoColumns } from 'recipe-book/helpers';
+
+
+const UnitList = ({units, closePopup}) => {
+    return(
+        <FlatList
+            data={units}
+            style={{width: '33.33333%'}}
+            renderItem={({item: unit}) => { return(
+                <Pressable onPress={() => closePopup(unit)}>
+                    <Text style={[text_styles.itemText, ingredients_style.unit_item]} >{unit.trim()}</Text>
+                </Pressable>
+            )}}
+        />
+    )
+}
+
+
+const UnitModal = ({setUnit, index, open, setOpen}) => {
+
+     // possible units
+    const metric = ['mg', 'g', 'kg', 'ml', 'cl', 'dl', 'l']
+    const imperial = ['tsp', 'tbsp', ' cup(s)', 'lb', 'oz', 'fl oz', ' pint(s)', ' quart(s)', ' gallon(s)']
+    const other = [' small', ' medium', ' large', ' clove(s)', ' slice(s)', ' cube(s)', ' drop(s)']
+
+    const closePopup = (value) => {
+        setUnit(value, index)
+        setOpen(false)
+    }
+
+    return (
+        <>
+            <Modal
+                animationType="fade"
+                visible={open}
+                transparent={true}
+                onRequestClose={() => setOpen(false)}
+            >
+                <View style={ingredients_style.faded_background}>
+                </View>
+            </Modal>
+            <Modal
+                animationType="slide"
+                visible={open}
+                transparent={true}
+                onRequestClose={() => setOpen(false)}
+            >
+                <Pressable style={ingredients_style.modal_container} onPress={() => setOpen(false)}>
+                    <Pressable style={ingredients_style.modal_content} onPress={(event) => event.stopPropagation()}>
+                        <FlatList
+                            data={[0]}
+                            renderItem={({item}) => { return(<>
+                                <View style={styles.row}>
+                                    <Pressable onPress={() => closePopup(null)} style={{width: '33.33333%'}}>
+                                        <Text style={[text_styles.itemText, ingredients_style.unit_item, {color: 'grey'}]} >no unit</Text>
+                                    </Pressable>
+                                    <Pressable onPress={() => setOpen(false)}>
+                                        <Icon
+                                            name={"close"}
+                                            size={30}
+                                            color={'grey'}
+                                            style={{padding: 2}}
+                                        />
+                                    </Pressable>
+                                </View>
+                                <View style={styles.row}>
+                                    <UnitList units={metric} closePopup={closePopup} />
+                                    <UnitList units={imperial} closePopup={closePopup} />
+                                    <UnitList units={other} closePopup={closePopup} />
+                                </View>
+                            </>)}}
+                        />
+                    </Pressable>
+                </Pressable>
+            </Modal>
+        </>
+    )
+}
 
 
 
@@ -45,15 +123,6 @@ function IngredientsList ({Ingredient, ingredients, setIngredients}) {
          setIngredients(copy)
      }
 
-     // possible units
-     const metric = ['mg', 'g', 'kg', 'ml', 'cl', 'dl', 'l']
-     const imperial = ['tsp', 'tbsp', ' cup(s)', 'lb', 'oz', 'fl oz', ' pint(s)', ' quart(s)', ' gallon(s)']
-     const other = [' small', ' medium', ' large', ' clove(s)', ' slice(s)', ' cube(s)']
-
-     const units = metric.concat(imperial.concat(other)).map((item, index) => {
-        return {key: index, value: item}
-    })
-
      // update the ingredient unit when user selects. find ingredient to update using index
      const setUnit = (value, index) => {
          const copy = ingredients.slice()
@@ -78,6 +147,9 @@ function IngredientsList ({Ingredient, ingredients, setIngredients}) {
      const visible = ingredients.length <= 1
      const [rowOpacity, setOpacity] = useState(-1)
 
+     const [open, setOpen] = useState(false)
+     const [unit_idx, setIndex] = useState(0)
+
      return(
          <>
             <FlatList
@@ -87,39 +159,40 @@ function IngredientsList ({Ingredient, ingredients, setIngredients}) {
                         <View style={{justifyContent: 'center', marginBottom: 15}}>
                             <Text style={text_styles.itemText}>{index + 1}.</Text>
                         </View>
-                        <TextInput
-                            style={ingredients_style.input}
-                            onChangeText={(text) => setName(text, index)}
-                            value={item.name}
-                            placeholder="Add ingredient (Name)"
-                            placeholderTextColor='grey'
-                        />
-                        <TextInput
-                            style={item.name == '' ? reduced_opacity : ingredients_style.input}
-                            onChangeText={(text) => setQuantity(text, index)}
-                            value={item.quantity ? item.quantity.toString() : undefined}
-                            placeholder="Quantity"
-                            placeholderTextColor='grey'
-                            keyboardType="numeric"
-                            editable={item.name != ''}
-                        />
-                        <View pointerEvents={item.name != '' ? 'auto' : 'none'}>
-                            <SelectList
-                                setSelected={(val) => setUnit(val, index)}
-                                data={units}
-                                search={false}
-                                save="value"
-                                placeholder="Unit"
-                                boxStyles={item.name == '' ?
-                                    [reduced_opacity, {marginBottom: 0}]
-                                :
-                                    [ingredients_style.input, {marginBottom: 0}]}
-                                dropdownStyles={[ingredients_style.input, {marginTop: 0}]}
+                        <View style={[styles.row, {width: '94%'}]}>
+                            <TextInput
+                                style={[ingredients_style.input, {width: '49%'}]}
+                                onChangeText={(text) => setName(text, index)}
+                                value={item.name}
+                                placeholder="Add ingredient (Name)"
+                                placeholderTextColor='grey'
                             />
+                            <TextInput
+                                style={[{width: '29%'}, item.name == '' ? reduced_opacity : ingredients_style.input]}
+                                onChangeText={(text) => setQuantity(text, index)}
+                                value={item.quantity ? item.quantity.toString() : undefined}
+                                placeholder="Quantity"
+                                placeholderTextColor='grey'
+                                keyboardType="numeric"
+                                editable={item.name != ''}
+                            />
+                            <View pointerEvents={item.name != '' ? 'auto' : 'none'} style={{width: '19%'}} >
+                                <Pressable onPress={() => {setOpen(!open)
+                                        setIndex(index)}}>
+                                    <TextInput
+                                        style={item.name == '' ? reduced_opacity : ingredients_style.input}
+                                        value={item.unit}
+                                        placeholder="Unit"
+                                        placeholderTextColor='grey'
+                                        editable={false}
+                                    />
+                                </Pressable>
+                            </View>
                         </View>
                     </View>
                 )}}
             />
+            <UnitModal setUnit={setUnit} index={unit_idx} open={open} setOpen={setOpen} />
          </>
      )
 }
@@ -134,6 +207,42 @@ const ingredients_style = StyleSheet.create({
         borderRadius: 5,
         marginBottom: 15,
         height: 45
+    },
+    modal_container: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        zIndex: 3,
+    },
+    modal_content: {
+        backgroundColor: 'white',
+        margin: 20,
+        marginBottom: 0,
+        padding: 10,
+        paddingTop: 15,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        height: '60%'
+    },
+    unit_item: {
+        color: 'black',
+        backgroundColor: 'white',
+        textAlign: 'center',
+        margin: 5,
+        borderWidth: 2,
+        borderColor: styles.headerColor.color,
+        borderRadius: 5,
+        width: '90%',
+        flex: 1,
+        alignSelf: 'center'
+    },
+    faded_background: {
+        height: '100%',
+        backgroundColor: `${styles.backgroundColor.color}80`,
     },
 })
 

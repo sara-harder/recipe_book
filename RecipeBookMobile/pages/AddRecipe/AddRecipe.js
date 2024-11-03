@@ -2,6 +2,8 @@
 import React from 'react';
 import {
   SafeAreaView,
+  KeyboardAvoidingView,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -67,36 +69,38 @@ function AddRecipe({navigation, route}) {
 
     return(
         <SafeAreaView style={styles.app}>
-            <View style={styles.container}>
-                <Text style={text_styles.itemText}>Recipe Name</Text>
-                <TextInput
-                    style={form_style.input}
-                    onChangeText={(text) => setName(text)}
-                    value={name}
-                    placeholder="Enter name"
-                    placeholderTextColor='grey'
-                />
+            <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                <ScrollView contentContainerStyle={form_style.scroll_container}>
+                    <Text style={text_styles.itemText}>Recipe Name</Text>
+                    <TextInput
+                        style={form_style.input}
+                        onChangeText={(text) => setName(text)}
+                        value={name}
+                        placeholder="Enter name"
+                        placeholderTextColor='grey'
+                    />
 
-                <Text style={text_styles.itemText}>Portions</Text>
-                <TextInput
-                    style={form_style.input}
-                    onChangeText={(text) => setPortions(text)}
-                    value={portions.toString()}
-                    keyboardType="numeric"
-                    max={100}
-                    min={1}
-                />
+                    <Text style={text_styles.itemText}>Portions</Text>
+                    <TextInput
+                        style={form_style.input}
+                        onChangeText={(text) => setPortions(text)}
+                        value={portions.toString()}
+                        keyboardType="numeric"
+                        max={100}
+                        min={1}
+                    />
 
-                <Text style={text_styles.itemText}>Category</Text>
-                <View style={{width: '90%'}}>
-                    <CategorySelector route={route} selected={categories} setSelected={setCategories} validated={validated}/>
-                </View>
+                    <Text style={text_styles.itemText}>Category</Text>
+                    <View style={{width: '90%', marginBottom: 13}}>
+                        <CategorySelector route={route} selected={categories} setSelected={setCategories} validated={validated}/>
+                    </View>
 
-                <Text style={text_styles.itemText}>Ingredients</Text>
-                <View style={{width: '90%'}}>
-                    <IngredientsList Ingredient={Ingredient} ingredients={ingredients} setIngredients={setIngredients} />
-                </View>
-            </View>
+                    <Text style={text_styles.itemText}>Ingredients</Text>
+                    <View style={{width: '90%'}}>
+                        <IngredientsList Ingredient={Ingredient} ingredients={ingredients} setIngredients={setIngredients} />
+                    </View>
+                </ScrollView>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     )
 }
@@ -114,4 +118,7 @@ const form_style = StyleSheet.create({
         paddingLeft: 12,
         paddingRight: 12
     },
+    scroll_container: {
+        paddingBottom: 20
+    }
 })
