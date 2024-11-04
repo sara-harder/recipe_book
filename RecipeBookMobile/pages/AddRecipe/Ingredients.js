@@ -214,9 +214,10 @@ const ingredients_style = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         alignItems: 'center',
+        alignSelf: 'center',
 
         position: 'absolute',
-        width: '100%',
+        width: '105%',
         height: '100%',
         zIndex: 3,
     },

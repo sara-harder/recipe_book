@@ -4,13 +4,14 @@ import {
   SafeAreaView,
   FlatList,
   KeyboardAvoidingView,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View
 } from 'react-native';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 // component imports
 import CategorySelector from './CategorySelector.js';
@@ -49,25 +50,28 @@ function AddRecipe({navigation, route}) {
         setValidated(true)
         if (name == '') return false
         if (portions <= 0 || portions > 100) return false
-        if (categories.size == 0) return false
+        if (categories.length == 0) return false
         if (ingredients.length == 1) return false
         if (directions.length == 1) return false
         return true
     }
 
-    // add the new recipe to the database
-    const createRecipe = async () => {
-        if (validateRecipe() == false) return
-        const new_recipe = await recipe_funcs.addRecipe(name, portions, ingredients.slice(0, ingredients.length-1),
-                    directions.slice(0, directions.length-1), image, source)
+    const scrollRef = useRef()
 
-        // connect the recipe to the chosen categories
-        for (const cat of categories) {
-            rec_cat_funcs.connectRecipeCat(new_recipe._id, cat._id)
+    // send the new recipe to the map page to map ingredients to directions
+    const sendRecipe = () => {
+        if (validateRecipe() == false) {
+            scrollRef.current?.scrollToOffset({
+                offset: 0,
+                animated: true,
+            });
+            return
         }
 
-        // go back to the previous page
-        navigation.goBack()
+        navigation.navigate("MapRecipe", {recipe: {
+            name, portions, ingredients: ingredients.slice(0, ingredients.length-1),
+            directions: directions.slice(0, directions.length-1), image: image.replace("C:\\fakepath\\", "../images/"),
+            source, categories}})
     }
 
     return(
@@ -75,6 +79,7 @@ function AddRecipe({navigation, route}) {
             <KeyboardAvoidingView style={[styles.container, form_style.form]} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                 <FlatList
                     data={[0]}
+                    ref={scrollRef}
                     renderItem={({item}) => { return(<>
                         <UploadPDF setName={setName} Ingredient={Ingredient} setIngredients={setIngredients} setDirections={setDirections} setSource={setSource}/>
 
@@ -116,6 +121,10 @@ function AddRecipe({navigation, route}) {
 
                         <Text style={text_styles.itemText}>Directions</Text>
                         <DirectionsList directions={directions} setDirections={setDirections} />
+
+                        <Pressable style={form_style.button} onPress={sendRecipe}>
+                            <Text style={text_styles.itemText} >Add Recipe</Text>
+                        </Pressable>
                     </>)}}
                 />
             </KeyboardAvoidingView>
@@ -141,5 +150,16 @@ const form_style = StyleSheet.create({
     },
     scroll_container: {
         paddingBottom: 20
-    }
+    },
+    button: {
+        backgroundColor: styles.headerColor.color,
+
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        marginVertical: 8,
+        borderRadius: 5,
+
+        alignText: 'center',
+        width: '33.33333%'
+    },
 })

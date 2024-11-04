@@ -10,6 +10,7 @@ import RecipeList from '../pages/RecipeList.js'
 import ViewRecipe from '../pages/ViewRecipe.js'
 
 import AddRecipe from '../pages/AddRecipe/AddRecipe.js'
+import MapPage from '../pages/AddRecipe/RecipeMap.js'
 
 const Stack = createNativeStackNavigator();
 
@@ -47,9 +48,15 @@ const PageSetup = ({navigation}) => {
           options={{title: recipe, animation: "slide_from_right"}}
         />
 
+
         <Stack.Screen
           name="AddRecipe"
           component={AddRecipe}
+          options={{title: "Add a Recipe", animation: "slide_from_bottom"}}
+        />
+        <Stack.Screen
+          name="MapRecipe"
+          component={MapPage}
           options={{title: "Add a Recipe", animation: "slide_from_bottom"}}
         />
       </Stack.Navigator>
