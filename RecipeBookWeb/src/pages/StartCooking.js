@@ -98,7 +98,7 @@ function StartCooking() {
         <Container fluid className='position-relative'>
             <Row className='fs-55 cooking-page'>
                 <Col xs={4} className='h-100'>
-                    <Row className='cooking-display'>
+                    <Row className='cooking-display overflow-hidden'>
                         <ul className='list-unstyled align-bottom m-0 cooking-begin'>
                             <Col>
                             {recipe.ingredients.slice(0, connected[0] != undefined ? connected[0] : lastConnected[lastConnected.length - 1] + 1).map((item, index) => 

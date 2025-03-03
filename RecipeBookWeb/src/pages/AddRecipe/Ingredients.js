@@ -10,6 +10,8 @@ import Dropdown from 'react-bootstrap/Dropdown';
 
 // style imports
 import { FaRegTrashAlt as TrashIcon } from "react-icons/fa";
+import { FaAngleUp as UpArrow } from "react-icons/fa6";
+import { FaAngleDown as DownArrow } from "react-icons/fa6";
 
 
 const IngredientsList = ({Ingredient, ingredients, setIngredients}) => {
@@ -60,8 +62,25 @@ const IngredientsList = ({Ingredient, ingredients, setIngredients}) => {
         setTrash(-1)
     }
 
+    const moveIngredient = (index, direction) => {
+        if (index == 0 && direction == -1) return
+        if (index == end_idx - 1 && direction == 1) return
+
+        const ingr_1 = ingredients[index]
+        const ingr_2 = ingredients[index + direction]
+
+        const copy = ingredients.slice()
+        copy[index] = ingr_2
+        copy[index + direction] = ingr_1
+
+        setIngredients(copy)
+    }
+
     // change the trash-can color on hover
     const [trashIdx, setTrash] = useState(-1)
+
+    // change the arrow color on hover
+    const [arrowIdx, setArrow] = useState(-1)
 
     const visible = ingredients.length <= 1
     const [rowOpacity, setOpacity] = useState(-1)
@@ -73,8 +92,32 @@ const IngredientsList = ({Ingredient, ingredients, setIngredients}) => {
                 {ingredients.map((item, index) => 
                     <li className='row py-1 flex-nowrap' key={index}>
                         <Col xs={11} className='pe-0'><Row className='pe-0'>
-                            <Col className='col-1 w-auto center-vertical pe-1' style={index != end_idx || visible || rowOpacity == index ? {} : {opacity: .5}}>
-                                {index + 1}.
+                            <Col className='col-1 w-auto flex-column center-content pe-2'>
+                                <UpArrow 
+                                    size='.6em' 
+                                    color={arrowIdx == index * 2 ? 'black' : '#606060'}
+                                    style={{
+                                        transform: 'scaleX(1.8)', // Adjust the width without changing the height
+                                        opacity: index != 0 && index != end_idx ? .8 : .25
+                                    }}
+                                    onMouseEnter={() => setArrow(index != 0 && index != end_idx ? index * 2 : -1)} 
+                                    onMouseLeave={() => setArrow(-1)}
+                                    onClick={() => moveIngredient(index, -1)}
+                                />
+                                <Row style={{lineHeight: '1em', opacity: index != end_idx || visible || rowOpacity == index ? 1 : .5}}>
+                                    {index + 1}
+                                </Row>
+                                <DownArrow 
+                                    size='.6em' 
+                                    color={arrowIdx == index * 2 + 1 ? 'black' : '#606060'}
+                                    style={{
+                                        transform: 'scaleX(1.8)', // Adjust the width without changing the height
+                                        opacity: index < end_idx - 1 ? .8 : .25
+                                    }}
+                                    onMouseEnter={() => setArrow(index < end_idx - 1 ? index * 2 + 1 : -1)} 
+                                    onMouseLeave={() => setArrow(-1)}
+                                    onClick={() => moveIngredient(index, 1)}
+                                />
                             </Col>
                             <Col className='px-1' >
                                 <Form.Control 
