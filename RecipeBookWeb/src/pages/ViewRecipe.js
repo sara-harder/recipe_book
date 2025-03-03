@@ -1,6 +1,6 @@
 // react imports
 import React from 'react';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -13,6 +13,8 @@ import Button from 'react-bootstrap/esm/Button';
 
 // style imports
 import '../styling/Recipe.css';
+import { FaAngleUp as UpArrow } from "react-icons/fa6";
+import { FaAngleDown as DownArrow } from "react-icons/fa6";
 
 // function imports
 import { checkFraction } from 'recipe-book/helpers';
@@ -36,8 +38,46 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
     let recipe_round = "rounded"
     if (recipe.image) recipe_round = "rounded-bottom"
 
+    const moveDirection = (direction) => {
+        const portions = recipe.portions + direction
+    }
+
+    // change the arrow color on hover
+    const [arrowIdx, setArrow] = useState(-1)
+
     return(
         <Container fluid className='mt-4 mb-5'>
+            <Row>
+                <Col></Col>
+                <Col className='col-1 w-auto center-content'>
+                    <h5 className='fw-bold my-3 mb-3'>Portions:</h5>
+                </Col>
+                <Col className='col-1 w-auto center-content'>
+                    <h6 className='fw-bold m-0 p-0'>{recipe.portions}</h6>
+                </Col>
+                <Col className='col-1 w-auto flex-column center-content m-0 p-0 pe-4'>
+                    <UpArrow 
+                        size='.8em' 
+                        color={arrowIdx == 2 ? 'black' : '#606060'}
+                        style={{
+                            opacity: .8
+                        }}
+                        onMouseEnter={() => setArrow(2)} 
+                        onMouseLeave={() => setArrow(-1)}
+                        onClick={() => moveDirection(-1)}
+                    />
+                    <DownArrow 
+                        size='.8em' 
+                        color={arrowIdx == 1 ? 'black' : '#606060'}
+                        style={{
+                            opacity: .8
+                        }}
+                        onMouseEnter={() => setArrow(1)} 
+                        onMouseLeave={() => setArrow(-1)}
+                        onClick={() => moveDirection(1)}
+                    />
+                </Col>
+            </Row>
             {recipe.image ? 
                 <Row className='g-0'>
                     <Col>
