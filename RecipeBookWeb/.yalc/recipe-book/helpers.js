@@ -78,19 +78,41 @@ async function getRandomRecipes(flavor_type) {
 
 const getFraction = (num) => {
 // evaluates a number less than one and determines what fraction it is based on predetermined fractions
-    if (Math.abs(num - 0.75)    < 0.01) return [3, 4]
-    if (Math.abs(num - 0.666)   < 0.01) return [2, 3]
-    if (Math.abs(num - 0.5)     < 0.01) return [1, 2]
-    if (Math.abs(num - 0.333)   < 0.01) return [1, 3]
-    if (Math.abs(num - 0.25)    < 0.01) return [1, 4]
-    if (Math.abs(num - 0.166)   < 0.01) return [1, 6]
-    if (Math.abs(num - 0.125)   < 0.01) return [1, 8]
-    return [num, 1]
+    const fractions = [
+        [0.875, [7, 8]],
+        [0.833, [5, 6]],
+        [0.8, [4, 5]],
+        [0.75, [3, 4]],
+        [0.666, [2, 3]],
+        [0.625, [5, 8]],
+        [0.6, [3, 5]],
+        [0.5, [1, 2]],
+        [0.4, [2, 5]],
+        [0.375, [3, 8]],
+        [0.333, [1, 3]],
+        [0.25, [1, 4]],
+        [0.2, [1, 5]],
+        [0.166, [1, 6]],
+        [0.125, [1, 8]]
+    ];
+
+    let closestFraction = [num, 1];
+    let minDifference = Infinity;
+
+    for (const [fraction, value] of fractions) {
+        const difference = Math.abs(num - fraction);
+        if (difference < minDifference) {
+            minDifference = difference;
+            closestFraction = value;
+        }
+    }
+
+    return closestFraction;
 }
 
 const checkFraction = (num) => {
 // checks if a number needs to be converted to a fraction. if it does, returns the unicode form
-    if (num == undefined) return undefined
+    if (num == undefined || isNaN(num)) return undefined
     if (num < 1) {
         const res = getFraction(num)
         return `${fractionUnicode(res[0], res[1])} `

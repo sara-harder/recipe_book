@@ -15,6 +15,7 @@ import Button from 'react-bootstrap/esm/Button';
 function StartCooking() {
     const location = useLocation();
     const recipe = location.state.recipe
+    const portions = location.state.portions
 
     const [selected, setSelected] = useState(0)
     const [connected, setConnected] = useState([])
@@ -103,7 +104,7 @@ function StartCooking() {
                             <Col>
                             {recipe.ingredients.slice(0, connected[0] != undefined ? connected[0] : lastConnected[lastConnected.length - 1] + 1).map((item, index) => 
                                 <li className='row' key={index}>
-                                    <Col className='col-5 right text-nowrap overflow-hidden' >{checkFraction(item.quantity)}{item.unit}</Col>
+                                    <Col className='col-5 right text-nowrap overflow-hidden' >{checkFraction(item.quantity / recipe.portions * portions)}{item.unit}</Col>
                                     <Col className='col-7 left' >{item.name}</Col>
                                 </li>
                             )}
@@ -113,7 +114,7 @@ function StartCooking() {
                             <Col>
                             {connected.map((idx) => 
                                 <li className='row fs-3 fw-bold' key={idx}>
-                                    <Col className='col-5 right text-nowrap' >{checkFraction(recipe.ingredients[idx].quantity)}{recipe.ingredients[idx].unit}</Col>
+                                    <Col className='col-5 right text-nowrap' >{checkFraction(recipe.ingredients[idx].quantity / recipe.portions * portions)}{recipe.ingredients[idx].unit}</Col>
                                     <Col className='col-7 left' >{recipe.ingredients[idx].name}</Col>
                                 </li>
                             )}
@@ -122,7 +123,7 @@ function StartCooking() {
                         <ul className='list-unstyled overflow-hidden cooking-end'>
                             {recipe.ingredients.slice(lastConnected[lastConnected.length - 1] + 1).map((item, index) => 
                                 <li className='row' key={index}>
-                                    <Col className='col-5 right text-nowrap' >{checkFraction(item.quantity)}{item.unit}</Col>
+                                    <Col className='col-5 right text-nowrap' >{checkFraction(item.quantity / recipe.portions * portions)}{item.unit}</Col>
                                     <Col className='col-7 left' >{item.name}</Col>
                                 </li>
                             )}
