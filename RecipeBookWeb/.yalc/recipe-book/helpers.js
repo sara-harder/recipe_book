@@ -112,7 +112,7 @@ const getFraction = (num) => {
 
 const checkFraction = (num) => {
 // checks if a number needs to be converted to a fraction. if it does, returns the unicode form
-    if (num == undefined || isNaN(num)) return undefined
+    if (num == undefined || isNaN(num) || num == 0) return undefined
     if (num < 1) {
         const res = getFraction(num)
         return `${fractionUnicode(res[0], res[1])} `

@@ -62,8 +62,13 @@
 }
 
 #invisible-scroll {
-    position: absolute;
-    top: 0;
     z-index: 3;
     height: 85%;
+    pointer-events: auto;
+}
+
+#invisible-scroll-container {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
 }

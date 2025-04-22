@@ -98,3 +98,7 @@
 .add-border {
   border: 2px solid red;
 }
+
+.w-0 {
+  width: 0;
+}
