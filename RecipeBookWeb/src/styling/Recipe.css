@@ -61,13 +61,13 @@
     background: linear-gradient(rgba(255,255,255,0), var(--backgroundColor));
 }
 
-#invisible-scroll {
+#invisible-scroll-1, #invisible-scroll-2 {
     z-index: 3;
     height: 85%;
     pointer-events: auto;
 }
 
-#invisible-scroll-container {
+.invisible-scroll-container {
     pointer-events: none;
     position: absolute;
     top: 0;
