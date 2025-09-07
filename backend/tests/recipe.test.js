@@ -57,12 +57,12 @@ const recipe_1 = {
     connections: {2: [0], 3: [1]}
 }
 const recipe_2 = {
-    name: "Carbonara",
+    name: "Fake",
     image: "image_1",
     portions: 4,
     ingredients: [new Ingredient("Pasta", 360, "g"), new Ingredient("Pecorino", 100, "g")],
     directions: ["Boil water", "Add salt", "Cook the pasta", "Grate the cheese"],
-    source: "website/carbonara"
+    source: "website/fake"
 }
 
 const recipe_3 = {
@@ -73,6 +73,8 @@ const recipe_3 = {
     connections: {1: [0], 3: [1, 2]},
     source: "website/teriyaki-sauce"
 }
+
+const stripMethods = (obj) => JSON.parse(JSON.stringify(obj));
 
 
 // Test the recipe model
@@ -143,30 +145,30 @@ describe("RECIPE MODEL TESTS", () => {
     })
 
     performSyncTest("Search for recipe 2", async () => {
-        const recipe_results = await recipes.searchForRecipe("Carbonara")
+        const recipe_results = await recipes.searchForRecipe("Fake")
         expect(
-            recipe_results
+            stripMethods(recipe_results)
         ).toMatchObject(
-            [recipe_2]
-        )
+            [stripMethods(recipe_2)]
+        );
     })
 
     performSyncTest("Search for recipe 2 (shortened start)", async () => {
-        const recipe_results = await recipes.searchForRecipe("carb")
+        const recipe_results = await recipes.searchForRecipe("fak")
         expect(
-            recipe_results
+            stripMethods(recipe_results)
         ).toMatchObject(
-            [recipe_2]
-        )
+            [stripMethods(recipe_2)]
+        );
     })
 
     performSyncTest("Search for recipe 2 (shortened end)", async () => {
-        const recipe_results = await recipes.searchForRecipe("ara")
+        const recipe_results = await recipes.searchForRecipe("ke")
         expect(
-            recipe_results
+            stripMethods(recipe_results)
         ).toMatchObject(
-            [recipe_2]
-        )
+            [stripMethods(recipe_2)]
+        );
     })
 
     performSyncTest("No search results", async () => {
@@ -344,7 +346,7 @@ describe("RECIPE CONTROLLER TESTS", () => {
     })
 
     performSyncTest("Search for recipe 2", async () => {
-        const response = await fetch(`${proxy}/recipes/search/Carbonara`)
+        const response = await fetch(`${proxy}/recipes/search/Fake`)
         const recipe_results = await response.json()
         expect(
             recipe_results
@@ -354,7 +356,7 @@ describe("RECIPE CONTROLLER TESTS", () => {
     })
 
     performSyncTest("Search for recipe 2 (shortened start)", async () => {
-        const response = await fetch(`${proxy}/recipes/search/carb`)
+        const response = await fetch(`${proxy}/recipes/search/fak`)
         const recipe_results = await response.json()
         expect(
             recipe_results
