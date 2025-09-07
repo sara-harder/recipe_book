@@ -136,8 +136,8 @@ describe("RECIPES FUNCTIONALITY TESTS", () => {
         )
     })
 
-    performSyncTest("Search for recipe 2 (shortened start)", async () => {
-        const recipe_results = await recipe_funcs.searchForRecipe("ara")
+    performSyncTest("Search for recipe 2 (shortened end)", async () => {
+        const recipe_results = await recipe_funcs.searchForRecipe("ke")
         expect(
             recipe_results
         ).toMatchObject(
