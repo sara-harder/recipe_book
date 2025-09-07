@@ -123,7 +123,7 @@ function StartCooking({recipe, portions, completedDir, addedIngr, toggleCrossed,
                             <ul className='list-unstyled center-vertical m-0 cooking-focused z-2'>
                                 <Col>
                                 {connected.map((idx) => 
-                                    <li className={`row ${sousChefMode ? 'fs-5': 'fs-3'} fw-bold ${addedIngr.includes(idx) ? 'text-decoration-line-through' : ''}`} key={idx} onClick={() => toggleCrossed(idx, addedIngr)}>
+                                    <li className={`row ${sousChefMode ? 'fs-45': 'fs-3'} fw-bold ${addedIngr.includes(idx) ? 'text-decoration-line-through' : ''}`} key={idx} onClick={() => toggleCrossed(idx, addedIngr)}>
                                         <Col className='col-5 right text-nowrap' >{checkFraction(recipe.ingredients[idx].quantity / recipe.portions * portions)}{recipe.ingredients[idx].unit}</Col>
                                         <Col className='col-7 left'>{recipe.ingredients[idx].name}</Col>
                                     </li>
@@ -156,7 +156,7 @@ function StartCooking({recipe, portions, completedDir, addedIngr, toggleCrossed,
                             </ul>
                             <ul className='list-unstyled center-vertical m-0 cooking-focused'>
                                 <li 
-                                    className={`${sousChefMode ? 'fs-5': 'fs-3'} fw-bold py-5 ${completedDir.includes(selected) ? 'text-decoration-line-through' : ''}`}
+                                    className={`${sousChefMode ? 'fs-45': 'fs-3'} fw-bold py-5 ${completedDir.includes(selected) ? 'text-decoration-line-through' : ''}`}
                                     onClick={() => toggleCrossed(selected, completedDir)}
                                 >
                                     {recipe.directions[selected]}

@@ -1,0 +1,21 @@
+{
+  "name": "recipe-book",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "functionality",
+    "RecipeBookWeb",
+    "RecipeBookMobile"
+  ],
+  "scripts": {
+    "install:python": "python3 -m pip install --target ./backend/python_scripts/.python_deps -r ./backend/python_scripts/requirements.txt",
+    "postinstall": "npm run install:python",
+    "start:python": "PYTHONPATH=./backend/python_scripts/.python_deps python3 ./backend/python_scripts/flask_connection.py",
+    "start:backend": "npm run start --workspace recipe-backend",
+    "start:web": "npm run start --workspace recipe-book-web",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:web\" \"npm run start:python\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

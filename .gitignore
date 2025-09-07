@@ -6,3 +6,5 @@ backend/python_scripts/.idea
 functionality/.env
 functionality/node_modules
 .idea
+/node_modules
+/backend/python_scripts/.python_deps
