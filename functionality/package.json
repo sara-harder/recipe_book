@@ -1,5 +1,5 @@
 {
-  "name": "recipe-book",
+  "name": "recipe-book-functionality",
   "version": "1.0.0",
   "description": "functionality for the recipe book app",
   "main": "index.js",

@@ -18,18 +18,11 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install backend dependencies
-        working-directory: backend
-        run: npm ci install
+      - name: Install dependencies
+        run: npm ci --install-strategy=shallow
         
       - name: Run backend Jest tests
-        working-directory: backend
-        run: npm test
-
-      - name: Install functionality dependencies
-        working-directory: functionality
-        run: npm ci install
+        run: npm test --workspace recipe-backend
         
       - name: Run functionality Jest tests
-        working-directory: functionality
-        run: npm test
+        run: npm test --workspace recipe-book-functionality
