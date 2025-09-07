@@ -56,13 +56,13 @@ const recipe_1 = {
     connections: {2: [0], 3: [1]}
 }
 const recipe_2 = {
-    name: "Carbonara",
+    name: "Fake",
     image: "image_1",
     portions: 4,
     ingredients: [new Ingredient("Pasta", 360, "g"), new Ingredient("Pecorino", 100, "g")],
     directions: ["Boil water", "Add salt", "Cook the pasta", "Grate the cheese"],
     connections: {2: [0], 3: [1]},
-    source: "website/carbonara"
+    source: "website/fake"
 }
 const recipe_3 = {
     name: "Teriyaki",
@@ -128,7 +128,7 @@ describe("RECIPES FUNCTIONALITY TESTS", () => {
     })
 
     performSyncTest("Search for recipe 2", async () => {
-        const recipe_results = await recipe_funcs.searchForRecipe("Carbonara")
+        const recipe_results = await recipe_funcs.searchForRecipe("Fake")
         expect(
             recipe_results
         ).toMatchObject(
@@ -136,8 +136,8 @@ describe("RECIPES FUNCTIONALITY TESTS", () => {
         )
     })
 
-    performSyncTest("Search for recipe 2 (shortened start)", async () => {
-        const recipe_results = await recipe_funcs.searchForRecipe("ara")
+    performSyncTest("Search for recipe 2 (shortened end)", async () => {
+        const recipe_results = await recipe_funcs.searchForRecipe("ke")
         expect(
             recipe_results
         ).toMatchObject(

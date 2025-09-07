@@ -14,10 +14,10 @@ import Button from 'react-bootstrap/Button';
 import CategorySelector from './CategoryDropdown';
 import IngredientsList from './Ingredients';
 import DirectionsList from './Directions';
+import UploadPDF from './UploadPDF';
 
 // style imports
 import './Add.css';
-import UploadPDF from './UploadPDF';
 
 
 function AddRecipe({setHeader}) {
@@ -172,7 +172,7 @@ function AddRecipe({setHeader}) {
 
                 <Row>
                     <Col className='right py-5 px-4'>
-                        <Button variant="success" type="button" className='bg-color5 border-color5' onClick={() => sendRecipe()}>
+                        <Button variant="success" type="button" className='bg-color5 border-color5' onClick={sendRecipe}>
                             Add Recipe
                         </Button>
                     </Col>

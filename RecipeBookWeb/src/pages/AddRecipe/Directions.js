@@ -9,6 +9,8 @@ import Form from 'react-bootstrap/Form';
 
 // style imports
 import { FaRegTrashAlt as TrashIcon } from "react-icons/fa";
+import { FaAngleUp as UpArrow } from "react-icons/fa6";
+import { FaAngleDown as DownArrow } from "react-icons/fa6";
 
 
 const DirectionsList = ({directions, setDirections}) => {
@@ -36,8 +38,26 @@ const DirectionsList = ({directions, setDirections}) => {
         setTrash(-1)
     }
 
+    const moveDirection = (index, direction) => {
+        if (index == 0 && direction == -1) return
+        if (index == end_idx - 1 && direction == 1) return
+
+        const dir_1 = directions[index]
+        const dir_2 = directions[index + direction]
+
+        const copy = directions.slice()
+        copy[index] = dir_2
+        copy[index + direction] = dir_1
+
+        setDirections(copy)
+    }
+
+
     // change the trash-can color on hover
     const [trashIdx, setTrash] = useState(-1)
+
+    // change the arrow color on hover
+    const [arrowIdx, setArrow] = useState(-1)
 
     const visible = directions.length <= 1
     const [rowOpacity, setOpacity] = useState(-1)
@@ -47,13 +67,36 @@ const DirectionsList = ({directions, setDirections}) => {
             <Form.Label className='mb-1'>Directions</Form.Label>
             <ol className='list-unstyled'>
                 {directions.map((item, index) => 
-                    <li className='row py-1 flex-nowrap' key={index} 
-                    style={index != end_idx || visible || rowOpacity == index ? {} : {opacity: .5}}>
+                    <li className='row py-1 flex-nowrap' key={index}>
                         <Col xs={11} className='pe-0'><Row className='pe-0'>
-                            <Col className='col-1 w-auto center-vertical pe-1'>
-                                {index + 1}.
+                            <Col className='col-1 w-auto flex-column center-content pe-2'>
+                                <UpArrow 
+                                    size='.6em' 
+                                    color={arrowIdx == index * 2 ? 'black' : '#606060'}
+                                    style={{
+                                        transform: 'scaleX(1.8)', // Adjust the width without changing the height
+                                        opacity: index != 0 && index != end_idx ? .8 : .25
+                                    }}
+                                    onMouseEnter={() => setArrow(index != 0 && index != end_idx ? index * 2 : -1)} 
+                                    onMouseLeave={() => setArrow(-1)}
+                                    onClick={() => moveDirection(index, -1)}
+                                />
+                                <Row style={{lineHeight: '1em', opacity: index != end_idx || visible || rowOpacity == index ? 1 : .5}}>
+                                    {index + 1}
+                                </Row>
+                                <DownArrow 
+                                    size='.6em' 
+                                    color={arrowIdx == index * 2 + 1 ? 'black' : '#606060'}
+                                    style={{
+                                        transform: 'scaleX(1.8)', // Adjust the width without changing the height
+                                        opacity: index < end_idx - 1 ? .8 : .25
+                                    }}
+                                    onMouseEnter={() => setArrow(index < end_idx - 1 ? index * 2 + 1 : -1)} 
+                                    onMouseLeave={() => setArrow(-1)}
+                                    onClick={() => moveDirection(index, 1)}
+                                />
                             </Col>
-                            <Col className='ps-1 pe-2 me-1' >
+                            <Col className='ps-1 pe-2 me-1' style={index != end_idx || visible || rowOpacity == index ? {} : {opacity: .5}}>
                                 <Form.Control 
                                     type="name" 
                                     placeholder="Write directions"
@@ -68,7 +111,7 @@ const DirectionsList = ({directions, setDirections}) => {
                                 </Form.Control.Feedback>
                             </Col>
                         </Row></Col>
-                        <Col className='col-1 w-auto center-vertical'>
+                        <Col className='col-1 w-auto center-vertical' style={index != end_idx || visible || rowOpacity == index ? {} : {opacity: .5}}>
                             {index == end_idx ? 
                                 <TrashIcon size='1.15em' color='transparent' /> 
                             : 

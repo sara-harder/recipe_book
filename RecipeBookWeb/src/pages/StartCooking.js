@@ -1,21 +1,17 @@
 // react imports
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { useLocation } from "react-router-dom";
 
 // bootstrap imports
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/esm/Row';
 import Col from 'react-bootstrap/esm/Col';
+import Button from 'react-bootstrap/esm/Button';
 
 // function imports
 import { checkFraction } from 'recipe-book/helpers';
-import Button from 'react-bootstrap/esm/Button';
 
-function StartCooking() {
-    const location = useLocation();
-    const recipe = location.state.recipe
-
+function StartCooking({recipe, portions, completedDir, addedIngr, toggleCrossed, id, sousChefMode=true}) {
     const [selected, setSelected] = useState(0)
     const [connected, setConnected] = useState([])
     const [lastSelected, setLastSelected] = useState(-1)
@@ -47,8 +43,19 @@ function StartCooking() {
         }
     }
 
-    // move between instructions when the user scrolls
-    const invisible_display = document.getElementById('invisible-scroll')
+    const doScroll = (e) => {
+        if (invisible_display) {
+            // Adjust the scroll position based on the wheel delta
+            const scrollAmount = e.deltaY; // Positive for down, negative for up
+            invisible_display.scrollTop += scrollAmount;
+
+            // Trigger the checkScroll function
+            checkScroll();
+        }
+    }
+
+    // get scroll component
+    const invisible_display = document.getElementById(`invisible-scroll-${id}`)
     const [oldScroll, setOld] = useState(10)
 
     const checkScroll = () => {
@@ -63,10 +70,10 @@ function StartCooking() {
 
     // move between instructions when arrow keys are pressed
     onkeydown = (event) => {
+        if (sousChefMode) return
         if (event.code == 'ArrowRight' || event.code == 'ArrowDown') onNext()
         if (event.code == 'ArrowLeft' || event.code == 'ArrowUp') onPrevious()
     }
-
 
     // set the connected ingredients when user moves between instructions
     useEffect(() => {
@@ -96,56 +103,71 @@ function StartCooking() {
 
     return(
         <Container fluid className='position-relative'>
-            <Row className='fs-55 cooking-page'>
+            <Row className='fs-55 cooking-page px-3'>
                 <Col xs={4} className='h-100'>
-                    <Row className='cooking-display'>
-                        <ul className='list-unstyled align-bottom m-0 cooking-begin'>
-                            <Col>
-                            {recipe.ingredients.slice(0, connected[0] != undefined ? connected[0] : lastConnected[lastConnected.length - 1] + 1).map((item, index) => 
-                                <li className='row' key={index}>
-                                    <Col className='col-5 right text-nowrap overflow-hidden' >{checkFraction(item.quantity)}{item.unit}</Col>
-                                    <Col className='col-7 left' >{item.name}</Col>
-                                </li>
-                            )}
-                            </Col>
-                        </ul>
-                        <ul className='list-unstyled center-vertical m-0 cooking-focused z-2'>
-                            <Col>
-                            {connected.map((idx) => 
-                                <li className='row fs-3 fw-bold' key={idx}>
-                                    <Col className='col-5 right text-nowrap' >{checkFraction(recipe.ingredients[idx].quantity)}{recipe.ingredients[idx].unit}</Col>
-                                    <Col className='col-7 left' >{recipe.ingredients[idx].name}</Col>
-                                </li>
-                            )}
-                            </Col>
-                        </ul>
-                        <ul className='list-unstyled overflow-hidden cooking-end'>
-                            {recipe.ingredients.slice(lastConnected[lastConnected.length - 1] + 1).map((item, index) => 
-                                <li className='row' key={index}>
-                                    <Col className='col-5 right text-nowrap' >{checkFraction(item.quantity)}{item.unit}</Col>
-                                    <Col className='col-7 left' >{item.name}</Col>
-                                </li>
-                            )}
-                        </ul>
+                    <Row className='cooking-display overflow-hidden'>
+                        <div 
+                            className='scrollable-container h-100 overflow-y-hidden' 
+                            onWheel={doScroll}
+                        >
+                            <ul className='list-unstyled align-bottom m-0 cooking-begin'>
+                                <Col>
+                                {recipe.ingredients.slice(0, connected[0] != undefined ? connected[0] : lastConnected[lastConnected.length - 1] + 1).map((item, index) => 
+                                    <li className={`row ${sousChefMode ? 'fs-6': 'fs-5'} ${addedIngr.includes(index) ? 'text-decoration-line-through' : ''}`} key={index}>
+                                        <Col className='col-5 right text-nowrap overflow-hidden' >{checkFraction(item.quantity / recipe.portions * portions)}{item.unit}</Col>
+                                        <Col className='col-7 left' >{item.name}</Col>
+                                    </li>
+                                )}
+                                </Col>
+                            </ul>
+                            <ul className='list-unstyled center-vertical m-0 cooking-focused z-2'>
+                                <Col>
+                                {connected.map((idx) => 
+                                    <li className={`row ${sousChefMode ? 'fs-45': 'fs-3'} fw-bold ${addedIngr.includes(idx) ? 'text-decoration-line-through' : ''}`} key={idx} onClick={() => toggleCrossed(idx, addedIngr)}>
+                                        <Col className='col-5 right text-nowrap' >{checkFraction(recipe.ingredients[idx].quantity / recipe.portions * portions)}{recipe.ingredients[idx].unit}</Col>
+                                        <Col className='col-7 left'>{recipe.ingredients[idx].name}</Col>
+                                    </li>
+                                )}
+                                </Col>
+                            </ul>
+                            <ul className='list-unstyled overflow-hidden cooking-end'>
+                                {recipe.ingredients.slice(lastConnected[lastConnected.length - 1] + 1).map((item, index) => 
+                                    <li className={`row ${sousChefMode ? 'fs-6': 'fs-5'} ${addedIngr.includes(index + (lastConnected.length > 0 ? lastConnected[lastConnected.length - 1] : -1) + 1) ? 'text-decoration-line-through' : ''}`} key={index}>
+                                        <Col className='col-5 right text-nowrap' >{checkFraction(item.quantity / recipe.portions * portions)}{item.unit}</Col>
+                                        <Col className='col-7 left' >{item.name}</Col>
+                                    </li>
+                                )}
+                            </ul>
+                        </div>
                     </Row>
                 </Col>
                 <Col xs={8} className='h-100'>
                     <Row className='cooking-display overflow-hidden'>
-                        <ul className='list-unstyled align-bottom m-0 cooking-begin'>
-                            <Col>
-                            {recipe.directions.slice(0, selected).map((item, index) => 
-                                <li key={index}>{item}</li>
-                            )}
-                            </Col>
-                        </ul>
-                        <ul className='list-unstyled center-vertical m-0 cooking-focused'>
-                            <li className='fs-3 fw-bold py-5'>{recipe.directions[selected]}</li>
-                        </ul>
-                        <ul className='list-unstyled cooking-end'>
-                            {recipe.directions.slice(selected + 1).map((item, index) => 
-                                <li key={index}>{item}</li>
-                            )}
-                        </ul>
+                        <div 
+                            className='scrollable-container h-100 overflow-y-hidden' 
+                            onWheel={doScroll}
+                        >
+                            <ul className='list-unstyled align-bottom m-0 cooking-begin'>
+                                <Col>
+                                {recipe.directions.slice(0, selected).map((item, index) => 
+                                    <li key={index} className={`${sousChefMode ? 'fs-6': 'fs-5'} ${completedDir.includes(index) ? 'text-decoration-line-through' : ''}`}>{item}</li>
+                                )}
+                                </Col>
+                            </ul>
+                            <ul className='list-unstyled center-vertical m-0 cooking-focused'>
+                                <li 
+                                    className={`${sousChefMode ? 'fs-45': 'fs-3'} fw-bold py-5 ${completedDir.includes(selected) ? 'text-decoration-line-through' : ''}`}
+                                    onClick={() => toggleCrossed(selected, completedDir)}
+                                >
+                                    {recipe.directions[selected]}
+                                </li>
+                            </ul>
+                            <ul className='list-unstyled cooking-end'>
+                                {recipe.directions.slice(selected + 1).map((item, index) => 
+                                    <li key={index} className={`${sousChefMode ? 'fs-6': 'fs-5'} ${completedDir.includes(index + selected + 1) ? 'text-decoration-line-through' : ''}`}>{item}</li>
+                                )}
+                            </ul>
+                        </div>
                     </Row>
                     <Row className='position-relative z-2 center-content cooking-buttons'>
                         <Col className='px-3 left'>
@@ -161,9 +183,10 @@ function StartCooking() {
                     </Row>
                 </Col>
             </Row>
-            <Row className='overflow-y-scroll w-100' onScroll={checkScroll} id='invisible-scroll'>
-                <Col>
-                    <ul className='list-unstyled h-100 invisible'>
+            <Row className='w-100 h-100 cooking-page invisible-scroll-container'>
+                <Col></Col>
+                <Col id={`invisible-scroll-${id}`} className='overflow-y-scroll overflow-x-hidden col-auto p-0' onScroll={checkScroll} >
+                    <ul className='list-unstyled h-100 invisible w-0'>
                         {recipe.directions.map((item, index) => 
                             <li key={index} className='h-25'>{item}</li>
                         )}

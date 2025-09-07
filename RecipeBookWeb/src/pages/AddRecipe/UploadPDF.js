@@ -23,12 +23,9 @@ const UploadPDF = ({setName, Ingredient, setIngredients, setDirections, setSourc
         if (res != undefined){
             const recipe = res.recipe
             if (recipe != null) {
-                const formatted_ingredients = []
-                if (recipe.ingredients != undefined) {
-                    for (const ingredient of recipe.ingredients) {
-                        const formatted = new Ingredient(ingredient.name, ingredient.quantity, ingredient.unit)
-                        formatted_ingredients.push(formatted)
-                }}
+                const formatted_ingredients = recipe.ingredients?.map((ingredient) =>
+                    new Ingredient(ingredient.name, ingredient.quantity, ingredient.unit)
+                ) || [];
                 setName(recipe.name)
                 setIngredients(formatted_ingredients)
                 setDirections(recipe.directions)

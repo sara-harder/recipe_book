@@ -1,6 +1,6 @@
 // react imports
 import React from 'react';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -13,6 +13,8 @@ import Button from 'react-bootstrap/esm/Button';
 
 // style imports
 import '../styling/Recipe.css';
+import { FaAngleUp as UpArrow } from "react-icons/fa6";
+import { FaAngleDown as DownArrow } from "react-icons/fa6";
 
 // function imports
 import { checkFraction } from 'recipe-book/helpers';
@@ -36,8 +38,43 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
     let recipe_round = "rounded"
     if (recipe.image) recipe_round = "rounded-bottom"
 
+    // change the arrow color on hover
+    const [arrowIdx, setArrow] = useState(-1)
+    const [portions, setPortions] = useState(recipe.portions)
+
     return(
         <Container fluid className='mt-4 mb-5'>
+            <Row>
+                <Col></Col>
+                <Col className='col-1 w-auto center-content'>
+                    <h5 className='fw-bold my-3 mb-3'>Portions:</h5>
+                </Col>
+                <Col className='col-1 w-auto center-content'>
+                    <h6 className='fw-bold m-0 p-0'>{portions}</h6>
+                </Col>
+                <Col className='col-1 w-auto flex-column center-content m-0 p-0 pe-4'>
+                    <UpArrow 
+                        size='.8em' 
+                        color={arrowIdx == 2 ? 'black' : '#606060'}
+                        style={{
+                            opacity: .8
+                        }}
+                        onMouseEnter={() => setArrow(2)} 
+                        onMouseLeave={() => setArrow(-1)}
+                        onClick={() => setPortions(portions+1)}
+                    />
+                    <DownArrow 
+                        size='.8em' 
+                        color={arrowIdx == 1 ? 'black' : '#606060'}
+                        style={{
+                            opacity: .8
+                        }}
+                        onMouseEnter={() => setArrow(1)} 
+                        onMouseLeave={() => setArrow(-1)}
+                        onClick={() => setPortions(portions-1)}
+                    />
+                </Col>
+            </Row>
             {recipe.image ? 
                 <Row className='g-0'>
                     <Col>
@@ -51,7 +88,7 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
                     <ul className='list-unstyled'>
                         {recipe.ingredients.map((item, index) => 
                             <li className='row' key={index}>
-                                <Col className='col-5 right text-nowrap overflow-hidden' >{checkFraction(item.quantity)}{item.unit}</Col>
+                                <Col className='col-5 right text-nowrap overflow-hidden' >{checkFraction(item.quantity / recipe.portions * portions)}{item.unit}</Col>
                                 <Col className='col-7 left' >{item.name}</Col>
                             </li>
                         )}
@@ -69,7 +106,7 @@ function ViewRecipe({setHeader, setRecipe, setFavorite}) {
             </Row>
             <Row>
                 <Col className='py-5 px-4 center-content'>
-                    <Button variant="success" type="button" size='lg' className='bg-color5 border-color5' onClick={() => { if (recipe.connections)navigate('/cooking', {state: {recipe: recipe}})}}>
+                    <Button variant="success" type="button" size='lg' className='bg-color5 border-color5' onClick={() => { if (recipe.connections)navigate('/cooking', {state: {recipe: recipe, portions: portions}})}}>
                         Start Cooking!
                     </Button>
                 </Col>

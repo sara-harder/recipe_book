@@ -1,5 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from pdf_scraper import parse_recipe
 
 app = Flask(__name__)
@@ -22,4 +26,4 @@ def upload_file():
 
 if __name__ == '__main__':
     # run this script in pycharm, where python packages can be installed more easily
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5002, debug=True)
