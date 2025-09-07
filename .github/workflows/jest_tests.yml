@@ -20,7 +20,7 @@ jobs:
 
       - name: Install backend dependencies
         working-directory: backend
-        run: npm install
+        run: npm ci install
         
       - name: Run backend Jest tests
         working-directory: backend
@@ -28,7 +28,7 @@ jobs:
 
       - name: Install functionality dependencies
         working-directory: functionality
-        run: npm install
+        run: npm ci install
         
       - name: Run functionality Jest tests
         working-directory: functionality
